@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대수 오리엔테이션 | 2022 개정 교육과정</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-card {
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+        }
+
+        .header-card h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-card .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .header-card .tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header-card .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.95em;
+        }
+
+        .header-card .tag.highlight {
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            font-weight: bold;
+        }
+
+        h2 {
+            color: #1a1a2e;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2 .icon {
+            font-size: 1.2em;
+        }
+
+        .intro-section p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .highlight-box h3 {
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+
+        /* 단원 소개 */
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .unit-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .unit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .unit-card .unit-number {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .unit-card .unit-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .unit-card .unit-topics {
+            font-size: 0.9em;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* 평가 방법 */
+        .evaluation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .eval-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .eval-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .eval-item .percentage {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .eval-item .label {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        /* 커리큘럼 테이블 */
+        .curriculum-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .curriculum-table th,
+        .curriculum-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .curriculum-table th {
+            background: #1a1a2e;
+            color: white;
+            font-weight: 600;
+        }
+
+        .curriculum-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .curriculum-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .curriculum-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .unit-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .unit-tag.u1 { background: #e3f2fd; color: #1565c0; }
+        .unit-tag.u2 { background: #f3e5f5; color: #7b1fa2; }
+        .unit-tag.u3 { background: #e8f5e9; color: #2e7d32; }
+        .unit-tag.u4 { background: #fff3e0; color: #ef6c00; }
+
+        .exam-row {
+            background: #fff3cd !important;
+            font-weight: bold;
+        }
+
+        /* 학습 목표 */
+        .goals-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .goals-list li {
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.05em;
+            transition: all 0.3s ease;
+        }
+
+        .goals-list li:hover {
+            background: #e8ebff;
+            transform: translateX(10px);
+        }
+
+        .goals-list .number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* 준비물 */
+        .supplies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .supply-item {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .supply-item:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .supply-item .supply-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* 연락처 */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .contact-item .contact-icon {
+            font-size: 1.5em;
+        }
+
+        /* 교과서 정보 */
+        .textbook-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .textbook-icon {
+            font-size: 3em;
+        }
+
+        .textbook-details h3 {
+            color: #1565c0;
+            margin-bottom: 5px;
+        }
+
+        .textbook-details p {
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        /* 반응형 */
+        @media (max-width: 600px) {
+            .header-card h1 {
+                font-size: 2em;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .units-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .evaluation-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* 프린트 스타일 */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="card header-card">
+            <h1>대수</h1>
+            <p class="subtitle">OT</p>
+            <div class="tags">
+                <span class="tag highlight">풍문고등학교</span>
+                <span class="tag">2학년 1학기</span>
+                <span class="tag">2022 개정 교육과정</span>
+            </div>
+        </div>
+
+        <!-- 교사 소개 -->
+        <div class="card">
+            <h2><span class="icon">👨‍🏫</span> 교사 소개</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📛</span>
+                    <div>
+                        <strong>이름</strong><br>
+                        <span style="color: #666;">박도영</span>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">🏫</span>
+                    <div>
+                        <strong>교무실</strong><br>
+                        <span style="color: #666;">4층 2학년부A</span>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <div>
+                        <strong>E-mail</strong><br>
+                        <span style="color: #666;">doyeongmath@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div style="background: #ffebee; border: 2px solid #cc0000; border-radius: 12px; padding: 15px;">
+                    <h4 style="color: #cc0000; margin-bottom: 8px;">수업 중 금지사항</h4>
+                    <p style="color: #333; font-weight: bold;">핸드폰, 잡담, 비속어</p>
+                </div>
+                <div style="background: #e8f5e9; border: 2px solid #2e7d32; border-radius: 12px; padding: 15px;">
+                    <h4 style="color: #2e7d32; margin-bottom: 8px;">수업 중 허용사항</h4>
+                    <p style="color: #333; font-weight: bold;">질문</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 교재 -->
+        <div class="card">
+            <h2><span class="icon">📚</span> 교재</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: #f5f7fa; border: 1px solid #d0d8e8; border-radius: 15px; padding: 20px; border-top: 4px solid #4a7fc1;">
+                    <span style="background: #4a7fc1; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; font-weight: bold;">주교재</span>
+                    <h3 style="color: #4a7fc1; margin: 15px 0 10px; font-size: 1.5em;">교과서</h3>
+                    <p style="color: #444; font-size: 0.95em;">• 2022 개정 교육과정 반영</p>
+                    <p style="color: #444; font-size: 0.95em;">• 지수함수·로그함수, 삼각함수, 수열 수록</p>
+                </div>
+                <div style="background: #f5f7fa; border: 1px solid #d0d8e8; border-radius: 15px; padding: 20px; border-top: 4px solid #e8541a;">
+                    <span style="background: #e8541a; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; font-weight: bold;">부교재</span>
+                    <h3 style="color: #e8541a; margin: 15px 0 10px; font-size: 1.5em;">학습지</h3>
+                    <p style="color: #444; font-size: 0.95em;">• 개념정리 + 연습문제 수록</p>
+                    <p style="color: #444; font-size: 0.95em;">• 수행평가(개념정리 포트폴리오) 대상</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 단원 소개 -->
+        <div class="card">
+            <h2><span class="icon">📑</span> 단원 구성</h2>
+            <div class="units-grid">
+                <div class="unit-card">
+                    <div class="unit-number">Ⅰ 단원</div>
+                    <div class="unit-name">지수함수</div>
+                    <div class="unit-topics">거듭제곱과 거듭제곱근<br>지수의 확장<br>지수함수의 그래프</div>
+                </div>
+                <div class="unit-card">
+                    <div class="unit-number">Ⅱ 단원</div>
+                    <div class="unit-name">로그함수</div>
+                    <div class="unit-topics">로그의 정의와 성질<br>상용로그<br>로그함수의 그래프</div>
+                </div>
+                <div class="unit-card">
+                    <div class="unit-number">Ⅲ 단원</div>
+                    <div class="unit-name">삼각함수</div>
+                    <div class="unit-topics">일반각과 호도법<br>삼각함수의 정의<br>삼각함수의 그래프</div>
+                </div>
+                <div class="unit-card">
+                    <div class="unit-number">Ⅳ 단원</div>
+                    <div class="unit-name">수열</div>
+                    <div class="unit-topics">등차수열과 등비수열<br>수열의 합<br>수학적 귀납법</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 학습 목표 -->
+        <div class="card">
+            <h2><span class="icon">🎯</span> 학습 목표</h2>
+            <ul class="goals-list">
+                <li>
+                    <span class="number">1</span>
+                    지수와 로그의 개념을 이해하고 지수함수와 로그함수를 활용할 수 있다
+                </li>
+                <li>
+                    <span class="number">2</span>
+                    삼각함수의 뜻을 알고 그래프를 그리고 해석할 수 있다
+                </li>
+                <li>
+                    <span class="number">3</span>
+                    등차수열과 등비수열의 일반항과 합을 구할 수 있다
+                </li>
+                <li>
+                    <span class="number">4</span>
+                    수학적 귀납법의 원리를 이해하고 이를 이용하여 명제를 증명할 수 있다
+                </li>
+                <li>
+                    <span class="number">5</span>
+                    실생활 문제를 수학적으로 모델링하고 해결할 수 있다
+                </li>
+            </ul>
+        </div>
+
+        <!-- 평가 방법 -->
+        <div class="card">
+            <h2><span class="icon">📊</span> 평가 방법</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="eval-item" style="padding: 30px;">
+                    <div class="percentage">60%</div>
+                    <div class="label">지필평가</div>
+                    <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.9;">중간 30% + 기말 30%</div>
+                </div>
+                <div class="eval-item" style="padding: 30px;">
+                    <div class="percentage">40%</div>
+                    <div class="label">수행평가</div>
+                    <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.9;">10점 + 10점 + 20점</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 지필평가 계획 -->
+        <div class="card">
+            <h2><span class="icon">📝</span> 지필평가 계획</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px;">
+                <div style="background: #f8f9ff; border: 2px solid #667eea; border-radius: 15px; padding: 20px; text-align: center;">
+                    <div style="font-size: 2em; font-weight: bold; color: #667eea;">30%</div>
+                    <div style="font-size: 1.1em; color: #333; margin-top: 5px;">중간고사</div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Ⅰ. 지수함수 ~ Ⅱ. 로그함수</div>
+                </div>
+                <div style="background: #f8f9ff; border: 2px solid #667eea; border-radius: 15px; padding: 20px; text-align: center;">
+                    <div style="font-size: 2em; font-weight: bold; color: #667eea;">30%</div>
+                    <div style="font-size: 1.1em; color: #333; margin-top: 5px;">기말고사</div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Ⅲ. 삼각함수 ~ Ⅳ. 수열</div>
+                </div>
+            </div>
+            <h3 style="color: #1a1a2e; margin-bottom: 15px;">문항 구성 (100점 만점)</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div style="background: #e3f2fd; border-radius: 12px; padding: 20px; text-align: center;">
+                    <div style="font-size: 1.8em; font-weight: bold; color: #1565c0;">50점</div>
+                    <div style="font-size: 1em; color: #333; margin-top: 5px;">선택형</div>
+                    <div style="font-size: 0.85em; color: #666;">15문항</div>
+                </div>
+                <div style="background: #f3e5f5; border-radius: 12px; padding: 20px; text-align: center;">
+                    <div style="font-size: 1.8em; font-weight: bold; color: #7b1fa2;">20점</div>
+                    <div style="font-size: 1em; color: #333; margin-top: 5px;">단답형</div>
+                    <div style="font-size: 0.85em; color: #666;">5문항 내외</div>
+                </div>
+                <div style="background: #e8f5e9; border-radius: 12px; padding: 20px; text-align: center;">
+                    <div style="font-size: 1.8em; font-weight: bold; color: #2e7d32;">30점</div>
+                    <div style="font-size: 1em; color: #333; margin-top: 5px;">서술형</div>
+                    <div style="font-size: 0.85em; color: #666;">3문항 내외</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 수행평가 계획 -->
+        <div class="card">
+            <h2><span class="icon">✍️</span> 수행평가 계획</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 25px; text-align: center;">
+                    <div style="font-size: 2.5em; font-weight: bold;">10점</div>
+                    <div style="font-size: 1.2em; margin: 10px 0;">개념정리 포트폴리오</div>
+                    <div style="font-size: 0.85em; opacity: 0.9;">학습지 개념정리 활동</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 15px; padding: 25px; text-align: center;">
+                    <div style="font-size: 2.5em; font-weight: bold;">10점</div>
+                    <div style="font-size: 1.2em; margin: 10px 0;">문제서술 및 풀이해설</div>
+                    <div style="font-size: 0.85em; opacity: 0.9;">문제 출제 및 풀이 설명</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 15px; padding: 25px; text-align: center;">
+                    <div style="font-size: 2.5em; font-weight: bold;">20점</div>
+                    <div style="font-size: 1.2em; margin: 10px 0;">상호배움 활동</div>
+                    <div style="font-size: 0.85em; opacity: 0.9;">10점 × 2회</div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 25px;">
+                <h3>📌 수행평가 채점 기준</h3>
+                <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
+                    <tr style="background: #1a1a2e; color: white;">
+                        <th style="padding: 12px; text-align: center; border-radius: 8px 0 0 0;">등급</th>
+                        <th style="padding: 12px; text-align: center;">A</th>
+                        <th style="padding: 12px; text-align: center;">B</th>
+                        <th style="padding: 12px; text-align: center;">C</th>
+                        <th style="padding: 12px; text-align: center; border-radius: 0 8px 0 0;">미제출</th>
+                    </tr>
+                    <tr style="background: #f8f9ff;">
+                        <td style="padding: 12px; text-align: center; font-weight: bold;">10점 만점</td>
+                        <td style="padding: 12px; text-align: center;">10점</td>
+                        <td style="padding: 12px; text-align: center;">8점</td>
+                        <td style="padding: 12px; text-align: center;">6점</td>
+                        <td style="padding: 12px; text-align: center;">0점</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 수학 주제 발표 활동 안내 -->
+        <div class="card">
+            <h2><span class="icon">🎤</span> 수학 주제 발표 활동</h2>
+            <div class="highlight-box" style="background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%); border-left-color: #fbc02d;">
+                <h3 style="color: #f57f17;">상호배움 활동 (수행평가 20점)</h3>
+                <p style="margin-top: 10px; color: #333;">수학 관련 주제를 선정하여 발표하는 활동입니다.</p>
+            </div>
+            <div style="margin-top: 20px;">
+                <h4 style="color: #1a1a2e; margin-bottom: 15px;">발표 주제 예시</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; border-left: 4px solid #667eea;">
+                        <strong>수학사</strong><br>
+                        <span style="color: #666; font-size: 0.9em;">수학자의 생애와 업적</span>
+                    </div>
+                    <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; border-left: 4px solid #764ba2;">
+                        <strong>실생활 속 수학</strong><br>
+                        <span style="color: #666; font-size: 0.9em;">수학 원리의 실생활 적용</span>
+                    </div>
+                    <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; border-left: 4px solid #00d2ff;">
+                        <strong>수학 개념 탐구</strong><br>
+                        <span style="color: #666; font-size: 0.9em;">교과서 밖 수학 개념</span>
+                    </div>
+                    <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; border-left: 4px solid #3a7bd5;">
+                        <strong>진로와 수학</strong><br>
+                        <span style="color: #666; font-size: 0.9em;">진로 분야에서의 수학 활용</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 학습 계통도 -->
+        <div class="card">
+            <h2><span class="icon">🗺️</span> 학습 계통도</h2>
+            <p style="color: #666; margin-bottom: 20px;">대수는 고등학교 수학의 핵심 과목으로, 다양한 후속 과목의 기초가 됩니다.</p>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; border-radius: 15px; text-align: center; font-size: 1.3em; font-weight: bold;">
+                    대수
+                </div>
+                <div style="font-size: 2em; color: #667eea;">↓</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%;">
+                    <div style="background: #e3f2fd; border: 2px solid #1565c0; padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-weight: bold; color: #1565c0;">미적분</div>
+                        <div style="font-size: 0.85em; color: #666; margin-top: 5px;">수열의 극한, 미분, 적분</div>
+                    </div>
+                    <div style="background: #f3e5f5; border: 2px solid #7b1fa2; padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-weight: bold; color: #7b1fa2;">확률과 통계</div>
+                        <div style="font-size: 0.85em; color: #666; margin-top: 5px;">순열, 조합, 확률</div>
+                    </div>
+                    <div style="background: #e8f5e9; border: 2px solid #2e7d32; padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-weight: bold; color: #2e7d32;">기하</div>
+                        <div style="font-size: 0.85em; color: #666; margin-top: 5px;">벡터, 공간도형</div>
+                    </div>
+                </div>
+            </div>
+            <div class="highlight-box" style="margin-top: 25px; background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%); border-left-color: #ff8f00;">
+                <h3 style="color: #e65100;">📢 2028학년도 수능 범위</h3>
+                <p style="color: #333;">대수는 2028학년도 수능 시험의 출제 범위에 포함됩니다.</p>
+            </div>
+        </div>
+
+        <!-- 마무리 안내 -->
+        <div class="card">
+            <h2><span class="icon">📞</span> 연락처</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">👨‍🏫</span>
+                    <div>
+                        <strong>담당 교사</strong><br>
+                        <span style="color: #666;">박도영</span>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <div>
+                        <strong>E-mail</strong><br>
+                        <span style="color: #666;">doyeongmath@gmail.com</span>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div>
+                        <strong>교무실</strong><br>
+                        <span style="color: #666;">4층 2학년부A</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 30px; background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);">
+                <h3>🌟 한 학기 동안 함께 성장합시다!</h3>
+                <p>대수는 처음엔 어렵게 느껴질 수 있지만, 차근차근 배우면 반드시 이해할 수 있습니다. 질문은 언제든 환영합니다!</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
