@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(unzip:*)",
-      "Bash(powershell -Command \"New-Item -ItemType Directory -Force -Path ''C:\\\\Users\\\\pm\\\\Documents\\\\GitHub\\\\26\\\\대수\\\\pptx_temp''; Expand-Archive -Path ''C:\\\\Users\\\\pm\\\\OneDrive - 풍문고등학교\\\\2024\\\\수학1\\\\수학1 OT.pptx'' -DestinationPath ''C:\\\\Users\\\\pm\\\\Documents\\\\GitHub\\\\26\\\\대수\\\\pptx_temp'' -Force\")"
-    ]
-  }
-}

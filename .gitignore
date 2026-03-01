@@ -1,0 +1,10 @@
+# 임시 작업 폴더
+대수/pptx_temp/
+
+# Claude 로컬 설정
+.claude/
+대수/.claude/
+
+# OS 파일
+.DS_Store
+Thumbs.db

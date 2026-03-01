@@ -39,18 +39,9 @@
             background-clip: text;
         }
 
-        .header-card .subtitle {
-            font-size: 1.3em;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
+        .header-card .subtitle { font-size: 1.3em; opacity: 0.9; margin-bottom: 15px; }
 
-        .tags {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .tags { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 
         .tag {
             display: inline-block;
@@ -96,11 +87,7 @@
         .contact-icon { font-size: 1.5em; }
 
         /* 목표 리스트 */
-        .goals-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 10px;
-        }
+        .goals-list { list-style: none; padding: 0; margin-top: 10px; }
 
         .goals-list li {
             padding: 15px 20px;
@@ -115,10 +102,7 @@
             transition: all 0.3s ease;
         }
 
-        .goals-list li:hover {
-            background: #ffe4ec;
-            transform: translateX(10px);
-        }
+        .goals-list li:hover { background: #ffe4ec; transform: translateX(10px); }
 
         .goals-list .number {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -133,41 +117,36 @@
             flex-shrink: 0;
         }
 
-        /* 평가 */
-        .eval-grid {
+        /* P/F 평가 */
+        .pf-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin-top: 20px;
         }
 
-        .eval-item {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 30px;
+        .pf-item {
+            padding: 40px 20px;
             border-radius: 15px;
             text-align: center;
+            color: white;
             transition: transform 0.3s ease;
         }
 
-        .eval-item:hover { transform: translateY(-5px); }
+        .pf-item:hover { transform: translateY(-5px); }
 
-        .eval-item .percentage {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .pf-item .pf-badge {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
         }
 
-        .eval-item .label { font-size: 1.1em; }
-        .eval-item .sub { margin-top: 10px; font-size: 0.88em; opacity: 0.9; }
+        .pf-item .pf-label { font-size: 1.3em; font-weight: 700; margin-bottom: 10px; }
+        .pf-item .pf-desc { font-size: 0.9em; opacity: 0.9; line-height: 1.7; }
 
         /* 글쓰기 단계 */
-        .steps {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
+        .steps { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
 
         .step {
             display: flex;
@@ -197,30 +176,6 @@
 
         .step-content h4 { color: #1a1a2e; margin-bottom: 4px; }
         .step-content p { color: #666; font-size: 0.9em; }
-
-        /* 수행평가 상세 */
-        .perform-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .perform-item {
-            border-radius: 15px;
-            padding: 24px;
-            text-align: center;
-            color: white;
-        }
-
-        .perform-item .pts {
-            font-size: 2.3em;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .perform-item .name { font-size: 1em; margin-bottom: 6px; }
-        .perform-item .desc { font-size: 0.8em; opacity: 0.9; line-height: 1.5; }
 
         /* 하이라이트 박스 */
         .highlight-box {
@@ -271,8 +226,7 @@
         @media (max-width: 600px) {
             .header-card h1 { font-size: 2em; }
             .card { padding: 25px; }
-            .eval-grid { grid-template-columns: 1fr; }
-            .perform-grid { grid-template-columns: 1fr; }
+            .pf-grid { grid-template-columns: 1fr; }
         }
 
         @media print {
@@ -408,60 +362,23 @@
         <!-- 평가 방법 -->
         <div class="card">
             <h2>📊 평가 방법</h2>
-            <div class="eval-grid">
-                <div class="eval-item">
-                    <div class="percentage">60%</div>
-                    <div class="label">지필평가</div>
-                    <div class="sub">중간 30% + 기말 30%</div>
+            <div class="pf-grid">
+                <div class="pf-item" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <div class="pf-badge">P</div>
+                    <div class="pf-label">이수 (Pass)</div>
+                    <div class="pf-desc">기한 내 논술문 제출<br>성실하게 수업 참여</div>
                 </div>
-                <div class="eval-item">
-                    <div class="percentage">40%</div>
-                    <div class="label">수행평가</div>
-                    <div class="sub">논술문 작성 중심</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 수행평가 -->
-        <div class="card">
-            <h2>📝 수행평가 계획</h2>
-            <div class="perform-grid">
-                <div class="perform-item" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                    <div class="pts">20점</div>
-                    <div class="name">논술문 작성 1</div>
-                    <div class="desc">사회·문화 주제<br>1,000자 내외</div>
-                </div>
-                <div class="perform-item" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
-                    <div class="pts">20점</div>
-                    <div class="name">논술문 작성 2</div>
-                    <div class="desc">과학·기술 주제<br>1,000자 내외</div>
-                </div>
-                <div class="perform-item" style="background: linear-gradient(135deg, #fd7043 0%, #ff8a65 100%);">
-                    <div class="pts">0점</div>
-                    <div class="name">미제출</div>
-                    <div class="desc">기한 내 미제출 시<br>0점 처리</div>
+                <div class="pf-item" style="background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);">
+                    <div class="pf-badge">F</div>
+                    <div class="pf-label">미이수 (Fail)</div>
+                    <div class="pf-desc">논술문 미제출<br>무단 결석</div>
                 </div>
             </div>
 
             <div class="highlight-box" style="margin-top:25px;">
-                <h3>📌 수행평가 채점 기준</h3>
-                <table style="width:100%; margin-top:15px; border-collapse:collapse;">
-                    <tr style="background:#1a1a2e; color:white;">
-                        <th style="padding:12px; text-align:center; border-radius:8px 0 0 0;">등급</th>
-                        <th style="padding:12px; text-align:center;">A</th>
-                        <th style="padding:12px; text-align:center;">B</th>
-                        <th style="padding:12px; text-align:center;">C</th>
-                        <th style="padding:12px; text-align:center; border-radius:0 8px 0 0;">미제출</th>
-                    </tr>
-                    <tr style="background:#fff5f7;">
-                        <td style="padding:12px; text-align:center; font-weight:bold;">20점 만점</td>
-                        <td style="padding:12px; text-align:center;">20점</td>
-                        <td style="padding:12px; text-align:center;">16점</td>
-                        <td style="padding:12px; text-align:center;">12점</td>
-                        <td style="padding:12px; text-align:center;">0점</td>
-                    </tr>
-                </table>
-                <p style="margin-top:12px; color:#555; font-size:0.9em;">※ 논지의 명확성, 근거의 타당성, 글의 완결성을 종합 평가합니다.</p>
+                <h3>📌 P/F 평가 안내</h3>
+                <p>논술은 점수 대신 <strong>이수(P) / 미이수(F)</strong>로 평가합니다.<br>
+                기한 내 성실하게 제출하면 이수입니다. 내용의 완성도보다 <strong>꾸준한 참여</strong>가 중요합니다.</p>
             </div>
         </div>
 
