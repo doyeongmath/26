@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>박도영 | 풍문고등학교 2학년</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .header-card h1 {
+            font-size: 2.8em;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .header-card .subtitle {
+            font-size: 1.1em;
+            opacity: 0.75;
+            margin-bottom: 20px;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.12);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.9em;
+        }
+
+        .tag.highlight {
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            font-weight: bold;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-card h2 {
+            font-size: 1.2em;
+            color: #888;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 0.05em;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 28px 30px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            font-size: 1.25em;
+            font-weight: 700;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.22);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-hakgeup {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-nonsul {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-daesu {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-icon {
+            font-size: 1.6em;
+            flex-shrink: 0;
+        }
+
+        .btn-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-title {
+            font-size: 1em;
+            font-weight: 800;
+        }
+
+        .btn-desc {
+            font-size: 0.72em;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+
+        .btn-arrow {
+            margin-left: auto;
+            font-size: 1.2em;
+            opacity: 0.7;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 480px) {
+            .header-card h1 {
+                font-size: 2em;
+            }
+            .menu-card {
+                padding: 30px 20px;
+            }
+            .btn {
+                padding: 22px 20px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-card">
+            <h1>박도영</h1>
+            <p class="subtitle">풍문고등학교 · 2학년 1학기</p>
+            <div class="tags">
+                <span class="tag highlight">2026학년도</span>
+                <span class="tag">2022 개정 교육과정</span>
+            </div>
+        </div>
+
+        <div class="menu-card">
+            <h2>오리엔테이션 자료 모음</h2>
+            <div class="buttons">
+                <a href="담임/학급OT.html" class="btn btn-hakgeup">
+                    <span class="btn-icon">🏫</span>
+                    <div class="btn-text">
+                        <span class="btn-title">학급 OT</span>
+                        <span class="btn-desc">2-6반 학급 오리엔테이션</span>
+                    </div>
+                    <span class="btn-arrow">›</span>
+                </a>
+                <a href="담임/논술OT.html" class="btn btn-nonsul">
+                    <span class="btn-icon">✏️</span>
+                    <div class="btn-text">
+                        <span class="btn-title">논술 OT</span>
+                        <span class="btn-desc">논술 수업 오리엔테이션</span>
+                    </div>
+                    <span class="btn-arrow">›</span>
+                </a>
+                <a href="26-1 orientation.html" class="btn btn-daesu">
+                    <span class="btn-icon">📐</span>
+                    <div class="btn-text">
+                        <span class="btn-title">대수 OT</span>
+                        <span class="btn-desc">대수 수업 오리엔테이션</span>
+                    </div>
+                    <span class="btn-arrow">›</span>
+                </a>
+            </div>
+        </div>
+
+        <p class="footer">doyeongmath@gmail.com · 4층 2학년부A</p>
+    </div>
+</body>
+</html>
