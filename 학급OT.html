@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>학급 OT | 2-6반</title>
+    <title>학급 OT | 2-7반</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -39,18 +39,9 @@
             background-clip: text;
         }
 
-        .header-card .subtitle {
-            font-size: 1.3em;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
+        .header-card .subtitle { font-size: 1.3em; opacity: 0.9; margin-bottom: 15px; }
 
-        .tags {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .tags { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 
         .tag {
             display: inline-block;
@@ -67,7 +58,7 @@
 
         h2 {
             color: #1a1a2e;
-            font-size: 1.8em;
+            font-size: 1.6em;
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 3px solid #11998e;
@@ -79,9 +70,9 @@
         /* 연락처 */
         .contact-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 5px;
         }
 
         .contact-item {
@@ -89,70 +80,17 @@
             align-items: center;
             gap: 15px;
             padding: 18px;
-            background: #f8fffe;
+            background: #f0fff8;
             border-radius: 12px;
         }
 
         .contact-icon { font-size: 1.5em; }
 
-        /* 학급 규칙 */
-        .rules-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .rule-card {
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .rule-card.allowed {
-            background: #e8f5e9;
-            border: 2px solid #2e7d32;
-        }
-
-        .rule-card.forbidden {
-            background: #ffebee;
-            border: 2px solid #c62828;
-        }
-
-        .rule-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.1em;
-        }
-
-        .rule-card.allowed h3 { color: #2e7d32; }
-        .rule-card.forbidden h3 { color: #c62828; }
-
-        .rule-list {
-            list-style: none;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .rule-list li {
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .rule-card.allowed .rule-list li { background: #c8e6c9; color: #1b5e20; }
-        .rule-card.forbidden .rule-list li { background: #ffcdd2; color: #b71c1c; }
-
-        /* 주요 일정 */
+        /* 일정 테이블 */
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .schedule-table th,
@@ -172,52 +110,67 @@
         .schedule-table th:last-child { border-radius: 0 10px 0 0; }
         .schedule-table tr:hover { background: #f0fff8; }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.85em;
+        /* 규칙 리스트 */
+        .rules-list { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+
+        .rules-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 16px 20px;
+            background: #f0fff8;
+            border-radius: 12px;
+            border-left: 4px solid #11998e;
+            line-height: 1.6;
         }
 
-        .badge-exam { background: #fff3cd; color: #856404; }
-        .badge-event { background: #d1ecf1; color: #0c5460; }
-        .badge-perform { background: #e2d9f3; color: #4a2c8f; }
-
-        /* 학급 정보 */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .info-item {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        .rules-list .rule-num {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
-            padding: 28px 20px;
-            border-radius: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        /* 동료평가 */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .score-item {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 24px 15px;
+            border-radius: 14px;
             text-align: center;
-            transition: transform 0.3s ease;
         }
 
-        .info-item:hover { transform: translateY(-5px); }
+        .score-item .score-num { font-size: 2.2em; font-weight: 900; }
+        .score-item .score-label { font-size: 0.9em; margin-top: 4px; opacity: 0.9; }
 
-        .info-item .info-num {
-            font-size: 2.2em;
-            font-weight: 800;
-            margin-bottom: 6px;
+        .score-total {
+            margin-top: 15px;
+            background: #1a1a2e;
+            color: white;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1em;
         }
 
-        .info-item .info-label {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        /* 담임 한마디 */
+        /* 하이라이트 박스 */
         .highlight-box {
             background: linear-gradient(135deg, #f0fff8 0%, #d4f9ea 100%);
-            padding: 28px;
+            padding: 24px;
             border-radius: 15px;
             margin-top: 20px;
             border-left: 5px solid #11998e;
@@ -226,35 +179,18 @@
         .highlight-box h3 { color: #1a1a2e; margin-bottom: 10px; }
         .highlight-box p { color: #444; line-height: 1.9; }
 
-        /* 스마트폰 정책 */
-        .phone-policy {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
+        /* 안내사항 */
+        .notice-list { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
 
-        .policy-item {
-            flex: 1;
-            padding: 22px;
-            border-radius: 14px;
-            text-align: center;
-        }
-
-        .policy-item .policy-icon { font-size: 2.5em; margin-bottom: 10px; }
-        .policy-item h4 { font-size: 1em; margin-bottom: 8px; }
-        .policy-item p { font-size: 0.88em; color: #555; line-height: 1.6; }
-        .policy-item.on { background: #e8f5e9; border: 2px solid #43a047; }
-        .policy-item.on h4 { color: #2e7d32; }
-        .policy-item.off { background: #ffebee; border: 2px solid #e53935; }
-        .policy-item.off h4 { color: #c62828; }
-
-        /* 상담 안내 */
-        .counsel-box {
+        .notice-list li {
+            padding: 14px 18px;
             background: #f8f9ff;
-            border-radius: 14px;
-            padding: 24px;
-            margin-top: 20px;
-            border: 2px solid #667eea;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.6;
+            color: #333;
         }
 
         .back-btn {
@@ -270,11 +206,20 @@
 
         .back-btn:hover { color: white; }
 
+        .info-note {
+            font-size: 0.88em;
+            color: #777;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
         @media (max-width: 600px) {
             .header-card h1 { font-size: 2em; }
             .card { padding: 25px; }
-            .rules-grid { grid-template-columns: 1fr; }
-            .phone-policy { flex-direction: column; }
+            .score-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
         }
 
         @media print {
@@ -286,11 +231,11 @@
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="back-btn">← 메인으로</a>
+        <a href="index.html" class="back-btn">&#8592; 메인으로</a>
 
         <!-- 헤더 -->
         <div class="card header-card">
-            <h1>2-6반</h1>
+            <h1>2-7반</h1>
             <p class="subtitle">학급 OT</p>
             <div class="tags">
                 <span class="tag highlight">풍문고등학교</span>
@@ -301,177 +246,191 @@
 
         <!-- 담임 소개 -->
         <div class="card">
-            <h2>👨‍🏫 담임 소개</h2>
+            <h2>&#128104;&#8205;&#127979; 담임 소개</h2>
             <div class="contact-grid">
                 <div class="contact-item">
-                    <span class="contact-icon">📛</span>
+                    <span class="contact-icon">&#128219;</span>
                     <div>
                         <strong>이름</strong><br>
                         <span style="color:#666;">박도영</span>
                     </div>
                 </div>
                 <div class="contact-item">
-                    <span class="contact-icon">📚</span>
+                    <span class="contact-icon">&#128218;</span>
                     <div>
                         <strong>담당 과목</strong><br>
                         <span style="color:#666;">수학 (대수)</span>
                     </div>
                 </div>
                 <div class="contact-item">
-                    <span class="contact-icon">🏫</span>
+                    <span class="contact-icon">&#128205;</span>
                     <div>
                         <strong>교무실</strong><br>
                         <span style="color:#666;">4층 2학년부A</span>
                     </div>
                 </div>
                 <div class="contact-item">
-                    <span class="contact-icon">📧</span>
+                    <span class="contact-icon">&#128231;</span>
                     <div>
                         <strong>E-mail</strong><br>
                         <span style="color:#666;">doyeongmath@gmail.com</span>
                     </div>
                 </div>
             </div>
-            <div class="highlight-box" style="margin-top:25px;">
-                <h3>🌱 담임 한마디</h3>
-                <p>2-6반 여러분, 반갑습니다. 올 한 해 함께 성장하는 학급을 만들어 가고 싶습니다. 여러분 한 명 한 명이 소중한 구성원입니다. 어려운 일이 있으면 언제든 찾아오세요.</p>
-            </div>
         </div>
 
-        <!-- 학급 정보 -->
+        <!-- 3월 3일 일정 -->
         <div class="card">
-            <h2>🏷️ 학급 정보</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-num">2-6</div>
-                    <div class="info-label">학반</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-num">4층</div>
-                    <div class="info-label">교실 위치</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-num">1학기</div>
-                    <div class="info-label">2026학년도</div>
-                </div>
+            <h2>&#128197; 3월 3일 (월) 일정</h2>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>교시</th>
+                        <th>내용</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1~2교시</strong></td>
+                        <td>학급 활동 (OT)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3~7교시</strong></td>
+                        <td>정상 수업</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="highlight-box" style="margin-top:20px;">
+                <h3>&#128196; 기초 조사</h3>
+                <p>자기소개서 &amp; 학부모 설문지 작성 &#8594; 당일 제출</p>
             </div>
         </div>
 
         <!-- 학급 규칙 -->
         <div class="card">
-            <h2>📋 학급 규칙</h2>
-            <div class="rules-grid">
-                <div class="rule-card forbidden">
-                    <h3>🚫 금지사항</h3>
-                    <ul class="rule-list">
-                        <li>✕ 수업 중 스마트폰 사용</li>
-                        <li>✕ 무단 이탈 및 지각</li>
-                        <li>✕ 교실 내 음식물 섭취</li>
-                        <li>✕ 타인에 대한 비방·욕설</li>
-                    </ul>
+            <h2>&#128203; 학급 규칙</h2>
+            <ul class="rules-list">
+                <li>
+                    <span class="rule-num">1</span>
+                    <div>
+                        <strong>등교 시간</strong><br>
+                        08:00 이전 등교 &#8594; 지각 시 방과후 청소 + 벌점 / 개근 시 상점
+                    </div>
+                </li>
+                <li>
+                    <span class="rule-num">2</span>
+                    <div>
+                        <strong>칭찬 문화</strong><br>
+                        서로 칭찬하고 격려하는 학급 분위기 만들기
+                    </div>
+                </li>
+                <li>
+                    <span class="rule-num">3</span>
+                    <div>
+                        <strong>화장 금지</strong><br>
+                        교내 화장 금지 (교칙 준수)
+                    </div>
+                </li>
+                <li>
+                    <span class="rule-num">4</span>
+                    <div>
+                        <strong>의자 올리기</strong><br>
+                        귀가 전 의자 올리기 (청소 편의)
+                    </div>
+                </li>
+                <li>
+                    <span class="rule-num">5</span>
+                    <div>
+                        <strong>1인 1역</strong><br>
+                        학급 구성원 모두 역할 담당 (아래 별도 안내)
+                    </div>
+                </li>
+                <li>
+                    <span class="rule-num">6</span>
+                    <div>
+                        <strong>조회 &amp; 종례</strong><br>
+                        조회·종례 시간 자리 착석 및 성실 참여
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 1인 1역 -->
+        <div class="card">
+            <h2>&#127775; 1인 1역</h2>
+            <ul class="notice-list">
+                <li>&#128197; <div><strong>신청 방법:</strong> 목요일 조회 시간에 신청</div></li>
+                <li>&#9200; <div><strong>신청 마감:</strong> 목요일 23:59</div></li>
+                <li>&#128221; <div><strong>생기부 기록:</strong> 성실하게 역할을 수행한 학생의 경우 생활기록부에 기재 가능</div></li>
+            </ul>
+        </div>
+
+        <!-- 동료 평가 -->
+        <div class="card">
+            <h2>&#127937; 동료 평가 (총 15점)</h2>
+            <div class="score-grid">
+                <div class="score-item">
+                    <div class="score-num">5점</div>
+                    <div class="score-label">출결</div>
                 </div>
-                <div class="rule-card allowed">
-                    <h3>✅ 우리 학급의 약속</h3>
-                    <ul class="rule-list">
-                        <li>○ 서로 존중하는 말하기</li>
-                        <li>○ 청소 당번 성실히 이행</li>
-                        <li>○ 학급 물품 소중히 사용</li>
-                        <li>○ 어려울 때 솔직하게 대화</li>
-                    </ul>
+                <div class="score-item">
+                    <div class="score-num">5점</div>
+                    <div class="score-label">1인 1역</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-num">5점</div>
+                    <div class="score-label">주번</div>
                 </div>
             </div>
-        </div>
-
-        <!-- 스마트폰 정책 -->
-        <div class="card">
-            <h2>📱 스마트폰 정책</h2>
-            <div class="phone-policy">
-                <div class="policy-item on">
-                    <div class="policy-icon">✅</div>
-                    <h4>등교 후 ~ 수업 전</h4>
-                    <p>자유롭게 사용 가능합니다.</p>
-                </div>
-                <div class="policy-item off">
-                    <div class="policy-icon">🔕</div>
-                    <h4>수업 시간</h4>
-                    <p>무음 후 가방 속 보관.<br>교사 허락 시 사용 가능.</p>
-                </div>
-                <div class="policy-item on">
-                    <div class="policy-icon">✅</div>
-                    <h4>점심·쉬는 시간</h4>
-                    <p>자유롭게 사용 가능합니다.</p>
-                </div>
+            <div class="score-total">
+                기본 15점 + 가산점 (주번 일수 &#215; 0.1점)
             </div>
+            <div class="info-note">※ 동료 평가 점수는 학기말 반영됩니다.</div>
         </div>
 
-        <!-- 주요 일정 -->
+        <!-- 아침의 기적 -->
         <div class="card">
-            <h2>📅 주요 학사 일정</h2>
-            <table class="schedule-table">
-                <thead>
-                    <tr>
-                        <th>시기</th>
-                        <th>일정</th>
-                        <th>구분</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>3월 초</td>
-                        <td>학급 임원 선출</td>
-                        <td><span class="badge badge-event">학급행사</span></td>
-                    </tr>
-                    <tr>
-                        <td>4월</td>
-                        <td>1차 수행평가</td>
-                        <td><span class="badge badge-perform">수행평가</span></td>
-                    </tr>
-                    <tr>
-                        <td>5월</td>
-                        <td>중간고사</td>
-                        <td><span class="badge badge-exam">지필평가</span></td>
-                    </tr>
-                    <tr>
-                        <td>6월</td>
-                        <td>2차 수행평가</td>
-                        <td><span class="badge badge-perform">수행평가</span></td>
-                    </tr>
-                    <tr>
-                        <td>7월</td>
-                        <td>기말고사</td>
-                        <td><span class="badge badge-exam">지필평가</span></td>
-                    </tr>
-                    <tr>
-                        <td>7월 말</td>
-                        <td>여름방학</td>
-                        <td><span class="badge badge-event">방학</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 상담 안내 -->
-        <div class="card">
-            <h2>💬 상담 안내</h2>
-            <div class="counsel-box">
-                <p style="font-size:1.05em; line-height:1.9; color:#333;">
-                    학교생활, 진로, 교우관계 등 어떤 고민이든 담임 선생님과 편하게 이야기 나눌 수 있습니다.<br>
-                    상담을 원하면 <strong>쉬는 시간이나 점심시간</strong>에 교무실로 방문하거나,
-                    이메일로 먼저 연락해 주세요.
+            <h2>&#9728;&#65039; 아침의 기적 (1학기)</h2>
+            <div class="highlight-box">
+                <h3>&#127807; 자기주도 프로젝트</h3>
+                <p>
+                    매일 아침 스스로 설정한 목표를 실천하는 자기주도 학습 프로젝트입니다.<br>
+                    꾸준히 참여한 학생의 활동 내용은 <strong>세부능력 및 특기사항(세특)</strong>에 반영됩니다.
                 </p>
-                <div style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;">
-                    <div style="background:#e8f5e9; padding:14px 22px; border-radius:10px; font-size:0.95em;">
-                        📍 <strong>교무실</strong> 4층 2학년부A
+            </div>
+        </div>
+
+        <!-- 출결 안내 -->
+        <div class="card">
+            <h2>&#128203; 출결 안내</h2>
+            <ul class="notice-list">
+                <li>&#128241; <div><strong>나이스 서비스:</strong> 학부모 나이스 앱을 통해 출결 현황 실시간 확인 가능</div></li>
+                <li>&#128196; <div><strong>서류 제출:</strong> 결석·지각·조퇴·결과 시 관련 서류 5일 이내 제출</div></li>
+                <li>&#128683; <div><strong>교외 체험학습:</strong> 특정 기간(중간·기말고사 전후 등)에는 불허</div></li>
+            </ul>
+            <div class="info-note">※ 출결 관련 서류는 담임 선생님께 직접 제출하거나 이메일로 발송해 주세요.</div>
+        </div>
+
+        <!-- 안내 사항 -->
+        <div class="card">
+            <h2>&#128226; 기타 안내</h2>
+            <ul class="notice-list">
+                <li>&#128101; <div><strong>자기소개:</strong> 오늘 30초~1분 자기소개 진행 (이름, 관심사, 목표 등)</div></li>
+                <li>&#128241; <div><strong>리로스쿨:</strong> 학급 관리 앱 리로스쿨 가입 (추후 안내)</div></li>
+                <li>&#128172; <div><strong>단체 카톡방:</strong> 학급 단톡방 개설 예정 (추후 초대)</div></li>
+            </ul>
+
+            <div style="margin-top:25px; background:linear-gradient(135deg, #d4f9ea 0%, #b2f0d8 100%); border-left:5px solid #11998e; border-radius:15px; padding:25px;">
+                <h3 style="color:#1a1a2e; margin-bottom:10px;">&#127775; 2026년, 2학년 7반 모두 화이팅!</h3>
+                <p style="color:#444; line-height:1.9;">올 한 해 함께 성장하는 학급이 되길 바랍니다. 어려운 일이 있으면 언제든지 찾아오세요.</p>
+                <div style="margin-top:15px; display:flex; gap:12px; flex-wrap:wrap;">
+                    <div style="background:white; padding:12px 18px; border-radius:10px; font-size:0.9em;">
+                        &#128231; doyeongmath@gmail.com
                     </div>
-                    <div style="background:#e8f5e9; padding:14px 22px; border-radius:10px; font-size:0.95em;">
-                        📧 <strong>이메일</strong> doyeongmath@gmail.com
+                    <div style="background:white; padding:12px 18px; border-radius:10px; font-size:0.9em;">
+                        &#128205; 4층 2학년부A
                     </div>
                 </div>
-            </div>
-
-            <div class="highlight-box" style="background: linear-gradient(135deg, #d4f9ea 0%, #b2f0d8 100%); margin-top:20px;">
-                <h3>🌟 즐거운 1년을 만들어 갑시다!</h3>
-                <p>2-6반이 서로 배려하고 응원하는 따뜻한 학급이 되길 바랍니다. 여러분의 고등학교 생활을 응원합니다!</p>
             </div>
         </div>
     </div>
