@@ -110,9 +110,27 @@
         /* 단원 소개 */
         .units-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-top: 20px;
+        }
+
+        /* 반응형 그리드 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .unit-card {
@@ -350,20 +368,43 @@
 
         /* 반응형 */
         @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+
             .header-card h1 {
-                font-size: 2em;
+                font-size: 1.8em;
+            }
+
+            .header-card .subtitle {
+                font-size: 1.1em;
             }
 
             .card {
-                padding: 25px;
+                padding: 20px;
             }
 
-            .units-grid {
+            h2 {
+                font-size: 1.4em;
+                gap: 8px;
+            }
+
+            .units-grid,
+            .grid-2,
+            .grid-3 {
                 grid-template-columns: 1fr;
             }
 
-            .evaluation-grid {
-                grid-template-columns: 1fr 1fr;
+            .eval-item .percentage {
+                font-size: 2em;
+            }
+
+            .unit-card .unit-name {
+                font-size: 1.2em;
+            }
+
+            .highlight-box {
+                padding: 18px;
             }
         }
 
@@ -413,7 +454,7 @@
         <!-- 교재 -->
         <div class="card">
             <h2><span class="icon">📚</span> 교재</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="grid-2">
                 <div style="background: #f5f7fa; border: 1px solid #d0d8e8; border-radius: 15px; padding: 20px; border-top: 4px solid #4a7fc1;">
                     <span style="background: #4a7fc1; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; font-weight: bold;">주교재</span>
                     <h3 style="color: #4a7fc1; margin: 15px 0 10px; font-size: 1.5em;">교과서</h3>
@@ -432,7 +473,7 @@
         <!-- 단원 소개 -->
         <div class="card">
             <h2><span class="icon">📑</span> 단원 구성</h2>
-            <div class="units-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="units-grid">
                 <div class="unit-card">
                     <div class="unit-number">Ⅰ 단원</div>
                     <div class="unit-name">지수함수와 로그함수</div>
@@ -454,7 +495,7 @@
         <!-- 평가 방법 -->
         <div class="card">
             <h2><span class="icon">📊</span> 평가 방법</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="grid-2">
                 <div class="eval-item" style="padding: 30px;">
                     <div class="percentage">60%</div>
                     <div class="label">정기고사</div>
@@ -471,7 +512,7 @@
         <!-- 정기고사 계획 -->
         <div class="card">
             <h2><span class="icon">📝</span> 정기고사 계획</h2>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px;">
+            <div class="grid-2" style="margin-bottom: 25px;">
                 <div style="background: #f8f9ff; border: 2px solid #667eea; border-radius: 15px; padding: 20px; text-align: center;">
                     <div style="font-size: 2em; font-weight: bold; color: #667eea;">30%</div>
                     <div style="font-size: 1.1em; color: #333; margin-top: 5px;">중간고사</div>
@@ -484,7 +525,7 @@
                 </div>
             </div>
             <h3 style="color: #1a1a2e; margin-bottom: 15px;">문항 구성 (100점 만점)</h3>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+            <div class="grid-3" style="gap: 15px;">
                 <div style="background: #e3f2fd; border-radius: 12px; padding: 20px; text-align: center;">
                     <div style="font-size: 1.8em; font-weight: bold; color: #1565c0;">50점</div>
                     <div style="font-size: 1em; color: #333; margin-top: 5px;">선택형</div>
@@ -506,7 +547,7 @@
         <!-- 수행평가 계획 -->
         <div class="card">
             <h2><span class="icon">✍️</span> 수행평가 계획</h2>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div class="grid-3">
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 25px; text-align: center;">
                     <div style="font-size: 2.5em; font-weight: bold;">10점</div>
                     <div style="font-size: 1.2em; margin: 10px 0;">개념정리 포트폴리오</div>
@@ -519,8 +560,8 @@
                 </div>
                 <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 15px; padding: 25px; text-align: center;">
                     <div style="font-size: 2.5em; font-weight: bold;">20점</div>
-                    <div style="font-size: 1.2em; margin: 10px 0;">상호배움 활동</div>
-                    <div style="font-size: 0.85em; opacity: 0.9;">단계별 과정평가 2회 실시</div>
+                    <div style="font-size: 1.2em; margin: 10px 0;">개념이해도 및 문제 풀이 평가</div>
+                    <div style="font-size: 0.85em; opacity: 0.9;">개념·문제풀이 평가 2회 실시</div>
                 </div>
             </div>
 
@@ -540,7 +581,7 @@
                     <li>개인 발표: 선생님에게 찾아가 개별적으로 문제를 풀고 설명 (주 1회만 가능) → <strong>0.5회 부여</strong></li>
                     <li>기타: 수업에 꼭 필요한 물품(교과서, 학습지 등)을 준비하지 않을 경우 → <strong>0.5회 차감</strong></li>
                 </ul>
-                <table style="width: 100%; margin-top: 12px; border-collapse: collapse; font-size: 0.95em;">
+                <div class="table-scroll"><table style="width: 100%; min-width: 380px; margin-top: 12px; border-collapse: collapse; font-size: 0.95em;">
                     <tr style="background: #1a1a2e; color: white;">
                         <th style="padding: 10px; text-align: center; border-radius: 8px 0 0 0;">점수</th>
                         <th style="padding: 10px; text-align: center;">0점</th>
@@ -557,9 +598,9 @@
                         <td style="padding: 10px; text-align: center;">1.5회</td>
                         <td style="padding: 10px; text-align: center;">2회</td>
                     </tr>
-                </table>
+                </table></div>
 
-                <h4 style="margin: 20px 0 10px; color: #1a1a2e;">3. 상호배움 활동 (20점 만점)</h4>
+                <h4 style="margin: 20px 0 10px; color: #1a1a2e;">3. 개념이해도 및 문제 풀이 평가 (20점 만점)</h4>
                 <ul style="padding-left: 20px; line-height: 2; color: #444;">
                     <li>2회 실시 후 평균값을 학기 말에 적용</li>
                     <li>구성: 단답형 2점 × 8문항 = 16점 &nbsp;+&nbsp; 서술형 4점 × 1문항 = 4점</li>
@@ -610,7 +651,7 @@
                 </div>
 
                 <!-- 이전: 공통수학 (간접출제범위) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
+                <div class="grid-2" style="gap: 12px; width: 100%;">
                     <div style="background: #e0e0e0; border: 2px solid #999; padding: 14px; border-radius: 12px; text-align: center;">
                         <div style="font-size: 0.72em; color: #777; margin-bottom: 4px; font-weight: 600; letter-spacing: 0.03em;">수능 간접출제범위</div>
                         <div style="font-weight: bold; color: #444;">공통수학1</div>
