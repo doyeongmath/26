@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>4월 급식표 — 풍문고등학교</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a3d2b;
+    --green-mid: #2d6a4f;
+    --green-light: #52b788;
+    --green-pale: #d8f3dc;
+    --amber: #f4a261;
+    --amber-dark: #e76f51;
+    --cream: #fdf8f0;
+    --card-bg: #ffffff;
+    --text-main: #1a1a1a;
+    --text-sub: #555;
+    --text-muted: #bbb;
+    --border: #e8e4dc;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.13);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--cream); color: var(--text-main);
+    min-height: 100vh; -webkit-text-size-adjust: 100%;
+  }
+
+  /* ── 헤더 ── */
+  .site-header {
+    background: var(--green-deep); color: #fff;
+    padding: clamp(16px,4vw,28px) clamp(16px,4vw,32px) clamp(14px,3vw,22px);
+    position: relative; overflow: hidden;
+  }
+  .site-header::before {
+    content: ''; position: absolute; right: -40px; top: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(82,183,136,0.25) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+  .header-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--green-light); font-weight: 500; margin-bottom: 4px; }
+  .header-title { font-size: clamp(22px,6vw,30px); font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; }
+  .header-title span { color: var(--amber); }
+  .header-sub { font-size: clamp(11px,2.8vw,12px); color: rgba(255,255,255,0.45); margin-top: 4px; font-weight: 300; }
+
+  /* ── 탭 ── */
+  .week-nav {
+    background: var(--green-deep); border-top: 1px solid rgba(255,255,255,0.08);
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .week-nav::-webkit-scrollbar { display: none; }
+  .week-nav-inner { max-width: 1100px; margin: 0 auto; display: flex; padding: 0 clamp(12px,3vw,24px); min-width: max-content; }
+  .week-tab {
+    padding: clamp(10px,2.5vw,12px) clamp(14px,3.5vw,20px);
+    font-size: clamp(12px,3vw,13px); font-weight: 500;
+    color: rgba(255,255,255,0.45); cursor: pointer; border: none; background: none;
+    border-bottom: 3px solid transparent; transition: all 0.2s;
+    font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  }
+  .week-tab:hover { color: rgba(255,255,255,0.8); }
+  .week-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  /* ── 본문 ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: clamp(16px,4vw,28px) clamp(12px,3vw,28px) 60px; }
+  .week-panel { display: none; }
+  .week-panel.active { display: block; }
+  .week-title-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .week-title-bar h2 { font-size: clamp(13px,3.5vw,15px); font-weight: 700; color: var(--green-mid); }
+  .week-title-bar .date-range { font-size: clamp(11px,2.8vw,12px); color: var(--text-muted); font-weight: 300; }
+  .week-title-bar::after { content: ''; flex: 1; height: 1px; background: var(--border); min-width: 20px; }
+
+  /* ── 그리드 ── */
+  .day-headers { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 6px; }
+  .day-header { text-align: center; padding: 6px 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--green-mid); border-bottom: 2px solid var(--green-pale); }
+  .day-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+
+  /* ── 카드 ── */
+  .meal-card, .exam-card {
+    background: var(--card-bg); border: 1.5px solid var(--border);
+    border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s; display: flex; flex-direction: column;
+  }
+  .meal-card:hover, .exam-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+  .card-date-bar {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    color: #fff; padding: clamp(7px,2vw,10px) clamp(10px,2.5vw,14px) clamp(6px,1.5vw,8px);
+    display: flex; align-items: baseline; gap: 5px; flex-shrink: 0;
+  }
+  .exam-card .card-date-bar { background: linear-gradient(135deg,#c2410c,#f97316); }
+  .special-card .card-date-bar { background: linear-gradient(135deg,#15803d,#4ade80); }
+  .card-date-num { font-size: clamp(18px,4.5vw,22px); font-weight: 900; line-height: 1; }
+  .card-date-day { font-size: clamp(10px,2.5vw,11px); font-weight: 500; opacity: 0.85; }
+  .card-badge { margin-left: auto; background: rgba(255,255,255,0.22); border-radius: 5px; padding: 2px 6px; font-size: clamp(9px,2vw,10px); font-weight: 700; white-space: nowrap; }
+
+  .card-body { padding: clamp(8px,2vw,11px) clamp(10px,2.5vw,14px); flex: 1; }
+
+  /* ── 메뉴 아이템 ── */
+  .meal-item {
+    padding: 4px 0 3px;
+    border-bottom: 1px solid #f3f0ea;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .meal-item:last-child { border-bottom: none; }
+
+  /* 메뉴명 행 */
+  .meal-row { display: flex; align-items: center; gap: 4px; }
+
+  /* 기본 메뉴명 */
+  .meal-name {
+    font-size: clamp(11.5px,2.7vw,12.5px);
+    color: var(--text-sub); font-weight: 400; line-height: 1.4; flex: 1;
+  }
+  /* 밥 */
+  .meal-name.rice {
+    font-size: clamp(11.5px,2.7vw,12.5px); color: #777; font-weight: 500;
+  }
+  /* 메인 메뉴 강조 */
+  .meal-item.main-dish {
+    background: #fffbf5;
+    margin: 2px -14px;
+    padding: 5px 14px 4px;
+    border-bottom: 1px solid #f3ede0;
+    border-radius: 0;
+  }
+  .meal-item.main-dish .meal-name {
+    font-size: clamp(12.5px,3vw,13.5px);
+    color: #c2410c;
+    font-weight: 700;
+  }
+  .main-badge {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
+    background: #fed7aa; color: #c2410c;
+    padding: 1px 5px; border-radius: 3px; flex-shrink: 0; white-space: nowrap;
+  }
+  /* 디저트 */
+  .meal-item.dessert-item {
+    background: #fff8ef;
+    margin: 2px -14px 0;
+    padding: 4px 14px;
+    border-bottom: none;
+  }
+  .meal-name.dessert {
+    color: var(--amber-dark);
+    font-weight: 600;
+    font-size: clamp(11.5px,2.7vw,12.5px);
+  }
+
+  /* ── 알레르기: 숫자만, 한 줄, 초미니 ── */
+  .al-line {
+    font-size: 9.5px; color: var(--text-muted);
+    letter-spacing: 0.3px; line-height: 1.2;
+    padding-left: 1px;
+  }
+
+
+
+  /* ── 영양 바 ── */
+  .nutrition-bar { background: #fafaf8; border-top: 1px solid var(--border); padding: clamp(7px,1.8vw,9px) clamp(10px,2.5vw,14px); }
+  .nutrition-rows { display: flex; flex-direction: column; gap: 3px; }
+  .nutrition-item { display: flex; align-items: center; gap: 4px; }
+  .nutrition-name { font-size: 9px; color: var(--text-muted); width: 30px; flex-shrink: 0; }
+  .nutrition-track { flex: 1; height: 3px; background: #ece8e0; border-radius: 2px; overflow: hidden; min-width: 0; }
+  .nutrition-fill { height: 100%; border-radius: 2px; }
+  .fill-kcal    { background: var(--amber); }
+  .fill-protein { background: var(--green-light); }
+  .fill-calcium { background: #74b3ce; }
+  .fill-iron    { background: var(--amber-dark); }
+  .nutrition-val { font-size: 9px; font-weight: 700; color: var(--text-sub); width: 36px; text-align: right; flex-shrink: 0; }
+  .special-card { background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .special-body { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: clamp(14px,4vw,20px); gap: 5px; }
+  .special-icon { font-size: clamp(20px,5vw,26px); }
+  .special-text { font-size: clamp(11px,2.8vw,12px); font-weight: 700; color: #16a34a; text-align: center; }
+
+  .empty-card { background: #fafafa; border: 1.5px dashed #e0ddd6; border-radius: 14px; min-height: 100px; display: flex; align-items: center; justify-content: center; color: #ddd; font-size: 18px; }
+
+  /* ── 알레르기 범례 ── */
+  .legend { margin-top: 28px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: clamp(14px,3.5vw,18px); }
+  .legend-title { font-size: 11px; font-weight: 700; color: var(--green-mid); margin-bottom: 10px; letter-spacing: 0.5px; }
+  .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 4px 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--text-sub); }
+  .legend-num { font-weight: 700; color: var(--text-muted); width: 18px; flex-shrink: 0; font-size: 10px; }
+
+  /* ════════ 모바일 ≤479px ════════ */
+  @media (max-width: 479px) {
+    .day-headers { display: none; }
+    .day-grid { grid-template-columns: 1fr; gap: 8px; }
+
+    .meal-card, .exam-card { flex-direction: row; border-radius: 12px; }
+    .card-date-bar {
+      flex-direction: column; align-items: center; justify-content: flex-start;
+      width: 50px; flex-shrink: 0; padding: 10px 5px 8px; gap: 2px;
+    }
+    .card-date-num { font-size: 18px; }
+    .card-date-day { font-size: 9px; }
+    .card-badge { margin-left: 0; margin-top: 4px; font-size: 7.5px; padding: 2px 3px; white-space: normal; word-break: keep-all; text-align: center; max-width: 42px; line-height: 1.3; }
+    .card-right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .card-body { padding: 8px 10px; }
+    .meal-item.main-dish { margin: 2px -10px; padding: 5px 10px 4px; }
+    .meal-item.dessert-item { margin: 2px -10px 0; padding: 4px 10px; }
+
+    .special-card { flex-direction: row; }
+    .special-card .card-date-bar { flex-direction: column; align-items: center; width: 50px; flex-shrink: 0; padding: 10px 5px 8px; }
+    .special-body { flex: 1; flex-direction: row; justify-content: flex-start; padding: 12px 14px; gap: 10px; }
+    .special-text { font-size: 11px; text-align: left; }
+
+    .empty-card { min-height: 52px; border-radius: 12px; }
+    .legend-grid { grid-template-columns: repeat(2,1fr); }
+  }
+
+  /* 태블릿 480–700px */
+  @media (min-width: 480px) and (max-width: 700px) {
+    .day-headers { display: none; }
+    .day-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .card-right { display: contents; }
+  }
+
+  /* 데스크톱 */
+  @media (min-width: 701px) {
+    .card-right { display: contents; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-label">Pungmun High School · 2026</div>
+    <h1 class="header-title">4월 <span>급식표</span></h1>
+    <p class="header-sub">풍문고등학교 · 중식</p>
+  </div>
+</header>
+
+<nav class="week-nav">
+  <div class="week-nav-inner">
+    <button class="week-tab active" onclick="showWeek(0)">1주차</button>
+    <button class="week-tab" onclick="showWeek(1)">2주차</button>
+    <button class="week-tab" onclick="showWeek(2)">3주차</button>
+    <button class="week-tab" onclick="showWeek(3)">4주차</button>
+    <button class="week-tab" onclick="showWeek(4)">5주차</button>
+  </div>
+</nav>
+
+<main class="main" id="app"></main>
+
+<script>
+/* 알레르기 이름 */
+const AL={1:'난류',2:'우유',3:'메밀',4:'땅콩',5:'대두',6:'밀',7:'고등어',8:'게',9:'새우',
+  10:'돼지고기',11:'복숭아',12:'토마토',13:'아황산류',14:'호두',15:'닭고기',16:'쇠고기',17:'오징어',18:'조개류',19:'잣'};
+
+/* 알레르기 한 줄: "5·6·15" 스타일 */
+function alLine(nums){
+  if(!nums||!nums.length) return '';
+  return `<span class="al-line">${nums.join('·')}</span>`;
+}
+
+/* 메뉴 아이템 */
+function row(m){
+  const isMain = m.t==='main';
+  const isRice = m.t==='rice';
+  const isDessert = m.t==='dessert';
+  let cls = 'meal-item';
+  if(isMain) cls = 'meal-item main-dish';
+  if(isDessert) cls = 'meal-item dessert-item';
+  const nameCls = isRice?'meal-name rice': isDessert?'meal-name dessert':'meal-name';
+  const prefix = isDessert?`<span style="font-size:11px;margin-right:2px">🍬</span>`:'';
+  return `<div class="${cls}">
+    <div class="meal-row">${prefix}<span class="${nameCls}">${m.n}</span></div>
+    ${alLine(m.al)}
+  </div>`;
+}
+
+
+/* 영양 바 (라벨 없음) */
+function nutBar(k,p,ca,fe){
+  const pct=(v,m)=>Math.min(100,Math.round(v/m*100));
+  return `<div class="nutrition-bar">
+    <div class="nutrition-rows">
+      <div class="nutrition-item"><span class="nutrition-name">열량</span><div class="nutrition-track"><div class="nutrition-fill fill-kcal" style="width:${pct(k,1100)}%"></div></div><span class="nutrition-val">${k}</span></div>
+      <div class="nutrition-item"><span class="nutrition-name">단백질</span><div class="nutrition-track"><div class="nutrition-fill fill-protein" style="width:${pct(p,60)}%"></div></div><span class="nutrition-val">${p}g</span></div>
+      <div class="nutrition-item"><span class="nutrition-name">칼슘</span><div class="nutrition-track"><div class="nutrition-fill fill-calcium" style="width:${pct(ca,500)}%"></div></div><span class="nutrition-val">${ca}mg</span></div>
+      <div class="nutrition-item"><span class="nutrition-name">철분</span><div class="nutrition-track"><div class="nutrition-fill fill-iron" style="width:${pct(fe,25)}%"></div></div><span class="nutrition-val">${fe}mg</span></div>
+    </div></div>`;
+}
+
+function mealCard(d,exam=false){
+  const cls=exam?'meal-card exam-card':'meal-card';
+  return `<div class="${cls}">
+    <div class="card-date-bar">
+      <span class="card-date-num">${d.date}</span>
+      <span class="card-date-day">${d.day}</span>
+      ${d.badge?`<span class="card-badge">${d.badge}</span>`:''}
+    </div>
+    <div class="card-right">
+      <div class="card-body">${d.menus.map(row).join('')}</div>
+      ${d.nut?nutBar(...d.nut):''}
+    </div>
+  </div>`;
+}
+
+function specialCard(d){
+  return `<div class="special-card">
+    <div class="card-date-bar">
+      <span class="card-date-num">${d.date}</span>
+      <span class="card-date-day">${d.day}</span>
+      ${d.badge?`<span class="card-badge">${d.badge}</span>`:''}
+    </div>
+    <div class="special-body">
+      <div class="special-icon">${d.icon}</div>
+      <div class="special-text">${d.text}</div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════
+   급식 데이터   t: 'main' = 메인 메뉴 강조
+═══════════════════════════ */
+const WEEKS=[
+  {title:'1주차',range:'3월 30일 – 4월 3일',days:[
+    {empty:1},{empty:1},
+    {date:1,day:'수요일',menus:[
+      {n:'찰보리밥',al:[],t:'rice'},
+      {n:'두부된장찌개',al:[5,6]},
+      {n:'달래오이무침',al:[]},
+      {n:'오븐닭구이&소스',al:[5,6,15],t:'main'},
+      {n:'햄전',al:[1,2,5,6,10,15,16]},
+      {n:'배추김치',al:[9]},
+      {n:'달칩샌드',al:[1,2,5,6],t:'dessert'}],nut:[827,37.7,150,3.2]},
+    {date:2,day:'목요일',menus:[
+      {n:'김가루양념밥',al:[1,2,5,6,10,15,16],t:'rice'},
+      {n:'메밀냉소바',al:[3,5,6,7,13,18]},
+      {n:'알감자조림',al:[13]},
+      {n:'셀프치킨또띠아',al:[1,2,5,6,12,15,18],t:'main'},
+      {n:'배추김치',al:[9]},
+      {n:'허쉬드링크',al:[2],t:'dessert'}],nut:[1054,39.7,296,7.0]},
+    {date:3,day:'금요일',menus:[
+      {n:'칼슘쌀밥',al:[],t:'rice'},
+      {n:'고사리육개장',al:[5,6,16]},
+      {n:'숙주나물무침(자율)',al:[]},
+      {n:'미니돈까스&소스',al:[1,2,5,6,10,12,16],t:'main'},
+      {n:'갑오징어볶음',al:[5,6,13,17]},
+      {n:'배추김치',al:[9]},
+      {n:'짜요짜요',al:[2],t:'dessert'}],nut:[846,38.8,197,22.6]},
+  ]},
+  {title:'2주차',range:'4월 6일 – 4월 10일',days:[
+    {date:6,day:'월요일',menus:[
+      {n:'김밥볶음밥',al:[1,2,5,6,8,10,15,16],t:'rice'},
+      {n:'가쓰오장국',al:[5,6]},
+      {n:'오이지무침',al:[13]},
+      {n:'궁중떡볶이',al:[5,6,10,13],t:'main'},
+      {n:'김말이강정',al:[1,5,6,12,13,16]},
+      {n:'백김치',al:[9]},
+      {n:'저당월드콘',al:[1,2,5],t:'dessert'}],nut:[951,23.8,284,10.9]},
+    {date:7,day:'화요일',menus:[
+      {n:'찰기장밥',al:[],t:'rice'},
+      {n:'들기름막국수',al:[3,6]},
+      {n:'우렁된장찌개',al:[5,6,9,18]},
+      {n:'돼지고기수육',al:[10],t:'main'},
+      {n:'보쌈김치',al:[9]},
+      {n:'쌈채소&쌈장',al:[5,6,13]}],nut:[1049,44.7,271,4.1]},
+    {date:8,day:'수요일',menus:[
+      {n:'찰흑미밥',al:[],t:'rice'},
+      {n:'설렁탕&소면',al:[2,5,6,10,13,15,16,18]},
+      {n:'오징어초무침',al:[5,6,13,17]},
+      {n:'스크램블에그',al:[1,5]},
+      {n:'치킨커틀렛&소스',al:[1,2,5,6,12,15,16,18],t:'main'},
+      {n:'깍두기',al:[9]},
+      {n:'방울토마토',al:[12],t:'dessert'}],nut:[832,39.0,126,4.1]},
+    {date:9,day:'목요일',special:1,icon:'🎉',text:'개교기념식',badge:'기념식'},
+    {date:10,day:'금요일',special:1,icon:'🏫',text:'개교기념일<br><span style="font-size:10px;font-weight:400;color:#4ade80">급식 없음</span>',badge:'공휴일'},
+  ]},
+  {title:'3주차',range:'4월 13일 – 4월 17일',days:[
+    {date:13,day:'월요일',menus:[
+      {n:'카레라이스',al:[5,6,10,12,16],t:'rice'},
+      {n:'홍합살무국',al:[5,18]},
+      {n:'배추김치',al:[9]},
+      {n:'그린샐러드&오리엔탈드레싱',al:[5,6]},
+      {n:'불고기반미샌드위치',al:[1,2,5,6,12,13,16],t:'main'},
+      {n:'블루베리에이드',al:[13],t:'dessert'}],nut:[893,37.1,219,7.3]},
+    {date:14,day:'화요일',menus:[
+      {n:'추가밥',al:[],t:'rice'},
+      {n:'짜장면',al:[1,5,6,10,13],t:'main'},
+      {n:'해물짬뽕국',al:[5,6,9,17,18]},
+      {n:'짜사이무침',al:[13]},
+      {n:'흑당꿔바로우',al:[1,5,6,10]},
+      {n:'배추김치',al:[9]},
+      {n:'요구르트',al:[2],t:'dessert'}],nut:[866,35.0,220,12.4]},
+    {date:15,day:'수요일',menus:[
+      {n:'낙지덮밥&김가루',al:[5,6,13],t:'rice'},
+      {n:'삼색달걀국',al:[1]},
+      {n:'동부묵무침',al:[5,6]},
+      {n:'한돈너비아니&소스',al:[1,2,5,6,10,12,15,16],t:'main'},
+      {n:'배추김치',al:[9]},
+      {n:'딸기모찌',al:[2,5,6],t:'dessert'}],nut:[906,47.6,170,5.5]},
+    {date:16,day:'목요일',menus:[
+      {n:'찰현미밥',al:[],t:'rice'},
+      {n:'콩나물국',al:[5]},
+      {n:'무쌈&부추겉절이',al:[]},
+      {n:'막창닭갈비',al:[5,15,18],t:'main'},
+      {n:'소떡갈떡&소스',al:[2,5,6,10,15]},
+      {n:'배추김치',al:[9]}],nut:[851,35.7,250,3.3]},
+    {date:17,day:'금요일',menus:[
+      {n:'찰보리밥',al:[],t:'rice'},
+      {n:'부대찌개',al:[1,2,5,6,9,10,15,16]},
+      {n:'얼갈이된장무침',al:[5,6]},
+      {n:'용가리치킨&소스',al:[1,2,5,6,15,16],t:'main'},
+      {n:'삼치순살튀김&데리야끼S',al:[5,6,13]},
+      {n:'배추김치',al:[9]},
+      {n:'파인애플',al:[],t:'dessert'}],nut:[969,46.9,150,3.5]},
+  ]},
+  {title:'4주차',range:'4월 20일 – 4월 24일 · 중간고사',days:[
+    {date:20,day:'월요일',menus:[
+      {n:'찰흑미밥',al:[],t:'rice'},
+      {n:'사골우거지국',al:[5,6,9,16,18]},
+      {n:'달걀조림',al:[1,5,6,13]},
+      {n:'돌김자반',al:[5,13]},
+      {n:'피자돈까스&소스',al:[1,2,5,6,10,12,13,16],t:'main'},
+      {n:'배추김치',al:[9]},
+      {n:'호랑이마카롱',al:[1,2,6],t:'dessert'}],nut:[846,35.4,257,4.0]},
+    {date:21,day:'화요일',menus:[
+      {n:'김가루주먹밥',al:[1,2,5,6,10,15,16],t:'rice'},
+      {n:'쑥갓어묵국',al:[1,5,6]},
+      {n:'바삭만두',al:[1,5,6,10,16,18]},
+      {n:'순대',al:[2,5,6,10,13,16]},
+      {n:'배추김치',al:[9]},
+      {n:'단무지',al:[]},
+      {n:'국물떡볶이',al:[1,5,6,10,13,15],t:'main'}],nut:[856,27.4,229,6.0]},
+    {date:22,day:'수요일',menus:[
+      {n:'참치채소비빔밥',al:[3,5,6,13,16,18],t:'rice'},
+      {n:'유부장국',al:[5,6]},
+      {n:'오이깨소금무침',al:[13]},
+      {n:'떡갈비',al:[5,6,10,13,15,16,18],t:'main'},
+      {n:'배추김치',al:[9]},
+      {n:'메이플피칸파이',al:[1,2,5,6,14],t:'dessert'}],nut:[810,27.1,145,3.5]},
+    {date:23,day:'목요일',exam:1,badge:'중간고사 1일',menus:[
+      {n:'주먹밥',al:[1,2,5,6,10,15,16],t:'rice'},
+      {n:'불고기비빔메밀국수',al:[3,5,6,10,13],t:'main'},
+      {n:'콘치즈마요도그',al:[2,5,6,10,13,15]},
+      {n:'버터알감자',al:[2,5,13]},
+      {n:'배추김치',al:[9]},
+      {n:'미니윌',al:[2],t:'dessert'}],nut:[877,43.1,232,2.9]},
+    {date:24,day:'금요일',examOnly:1},
+  ]},
+  {title:'5주차',range:'4월 27일 – 4월 30일 · 중간고사',days:[
+    {date:27,day:'월요일',exam:1,badge:'중간고사 3일',menus:[
+      {n:'목살필라프',al:[1,2,5,6,10,12,13,18],t:'rice'},
+      {n:'김치콩나물국',al:[5,9]},
+      {n:'감자튀김&케찹',al:[5,6,12]},
+      {n:'수제닭다리튀김&소스',al:[1,2,5,6,15],t:'main'},
+      {n:'깍두기',al:[9]},
+      {n:'그린샐러드&검은깨D',al:[1,5]}],nut:[976,53.1,121,3.3]},
+    {date:28,day:'화요일',exam:1,badge:'중간고사 4일',menus:[
+      {n:'추가밥',al:[],t:'rice'},
+      {n:'잔치국수',al:[5,6,7,9,13,18]},
+      {n:'치커리무침',al:[13]},
+      {n:'치즈닭갈비',al:[2,5,6,13,15],t:'main'},
+      {n:'파김치',al:[9]},
+      {n:'콘샐러드',al:[1,5,13]}],nut:[964,50.3,246,4.0]},
+    {date:29,day:'수요일',exam:1,badge:'중간고사 5일',menus:[
+      {n:'칼슘쌀밥',al:[],t:'rice'},
+      {n:'돈육김치찌개',al:[5,9,10]},
+      {n:'콩나물무침',al:[5]},
+      {n:'비엔나케찹볶음',al:[2,5,6,10,13,15,16]},
+      {n:'달걀말이&케찹',al:[1,5,12]},
+      {n:'깍두기',al:[9]},
+      {n:'개별김',al:[]}],nut:[845,40.4,210,4.7]},
+    {date:30,day:'목요일',menus:[
+      {n:'찰보리밥',al:[],t:'rice'},
+      {n:'꼬치어묵국',al:[1,5,6]},
+      {n:'시금치나물',al:[]},
+      {n:'정통불고기',al:[2,16],t:'main'},
+      {n:'메밀김치전병',al:[2,3,5,6,16,18]},
+      {n:'배추김치',al:[9]}],nut:[821,36.8,173,4.1]},
+    {empty:1},
+  ]},
+];
+
+/* ── 렌더 ── */
+function renderApp(){
+  const app=document.getElementById('app');
+  let html='';
+
+  WEEKS.forEach((wk,wi)=>{
+    let grid='';
+    wk.days.forEach(d=>{
+      if(d.empty){ grid+=`<div class="empty-card">—</div>`; return; }
+      if(d.examOnly){
+        grid+=`<div class="empty-card" style="border-color:#fdba74;background:#fff7ed;flex-direction:column;gap:6px;">
+          <div style="font-size:22px">📝</div>
+          <div style="font-size:12px;color:#f97316;font-weight:700">중간고사 2일</div>
+          <div style="font-size:10px;color:#fba55a">${d.date}일 ${d.day}</div>
+        </div>`; return;
+      }
+      if(d.special){ grid+=specialCard(d); return; }
+      grid+=mealCard(d,!!d.exam);
+    });
+
+    html+=`<section class="week-panel${wi===0?' active':''}" id="week-${wi}">
+      <div class="week-title-bar"><h2>${wk.title}</h2><span class="date-range">${wk.range}</span></div>
+      <div class="day-headers">
+        <div class="day-header">월요일</div><div class="day-header">화요일</div>
+        <div class="day-header">수요일</div><div class="day-header">목요일</div>
+        <div class="day-header">금요일</div>
+      </div>
+      <div class="day-grid">${grid}</div>
+    </section>`;
+  });
+
+  /* 범례 */
+  const lgItems=Object.entries(AL).map(([n,name])=>
+    `<div class="legend-item"><span class="legend-num">${String(n).padStart(2,'0')}</span><span>${name}</span></div>`
+  ).join('');
+  html+=`<div class="legend"><div class="legend-title">🔍 알레르기 유발식품</div><div class="legend-grid">${lgItems}</div></div>`;
+
+  app.innerHTML=html;
+}
+
+function showWeek(idx){
+  document.querySelectorAll('.week-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  document.querySelectorAll('.week-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+
+renderApp();
+</script>
+</body>
+</html>
