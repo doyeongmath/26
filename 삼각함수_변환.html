@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>삼각함수 그래프 변환</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:    #f5f6fa;
+  --bg2:   #ffffff;
+  --bg3:   #eef0f7;
+  --border: rgba(0,0,0,0.09);
+  --shadow: 0 1px 4px rgba(0,0,0,0.07);
+  --text:  #1a1c2e;
+  --muted: #8890b0;
+  --sin:   #2d6ef0;
+  --cos:   #e05030;
+  --tan:   #1aab6d;
+  --pa:    #c8860a;
+  --pb:    #9b59b6;
+  --pc:    #16a085;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.6rem 1rem 3rem;
+  user-select: none;
+}
+
+header { text-align: center; margin-bottom: 1.2rem; }
+header .sub { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
+header h1 { font-size: 1.45rem; font-weight: 700; }
+header p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.tabs {
+  display: flex; width: 100%; max-width: 960px;
+  margin-bottom: 12px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 13px; padding: 5px; gap: 5px;
+  box-shadow: var(--shadow);
+}
+.tab-btn {
+  flex: 1; padding: 11px 0;
+  border: 1.5px solid transparent; border-radius: 9px;
+  background: transparent; color: var(--muted);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; min-height: 48px;
+}
+.tab-btn:hover { background: var(--bg3); color: var(--text); }
+.tab-btn.act-sin { background: #e8effe; color: var(--sin); border-color: #a8c0f8; font-weight: 700; }
+.tab-btn.act-cos { background: #fdecea; color: var(--cos); border-color: #f5b0a0; font-weight: 700; }
+.tab-btn.act-tan { background: #e4f7ef; color: var(--tan); border-color: #88ddb8; font-weight: 700; }
+
+.formula-bar {
+  width: 100%; max-width: 960px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 11px; padding: 12px 20px;
+  margin-bottom: 10px; box-shadow: var(--shadow);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 54px;
+}
+
+.canvas-wrap {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 10px;
+  width: 100%; max-width: 960px; margin-bottom: 10px;
+  cursor: crosshair; box-shadow: var(--shadow);
+  transition: border-color 0.25s;
+}
+canvas#graph { width: 100%; display: block; border-radius: 6px; }
+
+.info-row { display: flex; gap: 8px; width: 100%; max-width: 960px; margin-bottom: 10px; }
+.info-card {
+  flex: 1; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 11px; padding: 9px 10px; text-align: center;
+  box-shadow: var(--shadow);
+}
+.info-card .lbl { font-size: 11px; color: var(--muted); margin-bottom: 4px; min-height: 20px; display: flex; align-items: center; justify-content: center; }
+.info-card .num { font-family: 'JetBrains Mono', monospace; font-size: 1.0rem; font-weight: 600; }
+
+.ctrl-section { width: 100%; max-width: 960px; }
+.ctrl-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.ctrl-top-label { font-size: 12px; color: var(--muted); }
+.btn-grp { display: flex; gap: 6px; }
+button {
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; font-weight: 500; padding: 7px 14px;
+  border-radius: 8px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+button:hover { background: #e2e5f0; }
+
+.ctrl-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 11px; padding: 12px 16px;
+  margin-bottom: 8px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 12px;
+}
+.p-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 1.05rem; min-width: 14px; text-align: center;
+}
+.p-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem; color: var(--muted); min-width: 56px; text-align: right;
+}
+.p-desc { font-size: 11px; color: var(--muted); min-width: 110px; }
+input[type=range] {
+  flex: 1; height: 4px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--bg3); border-radius: 2px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  border-radius: 50%; cursor: pointer; border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+#sliderA::-webkit-slider-thumb { background: var(--pa); }
+#sliderB::-webkit-slider-thumb { background: var(--pb); }
+#sliderC::-webkit-slider-thumb { background: var(--pc); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sub">삼각함수 그래프 변환</div>
+  <h1 id="mainTitle"></h1>
+  <p>a, b, c 슬라이더를 조절하여 그래프 변환을 확인하세요</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn act-sin" data-fn="sin" onclick="selectFn(this)"><span id="tab-sin"></span></button>
+  <button class="tab-btn" data-fn="cos" onclick="selectFn(this)"><span id="tab-cos"></span></button>
+  <button class="tab-btn" data-fn="tan" onclick="selectFn(this)"><span id="tab-tan"></span></button>
+</div>
+
+<div class="formula-bar">
+  <div id="formulaDisplay" style="font-size:1.15em;"></div>
+</div>
+
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="graph"></canvas>
+</div>
+
+<div class="info-row">
+  <div class="info-card">
+    <div class="lbl">진폭 |a|</div>
+    <div class="num" id="val-amp" style="color:var(--pa);">1</div>
+  </div>
+  <div class="info-card">
+    <div class="lbl">주기</div>
+    <div class="num" id="val-period" style="color:var(--pb);">2π</div>
+  </div>
+  <div class="info-card">
+    <div class="lbl">평행이동</div>
+    <div class="num" id="val-phase" style="color:var(--pc);">0</div>
+  </div>
+  <div class="info-card">
+    <div class="lbl">최댓값</div>
+    <div class="num" id="val-max" style="color:var(--sin);">1</div>
+  </div>
+  <div class="info-card">
+    <div class="lbl">최솟값</div>
+    <div class="num" id="val-min" style="color:var(--sin);">−1</div>
+  </div>
+</div>
+
+<div class="ctrl-section">
+  <div class="ctrl-top">
+    <span class="ctrl-top-label">파라미터 조절</span>
+    <div class="btn-grp">
+      <button id="btnRef" onclick="toggleRef()">기준 그래프 숨기기</button>
+      <button onclick="resetParams()">↺ 초기화</button>
+    </div>
+  </div>
+
+  <!-- a: 진폭 -->
+  <div class="ctrl-card">
+    <span class="p-label" style="color:var(--pa);">a</span>
+    <input type="range" id="sliderA" min="-3" max="3" step="0.1" value="1">
+    <span class="p-val" id="dispA">1.0</span>
+    <span class="p-desc">진폭 = <span id="desc-amp">1.0</span></span>
+  </div>
+  <!-- b: 주기 계수 -->
+  <div class="ctrl-card">
+    <span class="p-label" style="color:var(--pb);">b</span>
+    <input type="range" id="sliderB" min="0.5" max="4" step="0.1" value="1">
+    <span class="p-val" id="dispB">1.0</span>
+    <span class="p-desc">주기 = <span id="desc-period">2π</span></span>
+  </div>
+  <!-- c: 위상 -->
+  <div class="ctrl-card">
+    <span class="p-label" style="color:var(--pc);">c</span>
+    <input type="range" id="sliderC" min="-6.28" max="6.28" step="0.05" value="0">
+    <span class="p-val" id="dispC">0</span>
+    <span class="p-desc">평행이동 = <span id="desc-phase">0</span></span>
+  </div>
+</div>
+
+<script>
+const COLORS = { sin:'#2d6ef0', cos:'#e05030', tan:'#1aab6d' };
+const TWO_PI = Math.PI * 2;
+
+let curFn = 'sin';
+let showRef = true;
+let params = { a:1, b:1, c:0 };
+let hoverX = null;
+
+const canvas = document.getElementById('graph');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('canvasWrap');
+
+// ── KaTeX 헬퍼 ──
+function K(tex, el) {
+  try { katex.render(tex, el, { throwOnError:false, displayMode:false }); }
+  catch(e) { el.textContent = tex; }
+}
+
+function initTabs() {
+  K('a\\sin(bx+c)', document.getElementById('tab-sin'));
+  K('a\\cos(bx+c)', document.getElementById('tab-cos'));
+  K('a\\tan(bx+c)', document.getElementById('tab-tan'));
+  K('y = a\\sin(bx+c)', document.getElementById('mainTitle'));
+}
+initTabs();
+
+// ── 숫자 → 절댓값 문자열 ──
+function absStr(v) {
+  const a = Math.abs(v);
+  if (Number.isInteger(a * 10)) return a.toFixed(1);
+  return a.toFixed(2);
+}
+
+// ── 수식 LaTeX 생성 ──
+function buildTex(fn, a, b, c) {
+  // a 계수
+  let aStr;
+  if (Math.abs(a - 1) < 0.005)       aStr = '';
+  else if (Math.abs(a + 1) < 0.005)  aStr = '-';
+  else if (a < 0)                     aStr = '-' + absStr(a);
+  else                                aStr = absStr(a);
+
+  // bx 부분
+  let bxStr;
+  if (Math.abs(b - 1) < 0.005)  bxStr = 'x';
+  else                           bxStr = absStr(b) + 'x';
+
+  // c 부분 (π 분수 LaTeX 우선)
+  let cStr = '';
+  if (Math.abs(c) >= 0.005) {
+    cStr = (c > 0 ? '+' : '-') + niceTeX(Math.abs(c));
+  }
+
+  return `y = ${aStr}\\${fn}(${bxStr}${cStr})`;
+}
+
+// ── 절댓값 → LaTeX π 분수 ──
+function niceTeX(abs) {
+  const fracs = [
+    [2,   '2\\pi'             ],
+    [3/2, '\\frac{3\\pi}{2}' ],
+    [5/6, '\\frac{5\\pi}{6}' ],
+    [3/4, '\\frac{3\\pi}{4}' ],
+    [2/3, '\\frac{2\\pi}{3}' ],
+    [1/2, '\\frac{\\pi}{2}'  ],
+    [1/3, '\\frac{\\pi}{3}'  ],
+    [1/4, '\\frac{\\pi}{4}'  ],
+    [1/5, '\\frac{\\pi}{5}'  ],
+    [1/6, '\\frac{\\pi}{6}'  ],
+    [1,   '\\pi'              ],
+  ];
+  for (const [k, s] of fracs) {
+    if (Math.abs(abs - k * Math.PI) < 0.04) return s;
+  }
+  return abs.toFixed(2);
+}
+
+// ── 값 → 호도법 문자열 (π 분수 우선) ──
+function niceVal(v) {
+  if (Math.abs(v) < 0.005) return '0';
+  // [배수, 분자, 분모] 순으로 검사 (큰 것부터)
+  const fracs = [
+    [2,     '2π'   ],
+    [3/2,   '3π/2' ],
+    [5/6,   '5π/6' ],
+    [4/5,   '4π/5' ],
+    [3/4,   '3π/4' ],
+    [2/3,   '2π/3' ],
+    [3/5,   '3π/5' ],
+    [1/2,   'π/2'  ],
+    [2/5,   '2π/5' ],
+    [1/3,   'π/3'  ],
+    [1/4,   'π/4'  ],
+    [1/5,   'π/5'  ],
+    [1/6,   'π/6'  ],
+    [1,     'π'    ],
+  ];
+  const sign = v < 0 ? '−' : '';
+  const abs  = Math.abs(v);
+  for (const [k, s] of fracs) {
+    if (Math.abs(abs - k * Math.PI) < 0.04) return sign + s;
+  }
+  return v.toFixed(2);
+}
+
+// ── 수식 업데이트 ──
+function updateFormula() {
+  K(buildTex(curFn, params.a, params.b, params.c), document.getElementById('formulaDisplay'));
+}
+
+// ── 정보 카드 업데이트 ──
+function updateInfo() {
+  const { a, b, c } = params;
+  const basePeriod = curFn === 'tan' ? Math.PI : TWO_PI;
+  const period = basePeriod / Math.abs(b);
+  const phase = -c / b;          // bx + c = 0 → x = -c/b
+  const amp = Math.abs(a);
+
+  const pStr = (() => {
+    if (Math.abs(period - TWO_PI) < 0.01) return '2π';
+    if (Math.abs(period - Math.PI) < 0.01) return 'π';
+    if (Math.abs(period - Math.PI/2) < 0.01) return 'π/2';
+    return period.toFixed(3);
+  })();
+
+  document.getElementById('val-amp').textContent    = amp.toFixed(2);
+  document.getElementById('val-period').textContent = pStr;
+  document.getElementById('val-phase').textContent  = niceVal(phase);
+  document.getElementById('desc-amp').textContent   = amp.toFixed(2);
+  document.getElementById('desc-period').textContent = pStr;
+  document.getElementById('desc-phase').textContent = niceVal(phase);
+
+  const col = COLORS[curFn];
+  const maxEl = document.getElementById('val-max');
+  const minEl = document.getElementById('val-min');
+  if (curFn === 'tan') {
+    maxEl.textContent = '+∞';
+    minEl.textContent = '−∞';
+  } else {
+    const hi = amp, lo = -amp;
+    maxEl.textContent = (a >= 0 ? hi : lo).toFixed(2);
+    minEl.textContent = (a >= 0 ? lo : hi).toFixed(2);
+  }
+  maxEl.style.color = col;
+  minEl.style.color = col;
+}
+
+// ── 탭 선택 ──
+function selectFn(btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
+  btn.className = `tab-btn act-${btn.dataset.fn}`;
+  curFn = btn.dataset.fn;
+  const col = COLORS[curFn];
+  // 제목 수식 업데이트
+  K(`y = a\\${curFn}(bx+c)`, document.getElementById('mainTitle'));
+  wrap.style.borderColor = col + '88';
+  updateFormula(); updateInfo(); draw();
+}
+
+function toggleRef() {
+  showRef = !showRef;
+  document.getElementById('btnRef').textContent = showRef ? '기준 그래프 숨기기' : '기준 그래프 표시';
+  draw();
+}
+
+function resetParams() {
+  params = { a:1, b:1, c:0 };
+  document.getElementById('sliderA').value = 1;
+  document.getElementById('sliderB').value = 1;
+  document.getElementById('sliderC').value = 0;
+  syncDisp(); updateFormula(); updateInfo(); draw();
+}
+
+function syncDisp() {
+  const { a, b, c } = params;
+  document.getElementById('dispA').textContent = (a < 0 ? '−' : '') + absStr(a);
+  document.getElementById('dispB').textContent = absStr(b);
+  document.getElementById('dispC').textContent = niceVal(c);
+}
+
+document.getElementById('sliderA').addEventListener('input', e => {
+  params.a = parseFloat(e.target.value);
+  syncDisp(); updateFormula(); updateInfo(); draw();
+});
+document.getElementById('sliderB').addEventListener('input', e => {
+  params.b = parseFloat(e.target.value);
+  syncDisp(); updateFormula(); updateInfo(); draw();
+});
+document.getElementById('sliderC').addEventListener('input', e => {
+  params.c = parseFloat(e.target.value);
+  syncDisp(); updateFormula(); updateInfo(); draw();
+});
+
+canvas.addEventListener('mousemove', e => {
+  const rc = canvas.getBoundingClientRect();
+  hoverX = e.clientX - rc.left;
+  draw();
+});
+canvas.addEventListener('mouseleave', () => { hoverX = null; draw(); });
+
+// ── x축 눈금 ──
+const X_TICKS = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+const X_LABELS = {
+  '-2':'-2π', '-1.5':'-3π/2', '-1':'-π', '-0.5':'-π/2',
+  '0':'0', '0.5':'π/2', '1':'π', '1.5':'3π/2', '2':'2π'
+};
+
+// ── 드로우 ──
+function draw() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = wrap.clientWidth - 20;
+  const H = Math.min(400, Math.max(240, W * 0.42));
+  if (canvas.width !== Math.round(W * dpr)) {
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  const { a, b, c } = params;
+  const col = COLORS[curFn];
+
+  const PAD_L = 46, PAD_R = 16, PAD_T = 18, PAD_B = 30;
+  const gW = W - PAD_L - PAD_R;
+  const gH = H - PAD_T - PAD_B;
+
+  const X_MIN = -2 * Math.PI, X_MAX = 2 * Math.PI;
+  // y 범위: 진폭 고려
+  const amp = Math.abs(a);
+  const Y_RANGE = curFn === 'tan' ? 4 : Math.max(2.5, amp * 1.3);
+
+  const xC = x  => PAD_L + (x - X_MIN) / (X_MAX - X_MIN) * gW;
+  const yC = y  => PAD_T + (Y_RANGE - y) / (Y_RANGE * 2) * gH;
+  const Cx = px => X_MIN + (px - PAD_L) / gW * (X_MAX - X_MIN);
+
+  // 배경
+  ctx.fillStyle = '#f5f6fa';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = 'rgba(200,210,240,0.10)';
+  ctx.beginPath(); ctx.roundRect(PAD_L, PAD_T, gW, gH, 6); ctx.fill();
+
+  // ── 클리핑 시작 ──
+  ctx.save();
+  ctx.beginPath(); ctx.rect(PAD_L, PAD_T, gW, gH); ctx.clip();
+
+  // y 그리드
+  const rawYTicks = curFn === 'tan'
+    ? [-3,-2,-1,1,2,3]
+    : (amp > 2 ? [-3,-2,-1,1,2,3] : [-2,-1,1,2]);
+  rawYTicks.forEach(v => {
+    const gy = yC(v);
+    if (gy < PAD_T - 1 || gy > PAD_T + gH + 1) return;
+    ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD_L, gy); ctx.lineTo(PAD_L + gW, gy); ctx.stroke();
+  });
+
+  // 진폭 ±a 기준선 (sin/cos)
+  if (curFn !== 'tan' && Math.abs(amp - 1) > 0.05) {
+    [amp, -amp].forEach(v => {
+      const gy = yC(v);
+      if (gy < PAD_T || gy > PAD_T + gH) return;
+      ctx.strokeStyle = col + '28'; ctx.lineWidth = 1.2; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(PAD_L, gy); ctx.lineTo(PAD_L + gW, gy); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+  }
+
+  // x 그리드
+  X_TICKS.forEach(n => {
+    const gx = xC(n * Math.PI);
+    ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(gx, PAD_T); ctx.lineTo(gx, PAD_T + gH); ctx.stroke();
+  });
+
+  // 축
+  const axisY = yC(0), axisX = xC(0);
+  ctx.strokeStyle = 'rgba(0,0,0,0.22)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PAD_L, axisY); ctx.lineTo(PAD_L + gW, axisY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(axisX, PAD_T); ctx.lineTo(axisX, PAD_T + gH); ctx.stroke();
+
+  // 기준 tan 점근선 (a=b=1, c=0)
+  if (curFn === 'tan' && showRef) {
+    [-1.5, -0.5, 0.5, 1.5].forEach(n => {
+      const gx = xC(n * Math.PI);
+      ctx.strokeStyle = 'rgba(26,171,109,0.15)'; ctx.lineWidth = 1; ctx.setLineDash([5, 5]);
+      ctx.beginPath(); ctx.moveTo(gx, PAD_T); ctx.lineTo(gx, PAD_T + gH); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+  }
+
+  // 변환 tan 점근선: bx+c = π/2+nπ → x = (π/2+nπ-c)/b
+  if (curFn === 'tan') {
+    for (let n = -8; n <= 8; n++) {
+      const xA = (Math.PI / 2 + n * Math.PI - c) / b;
+      if (xA < X_MIN || xA > X_MAX) continue;
+      const gx = xC(xA);
+      ctx.strokeStyle = col + '30'; ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(gx, PAD_T); ctx.lineTo(gx, PAD_T + gH); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  const STEPS = 800;
+
+  const isDisc    = x => curFn === 'tan' && Math.abs(Math.cos(b * x + c)) < 0.07;
+  const isRefDisc = x => curFn === 'tan' && Math.abs(Math.cos(x)) < 0.07;
+
+  const fnVal  = x => {
+    const t = b * x + c;
+    return a * (curFn === 'sin' ? Math.sin(t) : curFn === 'cos' ? Math.cos(t) : Math.tan(t));
+  };
+  const refVal = x => curFn === 'sin' ? Math.sin(x) : curFn === 'cos' ? Math.cos(x) : Math.tan(x);
+
+  function drawCurve(valFn, isDiscFn, strokeCol, lineW) {
+    ctx.strokeStyle = strokeCol;
+    ctx.lineWidth = lineW;
+    ctx.beginPath();
+    let started = false, prevY = null;
+    for (let i = 0; i <= STEPS; i++) {
+      const x = X_MIN + (i / STEPS) * (X_MAX - X_MIN);
+      if (isDiscFn(x)) {
+        if (started) { ctx.stroke(); ctx.beginPath(); started = false; prevY = null; }
+        continue;
+      }
+      const y = valFn(x);
+      if (!isFinite(y) || Math.abs(y) > Y_RANGE * 1.4) {
+        if (started) { ctx.stroke(); ctx.beginPath(); started = false; }
+        prevY = null; continue;
+      }
+      if (prevY !== null && Math.abs(y - prevY) > Y_RANGE * 2) {
+        ctx.stroke(); ctx.beginPath(); started = false;
+      }
+      const gx = xC(x), gy = yC(Math.max(-Y_RANGE, Math.min(Y_RANGE, y)));
+      if (!started) { ctx.moveTo(gx, gy); started = true; } else ctx.lineTo(gx, gy);
+      prevY = y;
+    }
+    ctx.stroke();
+  }
+
+  // 기준 그래프 (ghost)
+  if (showRef) drawCurve(refVal, isRefDisc, col + '28', 1.5);
+
+  // 변환 그래프
+  ctx.shadowColor = col + '50'; ctx.shadowBlur = 5;
+  drawCurve(fnVal, isDisc, col, 2.5);
+  ctx.shadowBlur = 0;
+
+  // 호버
+  if (hoverX !== null) {
+    const x = Cx(hoverX);
+    if (x >= X_MIN && x <= X_MAX && !isDisc(x)) {
+      const y = fnVal(x);
+      if (isFinite(y) && Math.abs(y) <= Y_RANGE * 1.1) {
+        const gy = yC(y);
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(hoverX, PAD_T); ctx.lineTo(hoverX, PAD_T + gH); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(PAD_L, gy); ctx.lineTo(PAD_L + gW, gy); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'white';
+        ctx.beginPath(); ctx.arc(hoverX, gy, 7.5, 0, TWO_PI); ctx.fill();
+        ctx.fillStyle = col; ctx.shadowColor = col + '80'; ctx.shadowBlur = 8;
+        ctx.beginPath(); ctx.arc(hoverX, gy, 5.5, 0, TWO_PI); ctx.fill(); ctx.shadowBlur = 0;
+        const lx = hoverX + 10 < PAD_L + gW - 120 ? hoverX + 10 : hoverX - 125;
+        const ly = gy > PAD_T + 24 ? gy - 9 : gy + 18;
+        ctx.fillStyle = 'rgba(26,28,46,0.75)';
+        ctx.font = '11px JetBrains Mono'; ctx.textAlign = 'left';
+        ctx.fillText(`x=${(x / Math.PI).toFixed(2)}π  y=${y.toFixed(3)}`, lx, ly);
+      }
+    }
+  }
+
+  ctx.restore(); // ── 클리핑 종료 ──
+
+  // y축 레이블
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.font = '10px JetBrains Mono'; ctx.textAlign = 'right';
+  rawYTicks.forEach(v => {
+    const gy = yC(v);
+    if (gy < PAD_T || gy > PAD_T + gH) return;
+    ctx.fillText(v, PAD_L - 5, gy + 3);
+  });
+  // 진폭 레이블 (|a|≠1)
+  if (curFn !== 'tan' && Math.abs(amp - 1) > 0.05) {
+    [amp, -amp].forEach(v => {
+      const gy = yC(v);
+      if (gy < PAD_T || gy > PAD_T + gH) return;
+      ctx.fillStyle = col + '88';
+      ctx.fillText((v > 0 ? '' : '−') + absStr(v), PAD_L - 5, gy + 3);
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    });
+  }
+
+  // x축 레이블
+  ctx.textAlign = 'center';
+  X_TICKS.forEach(n => {
+    ctx.fillText(X_LABELS[String(n)], xC(n * Math.PI), PAD_T + gH + 18);
+  });
+}
+
+// 초기화
+syncDisp(); updateFormula(); updateInfo(); draw();
+window.addEventListener('resize', draw);
+</script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>삼각함수 단위원 시각화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:    #f5f6fa;
+  --bg2:   #ffffff;
+  --bg3:   #eef0f7;
+  --border: rgba(0,0,0,0.09);
+  --shadow: 0 1px 4px rgba(0,0,0,0.07);
+  --text:  #1a1c2e;
+  --muted: #8890b0;
+  --sin:   #2d6ef0;
+  --cos:   #e05030;
+  --tan:   #1aab6d;
+  --angle: #c8860a;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.6rem 1rem 3rem;
+  user-select: none;
+}
+
+/* 헤더 */
+header { text-align: center; margin-bottom: 1.2rem; }
+header .sub {
+  font-size: 10px; letter-spacing: 3px; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 5px;
+}
+header h1 { font-size: 1.45rem; font-weight: 700; color: var(--text); }
+header h1 em { font-style: normal; transition: color 0.2s; }
+header p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* 탭 */
+.tabs {
+  display: flex; width: 100%; max-width: 960px;
+  margin-bottom: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 5px; gap: 5px;
+  box-shadow: var(--shadow);
+}
+.tab-btn {
+  flex: 1; padding: 11px 0;
+  border: 1.5px solid transparent; border-radius: 9px;
+  background: transparent; color: var(--muted);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; min-height: 48px;
+}
+.tab-btn:hover { background: var(--bg3); color: var(--text); }
+.tab-btn.act-sin { background: #e8effe; color: var(--sin); border-color: #a8c0f8; font-weight: 700; }
+.tab-btn.act-cos { background: #fdecea; color: var(--cos); border-color: #f5b0a0; font-weight: 700; }
+.tab-btn.act-tan { background: #e4f7ef; color: var(--tan); border-color: #88ddb8; font-weight: 700; }
+.tab-btn .katex { font-size: 1.05em; }
+
+/* 값 카드 행 */
+.val-row { display: flex; gap: 8px; width: 100%; max-width: 960px; margin-bottom: 10px; }
+.val-card {
+  flex: 1; background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 11px; padding: 9px 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s;
+}
+.val-card .lbl {
+  font-size: 11px; color: var(--muted);
+  margin-bottom: 3px;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 22px;
+}
+.val-card .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem; font-weight: 600;
+}
+
+/* 캔버스 */
+.canvas-wrap {
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 10px;
+  width: 100%; max-width: 960px; margin-bottom: 10px;
+  cursor: crosshair;
+  box-shadow: var(--shadow);
+  transition: border-color 0.25s;
+}
+canvas#main { width: 100%; display: block; border-radius: 6px; }
+
+/* 수식 표시 영역 */
+.formula-bar {
+  width: 100%; max-width: 960px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 10px 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+  min-height: 50px;
+}
+.formula-bar .eq-label {
+  font-size: 12px; color: var(--muted); white-space: nowrap;
+}
+.formula-bar .eq-main {
+  font-size: 1.15em; flex: 1;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.formula-bar .eq-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem; font-weight: 700;
+  padding: 2px 10px; border-radius: 6px;
+}
+
+/* 컨트롤 */
+.ctrl-row { display: flex; gap: 10px; width: 100%; max-width: 960px; flex-wrap: wrap; align-items: center; }
+.ctrl-card {
+  flex: 1; min-width: 150px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 11px; padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: var(--shadow);
+}
+.ctrl-card label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+input[type=range] {
+  flex: 1; height: 4px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--bg3); border-radius: 2px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  border-radius: 50%; cursor: pointer; border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+#angleSlider::-webkit-slider-thumb { background: var(--angle); }
+#speedSlider::-webkit-slider-thumb { background: var(--muted); }
+
+.btn-grp { display: flex; gap: 6px; }
+button {
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; font-weight: 500; padding: 7px 15px;
+  border-radius: 8px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+button:hover { background: #e2e5f0; }
+button.on { background: #e8effe; border-color: #a8c0f8; color: var(--sin); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sub">삼각함수 단위원 시각화</div>
+  <h1>단위원과 <em id="fnLabel" style="color:var(--sin)">sin</em> 그래프</h1>
+  <p>원 위의 점을 드래그하거나 슬라이더로 각도를 조절하세요</p>
+</header>
+
+<!-- 탭 -->
+<div class="tabs">
+  <button class="tab-btn act-sin" data-fn="sin" onclick="selectFn(this)">
+    <span id="tab-sin"></span>
+  </button>
+  <button class="tab-btn" data-fn="cos" onclick="selectFn(this)">
+    <span id="tab-cos"></span>
+  </button>
+  <button class="tab-btn" data-fn="tan" onclick="selectFn(this)">
+    <span id="tab-tan"></span>
+  </button>
+</div>
+
+<!-- 값 카드 -->
+<div class="val-row">
+  <div class="val-card">
+    <div class="lbl"><span id="lbl-theta"></span></div>
+    <div class="num" id="vTheta" style="color:var(--angle)">0.0°</div>
+  </div>
+  <div class="val-card">
+    <div class="lbl" id="lbl0-wrap"></div>
+    <div class="num" id="v0" style="color:var(--sin)">0.000</div>
+  </div>
+  <div class="val-card">
+    <div class="lbl" id="lbl1-wrap"></div>
+    <div class="num" id="v1" style="color:var(--muted)">1.000</div>
+  </div>
+  <div class="val-card">
+    <div class="lbl" id="lbl2-wrap"></div>
+    <div class="num" id="v2" style="color:var(--muted)">0.000</div>
+  </div>
+</div>
+
+<!-- 수식 바 -->
+<div class="formula-bar">
+  <span class="eq-label">현재 값</span>
+  <div class="eq-main" id="formulaMain"></div>
+  <div class="eq-val" id="formulaVal" style="color:var(--sin); background:#e8effe;">0.000</div>
+</div>
+
+<!-- 캔버스 -->
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="main"></canvas>
+</div>
+
+<!-- 컨트롤 -->
+<div class="ctrl-row">
+  <div class="ctrl-card">
+    <div class="btn-grp">
+      <button id="btnPlay" class="on" onclick="togglePlay()">⏸ 정지</button>
+      <button onclick="resetAll()">↺ 초기화</button>
+    </div>
+  </div>
+  <div class="ctrl-card">
+    <label>각도</label>
+    <input type="range" id="angleSlider" min="0" max="719.9" step="0.5" value="0">
+  </div>
+  <div class="ctrl-card">
+    <label>속도</label>
+    <input type="range" id="speedSlider" min="0.2" max="3" step="0.1" value="1">
+  </div>
+</div>
+
+<script>
+// ── KaTeX 렌더링 헬퍼 ──
+function K(tex, el, opts) {
+  try { katex.render(tex, el, { throwOnError: false, displayMode: false, ...opts }); }
+  catch(e) { el.textContent = tex; }
+}
+
+// 탭 수식
+K('\\sin\\theta = \\dfrac{y}{r}', document.getElementById('tab-sin'));
+K('\\cos\\theta = \\dfrac{x}{r}', document.getElementById('tab-cos'));
+K('\\tan\\theta = \\dfrac{y}{x}', document.getElementById('tab-tan'));
+
+// θ 레이블
+K('\\theta', document.getElementById('lbl-theta'));
+
+// 초기 카드 레이블
+function setCardLabels(fn) {
+  const sets = {
+    sin: [['\\sin\\theta','sin'],['\\cos\\theta','cos'],['\\tan\\theta','tan']],
+    cos: [['\\cos\\theta','cos'],['\\sin\\theta','sin'],['\\tan\\theta','tan']],
+    tan: [['\\tan\\theta','tan'],['\\sin\\theta','sin'],['\\cos\\theta','cos']],
+  };
+  sets[fn].forEach(([tex, id], i) => {
+    const el = document.getElementById(`lbl${i}-wrap`);
+    el.innerHTML = '';
+    K(tex, el);
+  });
+}
+setCardLabels('sin');
+
+// 수식 바 렌더링
+function setFormula(fn, sinV, cosV, tanV) {
+  const el = document.getElementById('formulaMain');
+  el.innerHTML = '';
+  const col = COLORS[fn];
+  let tex, val;
+  if (fn === 'sin') {
+    tex = '\\sin\\theta = \\dfrac{y}{r} = \\dfrac{' + sinV.toFixed(3) + '}{1}';
+    val = sinV;
+  } else if (fn === 'cos') {
+    tex = '\\cos\\theta = \\dfrac{x}{r} = \\dfrac{' + cosV.toFixed(3) + '}{1}';
+    val = cosV;
+  } else {
+    tex = '\\tan\\theta = \\dfrac{y}{x} = \\dfrac{' + sinV.toFixed(3) + '}{' + cosV.toFixed(3) + '}';
+    val = tanV;
+  }
+  K(tex, el);
+  const fv = document.getElementById('formulaVal');
+  fv.style.color = col;
+  fv.style.background = BG[fn];
+  fv.textContent = Math.abs(tanV) > 99 && fn === 'tan' ? '∞' : val.toFixed(3);
+}
+
+// ── 상수 ──
+const COLORS = { sin:'#2d6ef0', cos:'#e05030', tan:'#1aab6d' };
+const BG = { sin:'#e8effe', cos:'#fdecea', tan:'#e4f7ef' };
+const TWO_PI = Math.PI * 2;
+
+const canvas = document.getElementById('main');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('canvasWrap');
+
+let curFn = 'sin';
+let theta = 0, playing = true, dragging = false;
+let trail = [];
+const MAX_TRAIL = 1500;
+let L = {};
+
+// ── 탭 선택 ──
+function selectFn(btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
+  btn.className = `tab-btn act-${btn.dataset.fn}`;
+  curFn = btn.dataset.fn;
+  const col = COLORS[curFn];
+  document.getElementById('fnLabel').textContent = curFn;
+  document.getElementById('fnLabel').style.color = col;
+  document.getElementById('v0').style.color = col;
+  // v1, v2 색상 업데이트
+  const order = { sin:['cos','tan'], cos:['sin','tan'], tan:['sin','cos'] };
+  document.getElementById('v1').style.color = COLORS[order[curFn][0]];
+  document.getElementById('v2').style.color = COLORS[order[curFn][1]];
+  wrap.style.borderColor = col + '88';
+  setCardLabels(curFn);
+  trail = [];
+}
+
+// ── 레이아웃 ──
+function calcLayout(W, H) {
+  const r = Math.min(W * 0.21, H * 0.37, 115);
+  const cx = r + 48, cy = H / 2;
+  const gx0 = cx + r + 56, gw = W - gx0 - 16;
+  return { r, cx, cy, gx0, gw, graphH: r, W, H };
+}
+
+// ── 슬라이더 ──
+const angleSlider = document.getElementById('angleSlider');
+angleSlider.addEventListener('input', () => {
+  playing = false; updatePlayBtn();
+  theta = parseFloat(angleSlider.value) * Math.PI / 180;
+  trail = buildTrail(theta);
+});
+
+function buildTrail(upTo) {
+  const pts = [], steps = Math.round(upTo / (Math.PI / 360));
+  for (let i = 0; i <= steps; i++) pts.push(i * Math.PI / 360);
+  return pts;
+}
+
+// ── 드래그 ──
+function ptrPos(e) {
+  const t = e.touches ? e.touches[0] : e;
+  const rc = canvas.getBoundingClientRect();
+  return { x:(t.clientX-rc.left)/rc.width*L.W, y:(t.clientY-rc.top)/rc.height*L.H };
+}
+function tryDrag(e) {
+  const p = ptrPos(e), dx = p.x-L.cx, dy = p.y-L.cy;
+  if (Math.sqrt(dx*dx+dy*dy) < L.r*1.8) { dragging=true; playing=false; updatePlayBtn(); moveDrag(e); }
+}
+function moveDrag(e) {
+  if (!dragging) return; e.preventDefault();
+  const p = ptrPos(e);
+  let t = Math.atan2(-(p.y-L.cy), p.x-L.cx);
+  if (t < 0) t += TWO_PI;
+  theta = Math.floor(theta/TWO_PI)*TWO_PI + t;
+  trail = buildTrail(theta);
+  angleSlider.value = (theta*180/Math.PI)%720;
+}
+canvas.addEventListener('mousedown', tryDrag);
+canvas.addEventListener('mousemove', moveDrag);
+canvas.addEventListener('mouseup', ()=>dragging=false);
+canvas.addEventListener('touchstart', tryDrag, {passive:false});
+canvas.addEventListener('touchmove', moveDrag, {passive:false});
+canvas.addEventListener('touchend', ()=>dragging=false);
+
+function togglePlay() { playing=!playing; updatePlayBtn(); }
+function updatePlayBtn() {
+  const b = document.getElementById('btnPlay');
+  b.textContent = playing ? '⏸ 정지' : '▶ 재생';
+  b.className = playing ? 'on' : '';
+}
+function resetAll() { theta=0; trail=[]; playing=true; angleSlider.value=0; updatePlayBtn(); }
+
+// ── 드로우 ──
+function draw() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = wrap.clientWidth - 20;
+  const H = Math.min(420, Math.max(260, W * 0.44));
+  if (canvas.width !== Math.round(W*dpr)) {
+    canvas.width = Math.round(W*dpr); canvas.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  L = calcLayout(W, H);
+  const {r, cx, cy, gx0, gw, graphH} = L;
+
+  // 배경
+  ctx.fillStyle = '#f5f6fa';
+  ctx.fillRect(0,0,W,H);
+
+  const sinV=Math.sin(theta), cosV=Math.cos(theta), tanV=Math.tan(theta);
+  const px=cx+r*cosV, py=cy-r*sinV;
+  const xScale=gw/TWO_PI, col=COLORS[curFn];
+
+  // ━━ 단위원 ━━
+  // 배경 원판
+  ctx.fillStyle = 'rgba(200,210,240,0.18)';
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,TWO_PI); ctx.fill();
+
+  // 축선
+  ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(cx-r-14,cy); ctx.lineTo(cx+r+14,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,cy-r-14); ctx.lineTo(cx,cy+r+14); ctx.stroke();
+
+  // 단위원
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,TWO_PI); ctx.stroke();
+
+  // ── 함수별 강조 ──
+  if (curFn==='sin') {
+    // x 흐린 점선
+    ctx.strokeStyle = 'rgba(224,80,48,0.3)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,cy); ctx.stroke(); ctx.setLineDash([]);
+    // y 수직선
+    ctx.strokeStyle=col; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(px,cy); ctx.lineTo(px,py); ctx.stroke();
+    if (Math.abs(sinV)>0.1) {
+      ctx.fillStyle=col; ctx.font=`bold ${Math.max(11,r*0.13)}px JetBrains Mono`;
+      ctx.textAlign='right'; ctx.fillText('y', px-7, (cy+py)/2+4);
+    }
+    ctx.fillStyle='rgba(0,0,0,0.28)'; ctx.font=`${Math.max(10,r*0.11)}px JetBrains Mono`;
+    ctx.textAlign='center'; ctx.fillText('r=1', (cx+px)/2+10, (cy+py)/2-8);
+
+  } else if (curFn==='cos') {
+    // y 흐린 점선
+    ctx.strokeStyle='rgba(45,110,240,0.3)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(px,cy); ctx.lineTo(px,py); ctx.stroke(); ctx.setLineDash([]);
+    // x 수평선
+    ctx.strokeStyle=col; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,cy); ctx.stroke();
+    if (Math.abs(cosV)>0.1) {
+      ctx.fillStyle=col; ctx.font=`bold ${Math.max(11,r*0.13)}px JetBrains Mono`;
+      ctx.textAlign='center'; ctx.fillText('x', (cx+px)/2, cy-9);
+    }
+    ctx.fillStyle='rgba(0,0,0,0.28)'; ctx.font=`${Math.max(10,r*0.11)}px JetBrains Mono`;
+    ctx.textAlign='center'; ctx.fillText('r=1', (cx+px)/2+6, (cy+py)/2-8);
+
+  } else {
+    if (Math.abs(cosV)>0.07) {
+      const tx=cx+r, ty=cy-r*tanV;
+      ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(tx,ty); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle=col; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(tx,cy); ctx.lineTo(tx,ty); ctx.stroke();
+      ctx.strokeStyle='rgba(26,171,109,0.2)'; ctx.lineWidth=1; ctx.setLineDash([3,5]);
+      ctx.beginPath(); ctx.moveTo(tx,cy-r-10); ctx.lineTo(tx,cy+r+10); ctx.stroke(); ctx.setLineDash([]);
+      if (Math.abs(tanV)<5&&Math.abs(tanV)>0.1) {
+        ctx.fillStyle=col; ctx.font=`bold ${Math.max(11,r*0.12)}px JetBrains Mono`;
+        ctx.textAlign='left'; ctx.fillText('tanθ', tx+5, (cy+ty)/2+4);
+      }
+    }
+  }
+
+  // 반지름
+  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,py); ctx.stroke();
+
+  // 각도 호
+  ctx.strokeStyle='#c8860a'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(cx,cy,r*0.24,0,-Math.atan2(-(py-cy),px-cx),sinV<0); ctx.stroke();
+  const al=r*0.36, am=theta/2;
+  ctx.fillStyle='#c8860a'; ctx.font=`bold ${Math.max(11,r*0.14)}px serif`;
+  ctx.textAlign='center'; ctx.fillText('θ', cx+al*Math.cos(am), cy-al*Math.sin(am)+4);
+
+  // 원점, P 레이블
+  ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.arc(cx,cy,3,0,TWO_PI); ctx.fill();
+  ctx.font='11px Noto Sans KR'; ctx.textAlign='right'; ctx.fillStyle='rgba(0,0,0,0.3)';
+  ctx.fillText('O', cx-6, cy-5);
+
+  // ━━ 그래프 ━━
+  // 영역
+  ctx.fillStyle='rgba(200,210,240,0.10)';
+  ctx.beginPath(); ctx.roundRect(gx0-4,cy-graphH-18,gw+8,graphH*2+36,6); ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.12)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(gx0,cy); ctx.lineTo(gx0+gw,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(gx0,cy-graphH-16); ctx.lineTo(gx0,cy+graphH+16); ctx.stroke();
+
+  // x눈금
+  [0,0.5,1,1.5,2].forEach(n=>{
+    const gx=gx0+n*Math.PI*xScale;
+    ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(gx,cy-graphH-10); ctx.lineTo(gx,cy+graphH+10); ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText(n===0?'0':n===0.5?'π/2':n===1?'π':n===1.5?'3π/2':'2π', gx, cy+graphH+22);
+  });
+
+  // y눈금
+  const yTks = curFn==='tan'?[-2,-1,1,2]:[-1,1];
+  yTks.forEach(v=>{
+    const gy=cy-v*graphH;
+    if (gy<cy-graphH*2.5||gy>cy+graphH*2.5) return;
+    ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(gx0-4,gy); ctx.lineTo(gx0+gw,gy); ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.textAlign='right';
+    ctx.fillText(v, gx0-7, gy+3);
+  });
+
+  // tan 점근선
+  if (curFn === 'tan') {
+    ctx.strokeStyle = 'rgba(26,171,109,0.22)'; ctx.lineWidth = 1.2; ctx.setLineDash([5, 5]);
+    [0.5, 1.5].forEach(n => {
+      const gx = gx0 + n * Math.PI * xScale;
+      ctx.beginPath(); ctx.moveTo(gx, cy - graphH - 16); ctx.lineTo(gx, cy + graphH + 16); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+  }
+
+  // 가이드 곡선
+  ctx.strokeStyle=col+'33'; ctx.lineWidth=1.5;
+  ctx.beginPath(); let gs=false;
+  for (let i=0;i<=400;i++){
+    const t=(i/400)*TWO_PI, gx=gx0+t*xScale; let gy;
+    if (curFn==='sin') gy=cy-Math.sin(t)*graphH;
+    else if (curFn==='cos') gy=cy-Math.cos(t)*graphH;
+    else {
+      const tv=Math.tan(t);
+      if (Math.abs(tv)>4||Math.abs(Math.cos(t))<0.08){ctx.stroke();ctx.beginPath();gs=false;continue;}
+      gy=cy-tv*graphH;
+    }
+    if(!gs){ctx.moveTo(gx,gy);gs=true;}else ctx.lineTo(gx,gy);
+  }
+  ctx.stroke();
+
+  // 궤적
+  ctx.strokeStyle=col; ctx.lineWidth=2.5;
+  ctx.shadowColor=col+'80'; ctx.shadowBlur=4;
+  ctx.beginPath(); let ts2=false;
+  for (let i=0;i<trail.length;i++){
+    const t=trail[i], tm=t%TWO_PI, gx=gx0+tm*xScale; let gy, skip=false;
+    if (curFn==='sin') gy=cy-Math.sin(t)*graphH;
+    else if (curFn==='cos') gy=cy-Math.cos(t)*graphH;
+    else {
+      const tv=Math.tan(t);
+      if (Math.abs(tv)>4.5||Math.abs(Math.cos(t))<0.09) skip=true;
+      else gy=cy-tv*graphH;
+    }
+    if(skip){if(ts2){ctx.stroke();ctx.beginPath();ts2=false;}continue;}
+    if(!ts2){ctx.moveTo(gx,gy);ts2=true;}else ctx.lineTo(gx,gy);
+  }
+  ctx.stroke(); ctx.shadowBlur=0;
+
+  // 현재 점
+  const tMod=theta%TWO_PI, gpx=gx0+tMod*xScale;
+  const curVal=curFn==='sin'?sinV:curFn==='cos'?cosV:tanV;
+  if (Math.abs(curVal)<=5) {
+    const gpy=cy-curVal*graphH;
+    ctx.strokeStyle=col+'60'; ctx.lineWidth=1.3; ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    if (curFn==='tan') ctx.moveTo(cx+r,cy-curVal*r); else ctx.moveTo(px,py);
+    ctx.lineTo(gpx,gpy); ctx.stroke(); ctx.setLineDash([]);
+    // y기준선
+    ctx.strokeStyle=col+'30'; ctx.lineWidth=1; ctx.setLineDash([3,5]);
+    ctx.beginPath(); ctx.moveTo(gx0,gpy); ctx.lineTo(gpx,gpy); ctx.stroke(); ctx.setLineDash([]);
+    // 점
+    ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(gpx,gpy,7.5,0,TWO_PI); ctx.fill();
+    ctx.fillStyle=col; ctx.shadowColor=col+'80'; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.arc(gpx,gpy,5.5,0,TWO_PI); ctx.fill(); ctx.shadowBlur=0;
+  }
+
+  // P점
+  ctx.fillStyle='white';
+  ctx.beginPath(); ctx.arc(px,py,9,0,TWO_PI); ctx.fill();
+  ctx.fillStyle=col; ctx.shadowColor=col+'80'; ctx.shadowBlur=10;
+  ctx.beginPath(); ctx.arc(px,py,7,0,TWO_PI); ctx.fill(); ctx.shadowBlur=0;
+  ctx.fillStyle=col; ctx.font=`bold 12px Noto Sans KR`;
+  ctx.textAlign='left'; ctx.fillText('P', px+11, py-8);
+
+  // ━━ 값 업데이트 ━━
+  const deg=(theta%TWO_PI)*180/Math.PI;
+  document.getElementById('vTheta').textContent=deg.toFixed(1)+'°';
+  const sinStr=sinV.toFixed(3), cosStr=cosV.toFixed(3);
+  const tanStr=Math.abs(tanV)>99?'∞':tanV.toFixed(3);
+  const vals = curFn==='sin'?[sinStr,cosStr,tanStr]
+              :curFn==='cos'?[cosStr,sinStr,tanStr]
+              :[tanStr,sinStr,cosStr];
+  ['v0','v1','v2'].forEach((id,i)=>document.getElementById(id).textContent=vals[i]);
+  setFormula(curFn, sinV, cosV, tanV);
+}
+
+// ━━ 루프 ━━
+let last=null;
+function loop(ts){
+  requestAnimationFrame(loop);
+  if (playing&&!dragging){
+    if(last!==null){
+      const dt=Math.min((ts-last)/1000,0.05);
+      const spd=parseFloat(document.getElementById('speedSlider').value);
+      theta+=dt*spd*1.4;
+      if(theta>TWO_PI*2){theta-=TWO_PI*2;trail=[];}
+      trail.push(theta);
+      if(trail.length>MAX_TRAIL) trail.shift();
+      angleSlider.value=(theta*180/Math.PI)%720;
+    }
+    last=ts;
+  } else last=null;
+  draw();
+}
+
+requestAnimationFrame(loop);
+window.addEventListener('resize', draw);
+</script>
+</body>
+</html>
