@@ -47,31 +47,25 @@
   .header-title span { color: var(--amber); }
   .header-sub { font-size: clamp(11px,2.8vw,12px); color: rgba(255,255,255,0.45); margin-top: 4px; font-weight: 300; }
 
-  /* ── 탭 ── */
-  .week-nav {
+  /* ── 인쇄 버튼 바 ── */
+  .print-bar {
     background: var(--green-deep); border-top: 1px solid rgba(255,255,255,0.08);
-    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    padding: 10px clamp(12px,3vw,24px);
   }
-  .week-nav::-webkit-scrollbar { display: none; }
-  .week-nav-inner { max-width: 1100px; margin: 0 auto; display: flex; padding: 0 clamp(12px,3vw,24px); min-width: max-content; }
-  .week-tab {
-    padding: clamp(10px,2.5vw,12px) clamp(14px,3.5vw,20px);
-    font-size: clamp(12px,3vw,13px); font-weight: 500;
-    color: rgba(255,255,255,0.45); cursor: pointer; border: none; background: none;
-    border-bottom: 3px solid transparent; transition: all 0.2s;
-    font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  .print-bar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .print-bar-info { font-size: 12px; color: rgba(255,255,255,0.55); font-weight: 300; }
+  .btn-print {
+    background: var(--amber); color: #fff; border: none; border-radius: 8px;
+    padding: 8px 20px; font-size: 13px; font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+    transition: background 0.2s; -webkit-tap-highlight-color: transparent;
   }
-  .week-tab:hover { color: rgba(255,255,255,0.8); }
-  .week-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+  .btn-print:hover { background: var(--amber-dark); }
 
   /* ── 본문 ── */
   .main { max-width: 1100px; margin: 0 auto; padding: clamp(16px,4vw,28px) clamp(12px,3vw,28px) 60px; }
-  .week-panel { display: none; }
-  .week-panel.active { display: block; }
-  .week-title-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .week-title-bar h2 { font-size: clamp(13px,3.5vw,15px); font-weight: 700; color: var(--green-mid); }
-  .week-title-bar .date-range { font-size: clamp(11px,2.8vw,12px); color: var(--text-muted); font-weight: 300; }
-  .week-title-bar::after { content: ''; flex: 1; height: 1px; background: var(--border); min-width: 20px; }
+  .week-panel { display: block; }
+  .week-panel + .week-panel { margin-top: 10px; }
 
   /* ── 그리드 ── */
   .day-headers { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 6px; }
@@ -152,16 +146,17 @@
 
   /* ── 알레르기: 숫자만, 한 줄, 초미니 ── */
   .al-line {
-    font-size: 9.5px; color: var(--text-muted);
-    letter-spacing: 0.3px; line-height: 1.2;
-    padding-left: 1px;
+    font-size: 9px; color: var(--text-muted);
+    letter-spacing: 0.2px; line-height: 1.2;
+    margin-left: auto; padding-left: 4px; flex-shrink: 0; white-space: nowrap;
   }
 
 
 
   /* ── 영양 바 ── */
-  .nutrition-bar { background: #fafaf8; border-top: 1px solid var(--border); padding: clamp(7px,1.8vw,9px) clamp(10px,2.5vw,14px); }
-  .nutrition-rows { display: flex; flex-direction: column; gap: 3px; }
+  .nutrition-print { display: none; }
+  .nutrition-bar { background: #fafaf8; border-top: 1px solid var(--border); padding: clamp(5px,1.2vw,7px) clamp(10px,2.5vw,14px); }
+  .nutrition-rows { display: flex; flex-direction: column; gap: 2px; }
   .nutrition-item { display: flex; align-items: center; gap: 4px; }
   .nutrition-name { font-size: 9px; color: var(--text-muted); width: 30px; flex-shrink: 0; }
   .nutrition-track { flex: 1; height: 3px; background: #ece8e0; border-radius: 2px; overflow: hidden; min-width: 0; }
@@ -223,6 +218,87 @@
   @media (min-width: 701px) {
     .card-right { display: contents; }
   }
+
+  /* ── 인쇄 (A4 가로, 1장) ── */
+  @media print {
+    @page { margin: 6mm 7mm; size: A4 landscape; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff !important; }
+
+    /* 숨기기 */
+    .print-bar      { display: none !important; }
+    .nutrition-rows { display: none !important; }
+    .dessert-emoji  { display: none !important; }
+    .legend {
+      margin-top: 4px !important; padding: 3px 6px !important;
+      border-radius: 4px !important; border-width: 1px !important;
+      background: #fafaf8 !important;
+    }
+    .legend-title { font-size: 6.5px !important; margin-bottom: 3px !important; }
+    .legend-grid  { grid-template-columns: repeat(10, 1fr) !important; gap: 1px 6px !important; }
+    .legend-item  { font-size: 6px !important; gap: 2px !important; }
+    .legend-num   { font-size: 6px !important; width: 12px !important; }
+
+    /* 인쇄 전용 표시 */
+    .nutrition-bar  { padding: 1px 4px !important; }
+    .nutrition-print {
+      display: block !important;
+      font-size: 6px !important; color: #888 !important;
+      padding: 0 !important; line-height: 1.2 !important;
+    }
+    .al-line { display: block !important; font-size: 6px !important; color: #aaa !important; }
+
+    /* 헤더 → 한 줄로 압축 */
+    .site-header {
+      padding: 3px 10px !important;
+      background: var(--green-deep) !important;
+    }
+    .site-header::before { display: none; }
+    .header-label { display: none !important; }
+    .header-sub   { display: none !important; }
+    .header-title { font-size: 11px !important; line-height: 1 !important; }
+
+    /* 본문 여백 */
+    .main { padding: 4px 0 0 !important; }
+
+    /* 주차 간격 */
+    .week-panel + .week-panel { margin-top: 2px !important; }
+
+    /* 요일 헤더 */
+    .day-headers { gap: 2px !important; margin-bottom: 2px !important; display: grid !important; }
+    .day-header { font-size: 7px !important; padding: 2px !important; }
+
+    /* 그리드 */
+    .day-grid { gap: 2px !important; }
+
+    /* 카드 공통 */
+    .meal-card, .exam-card, .special-card {
+      box-shadow: none !important; transform: none !important;
+      border-radius: 4px !important; border-width: 1px !important;
+    }
+    .empty-card { min-height: 20px !important; border-radius: 4px !important; font-size: 9px !important; }
+
+    /* 날짜 바: 숫자만, 요일 텍스트 숨김 */
+    .card-date-bar { padding: 2px 4px !important; flex-direction: row !important; align-items: center !important; gap: 3px !important; }
+    .card-date-num { font-size: 9px !important; }
+    .card-date-day { display: none !important; }
+    .card-badge    { font-size: 5px !important; padding: 1px 3px !important; }
+
+    /* 카드 본문 */
+    .card-body { padding: 2px 4px !important; }
+    .meal-item { padding: 0.5px 0 !important; border-bottom-color: #f0ece4 !important; }
+    .meal-name  { font-size: 7.5px !important; line-height: 1.25 !important; }
+    .meal-item.main-dish { margin: 0 -4px !important; padding: 1px 4px !important; }
+    .meal-item.main-dish .meal-name { font-size: 8px !important; }
+    .main-badge { display: none !important; }
+    .meal-item.dessert-item { margin: 0 -4px !important; padding: 1px 4px !important; }
+    .meal-name.dessert { font-size: 7.5px !important; }
+
+    /* 특별 카드 */
+    .special-body { padding: 4px !important; }
+    .special-icon { font-size: 11px !important; }
+    .special-text { font-size: 6.5px !important; }
+  }
 </style>
 </head>
 <body>
@@ -235,15 +311,12 @@
   </div>
 </header>
 
-<nav class="week-nav">
-  <div class="week-nav-inner">
-    <button class="week-tab active" onclick="showWeek(0)">1주차</button>
-    <button class="week-tab" onclick="showWeek(1)">2주차</button>
-    <button class="week-tab" onclick="showWeek(2)">3주차</button>
-    <button class="week-tab" onclick="showWeek(3)">4주차</button>
-    <button class="week-tab" onclick="showWeek(4)">5주차</button>
+<div class="print-bar">
+  <div class="print-bar-inner">
+    <span class="print-bar-info">풍문고등학교 · 2026년 4월 · 전체 급식표</span>
+    <button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>
   </div>
-</nav>
+</div>
 
 <main class="main" id="app"></main>
 
@@ -267,10 +340,9 @@ function row(m){
   if(isMain) cls = 'meal-item main-dish';
   if(isDessert) cls = 'meal-item dessert-item';
   const nameCls = isRice?'meal-name rice': isDessert?'meal-name dessert':'meal-name';
-  const prefix = isDessert?`<span style="font-size:11px;margin-right:2px">🍬</span>`:'';
+  const prefix = isDessert?`<span class="dessert-emoji" style="font-size:11px;margin-right:2px">🍬</span>`:'';
   return `<div class="${cls}">
-    <div class="meal-row">${prefix}<span class="${nameCls}">${m.n}</span></div>
-    ${alLine(m.al)}
+    <div class="meal-row">${prefix}<span class="${nameCls}">${m.n}</span>${alLine(m.al)}</div>
   </div>`;
 }
 
@@ -284,7 +356,9 @@ function nutBar(k,p,ca,fe){
       <div class="nutrition-item"><span class="nutrition-name">단백질</span><div class="nutrition-track"><div class="nutrition-fill fill-protein" style="width:${pct(p,60)}%"></div></div><span class="nutrition-val">${p}g</span></div>
       <div class="nutrition-item"><span class="nutrition-name">칼슘</span><div class="nutrition-track"><div class="nutrition-fill fill-calcium" style="width:${pct(ca,500)}%"></div></div><span class="nutrition-val">${ca}mg</span></div>
       <div class="nutrition-item"><span class="nutrition-name">철분</span><div class="nutrition-track"><div class="nutrition-fill fill-iron" style="width:${pct(fe,25)}%"></div></div><span class="nutrition-val">${fe}mg</span></div>
-    </div></div>`;
+    </div>
+    <div class="nutrition-print">${k}kcal · 단백 ${p}g · 칼슘 ${ca}mg · 철분 ${fe}mg</div>
+  </div>`;
 }
 
 function mealCard(d,exam=false){
@@ -499,13 +573,14 @@ function renderApp(){
       grid+=mealCard(d,!!d.exam);
     });
 
-    html+=`<section class="week-panel${wi===0?' active':''}" id="week-${wi}">
-      <div class="week-title-bar"><h2>${wk.title}</h2><span class="date-range">${wk.range}</span></div>
-      <div class="day-headers">
+    const dayHeadersHtml = wi===0 ? `<div class="day-headers">
         <div class="day-header">월요일</div><div class="day-header">화요일</div>
         <div class="day-header">수요일</div><div class="day-header">목요일</div>
         <div class="day-header">금요일</div>
-      </div>
+      </div>` : '';
+
+    html+=`<section class="week-panel" id="week-${wi}">
+      ${dayHeadersHtml}
       <div class="day-grid">${grid}</div>
     </section>`;
   });
@@ -517,11 +592,6 @@ function renderApp(){
   html+=`<div class="legend"><div class="legend-title">🔍 알레르기 유발식품</div><div class="legend-grid">${lgItems}</div></div>`;
 
   app.innerHTML=html;
-}
-
-function showWeek(idx){
-  document.querySelectorAll('.week-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
-  document.querySelectorAll('.week-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
 }
 
 renderApp();
