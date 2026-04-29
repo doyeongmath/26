@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -28,144 +27,140 @@
     gap: 20px;
   }
 
-/* 헤더 */
-header { text-align: center; margin-bottom: 8px; }
-.eyebrow {
-font-size: 12px; font-weight: 600; letter-spacing: 2px;
-color: var(–blue); text-transform: uppercase; margin-bottom: 10px;
-}
-h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
-.sub { font-size: 13px; color: var(–muted); margin-top: 7px; }
+  /* 헤더 */
+  header { text-align: center; margin-bottom: 8px; }
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    color: var(--blue); text-transform: uppercase; margin-bottom: 10px;
+  }
+  h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+  .sub { font-size: 13px; color: var(--muted); margin-top: 7px; }
 
-/* 공통 레이아웃 */
-.w { width: 100%; max-width: 760px; }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.full { grid-column: 1 / -1; }
+  /* 공통 레이아웃 */
+  .w { width: 100%; max-width: 760px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .full { grid-column: 1 / -1; }
 
-/* 카드 */
-.card {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 16px;
-padding: 22px 26px;
-}
-.card-label {
-font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-color: var(–muted); text-transform: uppercase; margin-bottom: 20px;
-}
+  /* 카드 */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 26px;
+  }
+  .card-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 20px;
+  }
 
-/* ── 핵심 지표 ── */
-.stats { display: grid; grid-template-columns: repeat(5, 1fr); }
-.st {
-text-align: center; padding: 6px 4px;
-border-right: 1px solid var(–border);
-}
-.st:last-child { border-right: none; }
-.st-lbl { font-size: 11px; color: var(–muted); font-weight: 500; margin-bottom: 8px; }
-.st-val { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
-.st-unit { font-size: 12px; font-weight: 400; color: var(–muted); }
-.st-sub { font-size: 11px; color: var(–muted); margin-top: 4px; }
+  /* ── 핵심 지표 ── */
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); }
+  .st {
+    text-align: center; padding: 6px 4px;
+    border-right: 1px solid var(--border);
+  }
+  .st:last-child { border-right: none; }
+  .st-lbl { font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+  .st-val { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
+  .st-unit { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .st-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-/* ── 히스토그램 ── */
-.hist-wrap { display: flex; align-items: flex-end; gap: 5px; height: 150px; }
-.hcol { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.hbwrap { width: 100%; display: flex; align-items: flex-end; height: 100px; }
-.hbar { width: 100%; border-radius: 4px 4px 0 0; min-height: 3px; }
-.hlbl { font-size: 9.5px; color: var(–muted); font-weight: 500; white-space: nowrap; }
-.hcnt { font-size: 11px; font-weight: 700; color: var(–text); line-height: 1; }
+  /* ── 히스토그램 ── */
+  .hist-wrap { display: flex; align-items: flex-end; gap: 5px; height: 150px; }
+  .hcol { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .hbwrap { width: 100%; display: flex; align-items: flex-end; height: 100px; }
+  .hbar { width: 100%; border-radius: 4px 4px 0 0; min-height: 3px; }
+  .hlbl { font-size: 9.5px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+  .hcnt { font-size: 11px; font-weight: 700; color: var(--text); line-height: 1; }
 
-/* ── 집단 분포 ── */
-.groups { display: flex; flex-direction: column; gap: 16px; }
-.gitem { display: grid; grid-template-columns: 72px 1fr 48px 36px; align-items: center; gap: 10px; }
-.glbl-wrap { display: flex; flex-direction: column; gap: 2px; }
-.glbl { font-size: 13px; font-weight: 700; }
-.grange { font-size: 10px; color: var(–muted); }
-.gbar-bg { background: #f1f3f6; border-radius: 99px; height: 9px; overflow: hidden; }
-.gbar { height: 100%; border-radius: 99px; }
-.gpct { font-size: 13px; font-weight: 700; text-align: right; }
-.gcnt { font-size: 11px; color: var(–muted); }
+  /* ── 집단 분포 ── */
+  .groups { display: flex; flex-direction: column; gap: 16px; }
+  .gitem { display: grid; grid-template-columns: 72px 1fr 48px 36px; align-items: center; gap: 10px; }
+  .glbl-wrap { display: flex; flex-direction: column; gap: 2px; }
+  .glbl { font-size: 13px; font-weight: 700; }
+  .grange { font-size: 10px; color: var(--muted); }
+  .gbar-bg { background: #f1f3f6; border-radius: 99px; height: 9px; overflow: hidden; }
+  .gbar { height: 100%; border-radius: 99px; }
+  .gpct { font-size: 13px; font-weight: 700; text-align: right; }
+  .gcnt { font-size: 11px; color: var(--muted); }
 
-/* ── 분포 특성 ── */
-.insights { display: flex; flex-direction: column; gap: 14px; }
-.ins { display: flex; gap: 11px; align-items: flex-start; }
-.ins-dot {
-width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 7px;
-}
-.ins-body { font-size: 13px; line-height: 1.75; color: #374151; }
-.ins-body strong { color: var(–text); font-weight: 700; }
+  /* ── 분포 특성 ── */
+  .insights { display: flex; flex-direction: column; gap: 14px; }
+  .ins { display: flex; gap: 11px; align-items: flex-start; }
+  .ins-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 7px;
+  }
+  .ins-body { font-size: 13px; line-height: 1.75; color: #374151; }
+  .ins-body strong { color: var(--text); font-weight: 700; }
 
-/* ── 성취도 그리드 ── */
-.seongchwido-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 28px;
-align-items: start;
-}
-@media (max-width: 580px) {
-.seongchwido-grid {
-grid-template-columns: 1fr !important;
-gap: 20px !important;
-}
-}
-.summary {
-background: var(–blue-lt);
-border: 1px solid #bfdbfe;
-border-radius: 10px;
-padding: 18px 22px;
-font-size: 13.5px;
-line-height: 2;
-color: #1d4ed8;
-}
-.summary strong { font-weight: 700; }
+  /* ── 성취도 그리드 ── */
+  .seongchwido-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 580px) {
+    .seongchwido-grid {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+  }
+  .summary {
+    background: var(--blue-lt);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 18px 22px;
+    font-size: 13.5px;
+    line-height: 2;
+    color: #1d4ed8;
+  }
+  .summary strong { font-weight: 700; }
 
-footer {
-font-size: 11px; color: #c0c4cc; text-align: center; margin-top: 4px; line-height: 1.8;
-}
+  footer {
+    font-size: 11px; color: #c0c4cc; text-align: center; margin-top: 4px; line-height: 1.8;
+  }
 
-@media (max-width: 580px) {
-body { padding: 36px 16px 60px; gap: 14px; }
-h1 { font-size: 22px; }
-.eyebrow { font-size: 11px; letter-spacing: 1px; }
+  @media (max-width: 580px) {
+    body { padding: 36px 16px 60px; gap: 14px; }
+    h1 { font-size: 22px; }
+    .eyebrow { font-size: 11px; letter-spacing: 1px; }
 
-```
-/* 카드 */
-.card { padding: 18px 16px; }
+    /* 카드 */
+    .card { padding: 18px 16px; }
 
-/* 핵심 지표: 2×2 */
-.grid2 { grid-template-columns: 1fr; }
-.stats { grid-template-columns: repeat(2, 1fr) !important; row-gap: 16px; }
-.st { border-right: none !important; padding-bottom: 0; }
-.st:nth-child(odd) { border-right: 1px solid var(--border) !important; }
-.st-val { font-size: 22px; }
+    /* 핵심 지표: 2×2 */
+    .grid2 { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr) !important; row-gap: 16px; }
+    .st { border-right: none !important; padding-bottom: 0; }
+    .st:nth-child(odd) { border-right: 1px solid var(--border) !important; }
+    .st-val { font-size: 22px; }
 
-/* 히스토그램 */
-.hist-wrap { height: 120px; gap: 3px; }
-.hbwrap { height: 80px; }
-.hcnt { font-size: 9px; }
-.hlbl { font-size: 8px; }
+    /* 히스토그램 */
+    .hist-wrap { height: 120px; gap: 3px; }
+    .hbwrap { height: 80px; }
+    .hcnt { font-size: 9px; }
+    .hlbl { font-size: 8px; }
 
-/* 집단 분포 */
-.gitem { grid-template-columns: 64px 1fr 44px 32px; gap: 7px; }
-.glbl { font-size: 12px; }
-.gpct { font-size: 12px; }
-.gcnt { font-size: 10px; }
+    /* 집단 분포 */
+    .gitem { grid-template-columns: 64px 1fr 44px 32px; gap: 7px; }
+    .glbl { font-size: 12px; }
+    .gpct { font-size: 12px; }
+    .gcnt { font-size: 10px; }
 
-/* 분포 특성 */
-.ins-body { font-size: 12px; }
+    /* 분포 특성 */
+    .ins-body { font-size: 12px; }
 
-/* 성취도 섹션: 세로로 쌓기 */
-.seongchwido-grid { display: flex !important; flex-direction: column !important; gap: 20px !important; }
+    /* 성취도 섹션: 세로로 쌓기 */
+    .seongchwido-grid { display: flex !important; flex-direction: column !important; gap: 20px !important; }
 
-/* 종합 해석 */
-.summary { font-size: 13px; padding: 14px 16px; line-height: 1.85; }
+    /* 종합 해석 */
+    .summary { font-size: 13px; padding: 14px 16px; line-height: 1.85; }
 
-/* footer */
-footer { font-size: 10px; }
-```
-
-}
+    /* footer */
+    footer { font-size: 10px; }
+  }
 </style>
-
 </head>
 <body>
 
@@ -176,7 +171,6 @@ footer { font-size: 10px; }
 </header>
 
 <!-- 핵심 지표 -->
-
 <div class="w">
 <div class="card">
   <div class="card-label">핵심 지표</div>
@@ -204,9 +198,7 @@ footer { font-size: 10px; }
 <div class="w grid2">
 
   <!-- 점수 분포 히스토그램 -->
-
   <!-- 구간별: 36,54,46,39,33,18,30,19,16,4 / max=54 → 100px 기준 -->
-
   <div class="card full">
     <div class="card-label">점수 분포 (10점 구간)</div>
     <div class="hist-wrap">
@@ -264,61 +256,55 @@ footer { font-size: 10px; }
   </div>
 
   <!-- 집단별 분포 -->
-
   <!-- 바 너비: 각 % / 46.1(max) × 85% -->
-
   <div class="card">
     <div class="card-label">수준별 집단 분포</div>
     <div class="groups">
 
-```
-  <div class="gitem">
-    <div class="glbl-wrap">
-      <div class="glbl" style="color:#2563eb;">상위권</div>
-      <div class="grange">70점 이상</div>
+      <div class="gitem">
+        <div class="glbl-wrap">
+          <div class="glbl" style="color:#2563eb;">상위권</div>
+          <div class="grange">70점 이상</div>
+        </div>
+        <div class="gbar-bg"><div class="gbar" style="width:24%;background:#2563eb;"></div></div>
+        <div class="gpct" style="color:#2563eb;">13.2%</div>
+        <div class="gcnt">39명</div>
+      </div>
+
+      <div class="gitem">
+        <div class="glbl-wrap">
+          <div class="glbl" style="color:#16a34a;">중상위권</div>
+          <div class="grange">50~69점</div>
+        </div>
+        <div class="gbar-bg"><div class="gbar" style="width:30%;background:#16a34a;"></div></div>
+        <div class="gpct" style="color:#16a34a;">16.3%</div>
+        <div class="gcnt">48명</div>
+      </div>
+
+      <div class="gitem">
+        <div class="glbl-wrap">
+          <div class="glbl" style="color:#d97706;">중하위권</div>
+          <div class="grange">30~49점</div>
+        </div>
+        <div class="gbar-bg"><div class="gbar" style="width:45%;background:#d97706;"></div></div>
+        <div class="gpct" style="color:#d97706;">24.4%</div>
+        <div class="gcnt">72명</div>
+      </div>
+
+      <div class="gitem">
+        <div class="glbl-wrap">
+          <div class="glbl" style="color:#dc2626;">하위권</div>
+          <div class="grange">30점 미만</div>
+        </div>
+        <div class="gbar-bg"><div class="gbar" style="width:85%;background:#dc2626;"></div></div>
+        <div class="gpct" style="color:#dc2626;">46.1%</div>
+        <div class="gcnt">136명</div>
+      </div>
+
     </div>
-    <div class="gbar-bg"><div class="gbar" style="width:24%;background:#2563eb;"></div></div>
-    <div class="gpct" style="color:#2563eb;">13.2%</div>
-    <div class="gcnt">39명</div>
-  </div>
-
-  <div class="gitem">
-    <div class="glbl-wrap">
-      <div class="glbl" style="color:#16a34a;">중상위권</div>
-      <div class="grange">50~69점</div>
-    </div>
-    <div class="gbar-bg"><div class="gbar" style="width:30%;background:#16a34a;"></div></div>
-    <div class="gpct" style="color:#16a34a;">16.3%</div>
-    <div class="gcnt">48명</div>
-  </div>
-
-  <div class="gitem">
-    <div class="glbl-wrap">
-      <div class="glbl" style="color:#d97706;">중하위권</div>
-      <div class="grange">30~49점</div>
-    </div>
-    <div class="gbar-bg"><div class="gbar" style="width:45%;background:#d97706;"></div></div>
-    <div class="gpct" style="color:#d97706;">24.4%</div>
-    <div class="gcnt">72명</div>
-  </div>
-
-  <div class="gitem">
-    <div class="glbl-wrap">
-      <div class="glbl" style="color:#dc2626;">하위권</div>
-      <div class="grange">30점 미만</div>
-    </div>
-    <div class="gbar-bg"><div class="gbar" style="width:85%;background:#dc2626;"></div></div>
-    <div class="gpct" style="color:#dc2626;">46.1%</div>
-    <div class="gcnt">136명</div>
-  </div>
-
-</div>
-```
-
   </div>
 
   <!-- 분포 특성 -->
-
   <div class="card">
     <div class="card-label">분포 특성</div>
     <div class="insights">
@@ -354,104 +340,99 @@ footer { font-size: 10px; }
   </div>
 
   <!-- 성취도 (절대평가) -->
-
   <div class="card full">
     <div class="card-label">성취도 분포 (절대평가)</div>
     <div class="seongchwido-grid">
 
-```
-  <!-- 컷트라인 -->
-  <div>
-    <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:14px;">등급별 컷트라인</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#fef9c3;border-radius:9px;">
-        <span style="font-size:14px;font-weight:700;color:#92400e;white-space:nowrap;">A등급</span>
-        <span style="font-size:12px;color:#92400e;white-space:nowrap;">63.08점 이상</span>
+      <!-- 컷트라인 -->
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:14px;">등급별 컷트라인</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#fef9c3;border-radius:9px;">
+            <span style="font-size:14px;font-weight:700;color:#92400e;white-space:nowrap;">A등급</span>
+            <span style="font-size:12px;color:#92400e;white-space:nowrap;">63.08점 이상</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#dbeafe;border-radius:9px;">
+            <span style="font-size:14px;font-weight:700;color:#1e40af;white-space:nowrap;">B등급</span>
+            <span style="font-size:12px;color:#1e40af;white-space:nowrap;">49.93점 이상</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
+            <span style="font-size:14px;font-weight:700;color:#475569;white-space:nowrap;">C등급</span>
+            <span style="font-size:12px;color:#475569;white-space:nowrap;">34.95점 이상</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
+            <span style="font-size:14px;font-weight:700;color:#94a3b8;white-space:nowrap;">D등급</span>
+            <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">17.98점 이상</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
+            <span style="font-size:14px;font-weight:700;color:#64748b;white-space:nowrap;">E등급</span>
+            <span style="font-size:12px;color:#64748b;white-space:nowrap;">17.98점 미만</span>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#dbeafe;border-radius:9px;">
-        <span style="font-size:14px;font-weight:700;color:#1e40af;white-space:nowrap;">B등급</span>
-        <span style="font-size:12px;color:#1e40af;white-space:nowrap;">49.93점 이상</span>
+
+      <!-- 비율 바 -->
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:14px;">성취도 비율</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:13px;font-weight:700;color:#92400e;">A등급</span>
+              <span style="font-size:13px;font-weight:700;color:#92400e;">20.7% <span style="font-weight:400;font-size:11px;color:var(--muted);">61명</span></span>
+            </div>
+            <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
+              <div style="width:61%;height:100%;background:#fbbf24;border-radius:99px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:13px;font-weight:700;color:#1e40af;">B등급</span>
+              <span style="font-size:13px;font-weight:700;color:#1e40af;">8.8% <span style="font-weight:400;font-size:11px;color:var(--muted);">26명</span></span>
+            </div>
+            <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
+              <div style="width:26%;height:100%;background:#60a5fa;border-radius:99px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:13px;font-weight:700;color:#475569;">C등급</span>
+              <span style="font-size:13px;font-weight:700;color:#475569;">17.6% <span style="font-weight:400;font-size:11px;color:var(--muted);">52명</span></span>
+            </div>
+            <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
+              <div style="width:52%;height:100%;background:#94a3b8;border-radius:99px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:13px;font-weight:700;color:#94a3b8;">D등급</span>
+              <span style="font-size:13px;font-weight:700;color:#94a3b8;">26.1% <span style="font-weight:400;font-size:11px;color:var(--muted);">77명</span></span>
+            </div>
+            <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
+              <div style="width:77%;height:100%;background:#cbd5e1;border-radius:99px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:13px;font-weight:700;color:#64748b;">E등급</span>
+              <span style="font-size:13px;font-weight:700;color:#cbd5e1;">26.8% <span style="font-weight:400;font-size:11px;color:var(--muted);">79명</span></span>
+            </div>
+            <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
+              <div style="width:79%;height:100%;background:#94a3b8;border-radius:99px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 주목 포인트 -->
+        <div style="margin-top:20px;padding:12px 14px;background:#fef2f2;border-radius:9px;border-left:3px solid #f87171;">
+          <div style="font-size:12px;font-weight:700;color:#b91c1c;margin-bottom:4px;">⚠ D+E 합산 52.9%</div>
+          <div style="font-size:12px;color:#7f1d1d;line-height:1.6;">절반 이상이 기초 학력(17.98점) 미달 구간 — B등급(8.8%)이 유독 얇은 것은 히스토그램의 50대 구간 공동화와 일치</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
-        <span style="font-size:14px;font-weight:700;color:#475569;white-space:nowrap;">C등급</span>
-        <span style="font-size:12px;color:#475569;white-space:nowrap;">34.95점 이상</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
-        <span style="font-size:14px;font-weight:700;color:#94a3b8;white-space:nowrap;">D등급</span>
-        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">17.98점 이상</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
-        <span style="font-size:14px;font-weight:700;color:#64748b;white-space:nowrap;">E등급</span>
-        <span style="font-size:12px;color:#64748b;white-space:nowrap;">17.98점 미만</span>
-      </div>
+
     </div>
-  </div>
-
-  <!-- 비율 바 -->
-  <div>
-    <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:14px;">성취도 비율</div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:13px;font-weight:700;color:#92400e;">A등급</span>
-          <span style="font-size:13px;font-weight:700;color:#92400e;">20.7% <span style="font-weight:400;font-size:11px;color:var(--muted);">61명</span></span>
-        </div>
-        <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
-          <div style="width:61%;height:100%;background:#fbbf24;border-radius:99px;"></div>
-        </div>
-      </div>
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:13px;font-weight:700;color:#1e40af;">B등급</span>
-          <span style="font-size:13px;font-weight:700;color:#1e40af;">8.8% <span style="font-weight:400;font-size:11px;color:var(--muted);">26명</span></span>
-        </div>
-        <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
-          <div style="width:26%;height:100%;background:#60a5fa;border-radius:99px;"></div>
-        </div>
-      </div>
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:13px;font-weight:700;color:#475569;">C등급</span>
-          <span style="font-size:13px;font-weight:700;color:#475569;">17.6% <span style="font-weight:400;font-size:11px;color:var(--muted);">52명</span></span>
-        </div>
-        <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
-          <div style="width:52%;height:100%;background:#94a3b8;border-radius:99px;"></div>
-        </div>
-      </div>
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:13px;font-weight:700;color:#94a3b8;">D등급</span>
-          <span style="font-size:13px;font-weight:700;color:#94a3b8;">26.1% <span style="font-weight:400;font-size:11px;color:var(--muted);">77명</span></span>
-        </div>
-        <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
-          <div style="width:77%;height:100%;background:#cbd5e1;border-radius:99px;"></div>
-        </div>
-      </div>
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:13px;font-weight:700;color:#64748b;">E등급</span>
-          <span style="font-size:13px;font-weight:700;color:#cbd5e1;">26.8% <span style="font-weight:400;font-size:11px;color:var(--muted);">79명</span></span>
-        </div>
-        <div style="background:#f1f3f6;border-radius:99px;height:9px;overflow:hidden;">
-          <div style="width:79%;height:100%;background:#94a3b8;border-radius:99px;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 주목 포인트 -->
-    <div style="margin-top:20px;padding:12px 14px;background:#fef2f2;border-radius:9px;border-left:3px solid #f87171;">
-      <div style="font-size:12px;font-weight:700;color:#b91c1c;margin-bottom:4px;">⚠ D+E 합산 52.9%</div>
-      <div style="font-size:12px;color:#7f1d1d;line-height:1.6;">절반 이상이 기초 학력(17.98점) 미달 구간 — B등급(8.8%)이 유독 얇은 것은 히스토그램의 50대 구간 공동화와 일치</div>
-    </div>
-  </div>
-
-</div>
-```
-
   </div>
 
   <!-- 종합 해석 -->
-
   <div class="card full">
     <div class="card-label">종합 해석</div>
     <div class="summary">
