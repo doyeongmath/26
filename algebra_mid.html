@@ -111,11 +111,46 @@ font-size: 11px; color: #c0c4cc; text-align: center; margin-top: 4px; line-heigh
 }
 
 @media (max-width: 580px) {
+body { padding: 36px 16px 60px; gap: 14px; }
+h1 { font-size: 22px; }
+.eyebrow { font-size: 11px; letter-spacing: 1px; }
+
+```
+/* 카드 */
+.card { padding: 18px 16px; }
+
+/* 핵심 지표: 2×2 */
 .grid2 { grid-template-columns: 1fr; }
-.stats { grid-template-columns: repeat(3, 1fr); row-gap: 14px; }
-.st { border-right: none; border-bottom: 1px solid var(–border); padding-bottom: 12px; }
-.st:nth-child(3n) { border-bottom: none; }
-.st:last-child { border-bottom: none; }
+.stats { grid-template-columns: repeat(2, 1fr) !important; row-gap: 16px; }
+.st { border-right: none !important; padding-bottom: 0; }
+.st:nth-child(odd) { border-right: 1px solid var(--border) !important; }
+.st-val { font-size: 22px; }
+
+/* 히스토그램 */
+.hist-wrap { height: 120px; gap: 3px; }
+.hbwrap { height: 80px; }
+.hcnt { font-size: 9px; }
+.hlbl { font-size: 8px; }
+
+/* 집단 분포 */
+.gitem { grid-template-columns: 64px 1fr 44px 32px; gap: 7px; }
+.glbl { font-size: 12px; }
+.gpct { font-size: 12px; }
+.gcnt { font-size: 10px; }
+
+/* 분포 특성 */
+.ins-body { font-size: 12px; }
+
+/* 성취도 섹션: 세로로 쌓기 */
+.seongchwido-grid { display: flex !important; flex-direction: column !important; gap: 20px !important; }
+
+/* 종합 해석 */
+.summary { font-size: 13px; padding: 14px 16px; line-height: 1.85; }
+
+/* footer */
+footer { font-size: 10px; }
+```
+
 }
 </style>
 
@@ -310,7 +345,7 @@ font-size: 11px; color: #c0c4cc; text-align: center; margin-top: 4px; line-heigh
 
   <div class="card full">
     <div class="card-label">성취도 분포 (절대평가)</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
+    <div class="seongchwido-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
 
 ```
   <!-- 컷트라인 -->
@@ -333,9 +368,9 @@ font-size: 11px; color: #c0c4cc; text-align: center; margin-top: 4px; line-heigh
         <span style="font-size:14px;font-weight:700;color:#94a3b8;">D등급</span>
         <span style="font-size:11px;color:#94a3b8;">17.98점 이상</span>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#f8fafc;border-radius:9px;">
-        <span style="font-size:14px;font-weight:700;color:#cbd5e1;">E등급</span>
-        <span style="font-size:11px;color:#cbd5e1;">17.98점 미만</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#f1f5f9;border-radius:9px;">
+        <span style="font-size:14px;font-weight:700;color:#64748b;">E등급</span>
+        <span style="font-size:11px;color:#64748b;">17.98점 미만</span>
       </div>
     </div>
   </div>
