@@ -94,7 +94,19 @@ width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 7px;
 .ins-body { font-size: 13px; line-height: 1.75; color: #374151; }
 .ins-body strong { color: var(–text); font-weight: 700; }
 
-/* ── 종합 해석 ── */
+/* ── 성취도 그리드 ── */
+.seongchwido-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 28px;
+align-items: start;
+}
+@media (max-width: 580px) {
+.seongchwido-grid {
+grid-template-columns: 1fr !important;
+gap: 20px !important;
+}
+}
 .summary {
 background: var(–blue-lt);
 border: 1px solid #bfdbfe;
@@ -345,7 +357,7 @@ footer { font-size: 10px; }
 
   <div class="card full">
     <div class="card-label">성취도 분포 (절대평가)</div>
-    <div class="seongchwido-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
+    <div class="seongchwido-grid">
 
 ```
   <!-- 컷트라인 -->
