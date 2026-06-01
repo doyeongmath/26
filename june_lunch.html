@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>6월 급식표 — 풍문고등학교</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a3d2b; --green-mid: #2d6a4f; --green-light: #52b788; --green-pale: #d8f3dc;
+    --amber: #f4a261; --amber-dark: #e76f51; --cream: #fdf8f0; --card-bg: #ffffff;
+    --text-main: #1a1a1a; --text-sub: #555; --text-muted: #bbb;
+    --border: #e8e4dc; --shadow: 0 2px 12px rgba(0,0,0,0.07); --shadow-hover: 0 8px 32px rgba(0,0,0,0.13);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--cream); color: var(--text-main); min-height: 100vh; -webkit-text-size-adjust: 100%; }
+
+  /* ── 헤더 ── */
+  .site-header { background: var(--green-deep); color: #fff; padding: clamp(16px,4vw,28px) clamp(16px,4vw,32px) clamp(14px,3vw,22px); position: relative; overflow: hidden; }
+  .site-header::before { content: ''; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(82,183,136,0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+  .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+  .header-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--green-light); font-weight: 500; margin-bottom: 4px; }
+  .header-title { font-size: clamp(22px,6vw,30px); font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; }
+  .header-title span { color: var(--amber); }
+  .header-sub { font-size: clamp(11px,2.8vw,12px); color: rgba(255,255,255,0.45); margin-top: 4px; font-weight: 300; }
+
+  /* ── 인쇄 바 ── */
+  .print-bar { background: var(--green-deep); border-top: 1px solid rgba(255,255,255,0.08); padding: 10px clamp(12px,3vw,24px); }
+  .print-bar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .print-bar-info { font-size: 12px; color: rgba(255,255,255,0.55); font-weight: 300; }
+  .btn-print { background: var(--amber); color: #fff; border: none; border-radius: 8px; padding: 8px 20px; font-size: 13px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .btn-print:hover { background: var(--amber-dark); }
+
+  /* ── 본문 ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: clamp(16px,4vw,28px) clamp(12px,3vw,28px) 60px; }
+
+  /* ════ 오늘의 급식 카드 ════ */
+  .today-section { margin-bottom: 32px; }
+  .today-outer {
+    background: var(--card-bg); border: 2px solid var(--green-mid);
+    border-radius: 20px; padding: 20px 22px; box-shadow: 0 4px 20px rgba(44,106,79,0.12);
+  }
+  .today-pill {
+    display: inline-block; background: var(--amber); color: #fff;
+    padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .today-date-row {
+    font-size: clamp(18px,4.5vw,22px); font-weight: 900; color: var(--green-deep);
+    margin-bottom: 14px; line-height: 1.2;
+  }
+  .today-date-row span { font-size: clamp(13px,3vw,15px); color: var(--text-muted); font-weight: 400; margin-left: 8px; }
+  .today-tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+  .today-tile {
+    background: var(--green-pale); color: var(--green-deep);
+    padding: 7px 14px; border-radius: 20px;
+    font-size: clamp(12px,3vw,14px); font-weight: 500; line-height: 1.3;
+  }
+  .today-tile.is-main {
+    background: #fff3e8; color: #c2410c; font-weight: 700;
+    border: 1.5px solid #fed7aa;
+  }
+  .today-tile.is-dessert {
+    background: #fff8ef; color: var(--amber-dark); font-weight: 600;
+    border: 1.5px solid #fde68a;
+  }
+  .today-tile.is-rice { background: #f0fdf4; color: #166534; }
+  .today-no-data { text-align: center; color: var(--text-muted); font-size: 14px; padding: 20px 0; }
+  .today-special { font-size: 18px; font-weight: 700; color: #e67e22; padding: 10px 0; }
+
+  /* ── 전체 급식표 ── */
+  .week-panel { display: block; }
+  .week-panel + .week-panel { margin-top: 10px; }
+  .week-title { font-size: clamp(13px,3vw,15px); font-weight: 700; color: var(--green-mid); border-left: 4px solid var(--green-light); padding-left: 10px; margin-bottom: 8px; }
+
+  /* ── 그리드 ── */
+  .day-headers { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 6px; }
+  .day-header { text-align: center; padding: 6px 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--green-mid); border-bottom: 2px solid var(--green-pale); }
+  .day-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+
+  /* ── 카드 ── */
+  .meal-card, .exam-card { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s; display: flex; flex-direction: column; }
+  .meal-card:hover, .exam-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .card-date-bar { background: linear-gradient(135deg, var(--green-mid), var(--green-light)); color: #fff; padding: clamp(7px,2vw,10px) clamp(10px,2.5vw,14px) clamp(6px,1.5vw,8px); display: flex; align-items: baseline; gap: 5px; flex-shrink: 0; }
+  .exam-card .card-date-bar { background: linear-gradient(135deg,#c2410c,#f97316); }
+  .special-card .card-date-bar { background: linear-gradient(135deg,#15803d,#4ade80); }
+  .card-date-num { font-size: clamp(18px,4.5vw,22px); font-weight: 900; line-height: 1; }
+  .card-date-day { font-size: clamp(10px,2.5vw,11px); font-weight: 500; opacity: 0.85; }
+  .card-badge { margin-left: auto; background: rgba(255,255,255,0.22); border-radius: 5px; padding: 2px 6px; font-size: clamp(9px,2vw,10px); font-weight: 700; white-space: nowrap; }
+  .card-body { padding: clamp(8px,2vw,11px) clamp(10px,2.5vw,14px); flex: 1; }
+
+  /* ── 오늘 카드 강조 ── */
+  .meal-card.today, .exam-card.today { border: 2.5px solid var(--amber); box-shadow: 0 0 0 3px rgba(244,162,97,0.18), var(--shadow-hover); }
+  .meal-card.today .card-date-bar, .exam-card.today .card-date-bar { background: linear-gradient(135deg,#b45309,var(--amber)); }
+  .today-badge { margin-left: auto; background: rgba(255,255,255,0.9); color: #b45309; border-radius: 5px; padding: 2px 7px; font-size: 9px; font-weight: 800; white-space: nowrap; letter-spacing: 0.5px; }
+
+  /* ── 메뉴 아이템 ── */
+  .meal-item { padding: 4px 0 3px; border-bottom: 1px solid #f3f0ea; display: flex; flex-direction: column; gap: 1px; }
+  .meal-item:last-child { border-bottom: none; }
+  .meal-row { display: flex; align-items: center; gap: 4px; }
+  .meal-name { font-size: clamp(11.5px,2.7vw,12.5px); color: var(--text-sub); font-weight: 400; line-height: 1.4; flex: 1; }
+  .meal-name.rice { color: #777; font-weight: 500; }
+  .meal-item.main-dish { background: #fffbf5; margin: 2px -14px; padding: 5px 14px 4px; border-bottom: 1px solid #f3ede0; }
+  .meal-item.main-dish .meal-name { font-size: clamp(12.5px,3vw,13.5px); color: #c2410c; font-weight: 700; }
+  .meal-item.dessert-item { background: #fff8ef; margin: 2px -14px 0; padding: 4px 14px; border-bottom: none; }
+  .meal-name.dessert { color: var(--amber-dark); font-weight: 600; }
+  .al-line { font-size: 9px; color: var(--text-muted); letter-spacing: 0.2px; margin-left: auto; padding-left: 4px; flex-shrink: 0; white-space: nowrap; }
+
+  /* ── 영양 바 ── */
+  .nutrition-print { display: none; }
+  .nutrition-bar { background: #fafaf8; border-top: 1px solid var(--border); padding: clamp(5px,1.2vw,7px) clamp(10px,2.5vw,14px); }
+  .nutrition-rows { display: flex; flex-direction: column; gap: 2px; }
+  .nutrition-item { display: flex; align-items: center; gap: 4px; }
+  .nutrition-name { font-size: 9px; color: var(--text-muted); width: 30px; flex-shrink: 0; }
+  .nutrition-track { flex: 1; height: 3px; background: #ece8e0; border-radius: 2px; overflow: hidden; min-width: 0; }
+  .nutrition-fill { height: 100%; border-radius: 2px; }
+  .fill-kcal { background: var(--amber); } .fill-protein { background: var(--green-light); }
+  .fill-calcium { background: #74b3ce; } .fill-iron { background: var(--amber-dark); }
+  .nutrition-val { font-size: 9px; font-weight: 700; color: var(--text-sub); width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* ── 특수/빈 카드 ── */
+  .special-card { background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .special-body { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: clamp(14px,4vw,20px); gap: 5px; }
+  .special-icon { font-size: clamp(20px,5vw,26px); }
+  .special-text { font-size: clamp(11px,2.8vw,12px); font-weight: 700; color: #16a34a; text-align: center; }
+  .empty-card { background: #fafafa; border: 1.5px dashed #e0ddd6; border-radius: 14px; min-height: 100px; display: flex; align-items: center; justify-content: center; color: #ddd; font-size: 18px; }
+
+  /* ── 알레르기 범례 ── */
+  .legend { margin-top: 28px; background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 14px; padding: clamp(14px,3.5vw,18px); }
+  .legend-title { font-size: 11px; font-weight: 700; color: var(--green-mid); margin-bottom: 10px; letter-spacing: 0.5px; }
+  .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 4px 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--text-sub); }
+  .legend-num { font-weight: 700; color: var(--text-muted); width: 18px; flex-shrink: 0; font-size: 10px; }
+
+  /* ── 모바일 ≤479px ── */
+  @media (max-width: 479px) {
+    .print-bar-info { display: none; }
+    .day-headers { display: none; }
+    .day-grid { grid-template-columns: 1fr; gap: 8px; }
+    .meal-card, .exam-card { flex-direction: row; border-radius: 12px; }
+    .card-date-bar { flex-direction: column; align-items: center; justify-content: flex-start; width: 50px; flex-shrink: 0; padding: 10px 5px 8px; gap: 2px; }
+    .card-date-num { font-size: 18px; } .card-date-day { font-size: 9px; }
+    .card-badge, .today-badge { margin-left: 0; margin-top: 3px; text-align: center; }
+    .card-right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .card-body { padding: 8px 10px; }
+    .meal-item.main-dish { margin: 2px -10px; padding: 5px 10px 4px; }
+    .meal-item.dessert-item { margin: 2px -10px 0; padding: 4px 10px; }
+    .special-card { flex-direction: row; }
+    .special-card .card-date-bar { flex-direction: column; align-items: center; width: 50px; flex-shrink: 0; padding: 10px 5px 8px; }
+    .special-body { flex: 1; flex-direction: row; justify-content: flex-start; padding: 12px 14px; gap: 10px; }
+    .special-text { font-size: 11px; text-align: left; }
+    .empty-card { min-height: 52px; border-radius: 12px; }
+    .legend-grid { grid-template-columns: repeat(2,1fr); }
+    .today-tiles { gap: 6px; }
+    .today-tile { padding: 6px 11px; font-size: 13px; }
+  }
+  @media (min-width: 480px) and (max-width: 700px) {
+    .day-headers { display: none; }
+    .day-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .card-right { display: contents; }
+  }
+  @media (min-width: 701px) { .card-right { display: contents; } }
+
+  /* ── 인쇄 ── */
+  @media print {
+    @page { margin: 6mm 7mm; size: A4 landscape; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff !important; }
+    .print-bar, .today-section { display: none !important; }
+    .nutrition-rows { display: none !important; }
+    .dessert-emoji { display: none !important; }
+    .legend { margin-top: 4px !important; padding: 3px 6px !important; border-radius: 4px !important; border-width: 1px !important; background: #fafaf8 !important; }
+    .legend-title { font-size: 6.5px !important; margin-bottom: 3px !important; }
+    .legend-grid { grid-template-columns: repeat(10, 1fr) !important; gap: 1px 6px !important; }
+    .legend-item { font-size: 6px !important; gap: 2px !important; }
+    .legend-num { font-size: 6px !important; width: 12px !important; }
+    .nutrition-bar { padding: 1px 4px !important; }
+    .nutrition-print { display: block !important; font-size: 6px !important; color: #888 !important; padding: 0 !important; line-height: 1.2 !important; }
+    .al-line { font-size: 6px !important; color: #aaa !important; }
+    .site-header { padding: 3px 10px !important; }
+    .site-header::before { display: none; }
+    .header-label, .header-sub { display: none !important; }
+    .header-title { font-size: 11px !important; line-height: 1 !important; }
+    .main { padding: 4px 0 0 !important; }
+    .week-panel + .week-panel { margin-top: 2px !important; }
+    .week-title { font-size: 7px !important; padding-left: 6px !important; margin-bottom: 3px !important; border-left-width: 2px !important; }
+    .day-headers { gap: 2px !important; margin-bottom: 2px !important; display: grid !important; }
+    .day-header { font-size: 7px !important; padding: 2px !important; }
+    .day-grid { gap: 2px !important; }
+    .meal-card, .exam-card, .special-card { box-shadow: none !important; transform: none !important; border-radius: 4px !important; border-width: 1px !important; }
+    .meal-card.today, .exam-card.today { border-color: var(--border) !important; box-shadow: none !important; }
+    .empty-card { min-height: 20px !important; border-radius: 4px !important; font-size: 9px !important; }
+    .card-date-bar { padding: 2px 4px !important; flex-direction: row !important; align-items: center !important; gap: 3px !important; }
+    .card-date-num { font-size: 9px !important; }
+    .card-date-day { display: none !important; }
+    .card-badge, .today-badge { font-size: 5px !important; padding: 1px 3px !important; }
+    .card-body { padding: 2px 4px !important; }
+    .meal-item { padding: 0.5px 0 !important; border-bottom-color: #f0ece4 !important; }
+    .meal-name { font-size: 7.5px !important; line-height: 1.25 !important; }
+    .meal-item.main-dish { margin: 0 -4px !important; padding: 1px 4px !important; }
+    .meal-item.main-dish .meal-name { font-size: 8px !important; }
+    .meal-item.dessert-item { margin: 0 -4px !important; padding: 1px 4px !important; }
+    .meal-name.dessert { font-size: 7.5px !important; }
+    .special-body { padding: 4px !important; }
+    .special-icon { font-size: 11px !important; }
+    .special-text { font-size: 6.5px !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-label">Pungmun High School · 2026</div>
+    <h1 class="header-title">6월 <span>급식표</span></h1>
+    <p class="header-sub">풍문고등학교 · 중식</p>
+  </div>
+</header>
+
+<div class="print-bar">
+  <div class="print-bar-inner">
+    <span class="print-bar-info">풍문고등학교 · 2026년 6월 · 전체 급식표</span>
+    <button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>
+  </div>
+</div>
+
+<main class="main">
+  <section class="today-section" id="today-section"></section>
+  <div id="app"></div>
+</main>
+
+<script>
+const AL={1:'난류',2:'우유',3:'메밀',4:'땅콩',5:'대두',6:'밀',7:'고등어',8:'게',9:'새우',
+  10:'돼지고기',11:'복숭아',12:'토마토',13:'아황산류',14:'호두',15:'닭고기',16:'쇠고기',17:'오징어',18:'조개류',19:'잣'};
+
+const DAYS = ['일','월','화','수','목','금','토'];
+
+const WEEKS=[
+  {title:'1주차',range:'6월 1일 – 6월 5일',days:[
+    {date:1,day:'월요일',menus:[
+      {n:'오색현미밥',al:[],t:'rice'},{n:'뼈없는감자탕',al:[5,6,10]},
+      {n:'순대볶음',al:[2,5,6,10,13,16],t:'main'},{n:'애호박볶음',al:[9]},
+      {n:'동그랑땡&케찹',al:[1,2,5,6,10,12,15,16]},{n:'배추김치',al:[9]}],nut:[844,30.1,226,6.4]},
+    {date:2,day:'화요일',menus:[
+      {n:'오징어먹물빠에야',al:[1,2,5,6,8,9,17,18],t:'rice'},
+      {n:'베이컨오일파스타',al:[1,5,6,10,13],t:'main'},{n:'추가단호박스프',al:[2,5,6,13,16]},
+      {n:'체다불고기브리또',al:[1,2,5,6,10,12,13,15,16]},
+      {n:'샐러드&오미자청드레싱',al:[1,5,13,19]},{n:'모듬야채피클',al:[]}],nut:[946,31.7,263,6.0]},
+    {date:3,day:'수요일',special:1,icon:'🗳️',text:'지방선거일<br><span style="font-size:10px;font-weight:400;color:#4ade80">급식 없음</span>',badge:'선거일',specialText:'지방선거일'},
+    {date:4,day:'목요일',menus:[
+      {n:'스팸땡초주먹밥',al:[1,2,5,6,10,13,15,16,18],t:'rice'},{n:'감자튀김&케찹',al:[5,6,12]},
+      {n:'수제버거',al:[1,2,5,6,10,12,15,16],t:'main'},{n:'수제오이피클',al:[13]},
+      {n:'배추김치',al:[9]},{n:'마시는파인애플',al:[13],t:'dessert'}],nut:[772,25.3,178,3.0]},
+    {date:5,day:'금요일',menus:[
+      {n:'찰보리밥',al:[],t:'rice'},{n:'소고기미역국',al:[5,6,16]},
+      {n:'돼지갈비찜',al:[5,6,10,13],t:'main'},{n:'생깻잎지',al:[]},
+      {n:'한식잡채',al:[5,6,10,13,18]},{n:'백김치',al:[9]},
+      {n:'강릉쫀득밤',al:[1,2,5,6],t:'dessert'}],nut:[978,44.8,156,4.8]},
+  ]},
+  {title:'2주차',range:'6월 8일 – 6월 12일',days:[
+    {date:8,day:'월요일',menus:[
+      {n:'찰현미밥',al:[],t:'rice'},{n:'얼갈이된장국',al:[5,6]},
+      {n:'찜닭',al:[5,15],t:'main'},{n:'멸치볶음',al:[5,6,13]},
+      {n:'오징어김치전',al:[1,5,6]},{n:'깍두기',al:[9]},
+      {n:'허쉬드링크',al:[2],t:'dessert'}],nut:[860,28.9,505,4.3]},
+    {date:9,day:'화요일',menus:[
+      {n:'나물비빔밥&약고추장',al:[5,6,10,13],t:'rice'},{n:'들깨순두부탕',al:[5,6]},
+      {n:'모짜치즈볼',al:[1,2,5,6]},{n:'육전&파채겉절이',al:[1,5,6,10,15,18],t:'main'},
+      {n:'백김치',al:[9]},{n:'수박',al:[],t:'dessert'}],nut:[809,38.5,266,4.3]},
+    {date:10,day:'수요일',menus:[
+      {n:'추가밥',al:[],t:'rice'},{n:'열무김치말이국수',al:[1,5,6,9,13,16]},
+      {n:'남산식돈까스&소스',al:[1,2,5,6,10],t:'main'},{n:'콘샐러드',al:[1,5,13]},
+      {n:'깍두기',al:[9]},{n:'요구르트',al:[2],t:'dessert'}],nut:[959,23.0,164,3.2]},
+    {date:11,day:'목요일',menus:[
+      {n:'찰흑미밥',al:[],t:'rice'},{n:'나가사키수제비국',al:[5,6,9,13,17,18]},
+      {n:'새송이초무침',al:[5,6,13]},{n:'오리채소볶음',al:[],t:'main'},
+      {n:'감자고로케',al:[1,5,6]},{n:'배추김치',al:[9]}],nut:[959,39.9,121,2.3]},
+    {date:12,day:'금요일',menus:[
+      {n:'찰수수밥',al:[],t:'rice'},{n:'묵사발',al:[5,6,9,13,16]},
+      {n:'소보로메추리알조림',al:[1,2,5,6,13,16]},{n:'매콤닭갈비',al:[5,6,15],t:'main'},
+      {n:'숙주나물무침',al:[]},{n:'깍두기',al:[9]},
+      {n:'오레오쿠키',al:[1,2,5,6],t:'dessert'}],nut:[913,52.1,202,5.1]},
+  ]},
+  {title:'3주차',range:'6월 15일 – 6월 19일',days:[
+    {date:15,day:'월요일',menus:[
+      {n:'오징어덮밥&김가루',al:[5,6,13,17],t:'rice'},{n:'소고기무국',al:[5,6,16]},
+      {n:'겨자맛살냉채',al:[1,5,6,8,13]},{n:'갈비맛치킨',al:[15],t:'main'},
+      {n:'감자뇨끼',al:[2,5,6,10,13]},{n:'배추김치',al:[9]}],nut:[867,66.6,150,3.1]},
+    {date:16,day:'화요일',menus:[
+      {n:'찰수수밥',al:[],t:'rice'},{n:'유부김칫국',al:[5,9]},{n:'채소계란찜',al:[1]},
+      {n:'훈제삼겹&소스',al:[1,2,5,6,10],t:'main'},{n:'무쌈&부추겉절이',al:[]},{n:'파김치',al:[9]}],nut:[989,46.7,188,4.0]},
+    {date:17,day:'수요일',menus:[
+      {n:'콩나물밥&양념장',al:[5,6,16],t:'rice'},{n:'된장찌개',al:[5,6]},{n:'올방개묵무침',al:[5,6]},
+      {n:'담양버섯떡갈비',al:[5,6,10,13,15,16,18],t:'main'},{n:'가리비관자튀김',al:[1,5,6,13,18]},
+      {n:'배추김치',al:[9]},{n:'찐옥수수',al:[],t:'dessert'}],nut:[862,37.1,231,4.9]},
+    {date:18,day:'목요일',menus:[
+      {n:'찰기장밥',al:[],t:'rice'},{n:'설렁탕&소면',al:[2,5,6,10,13,15,16,18]},
+      {n:'오이깨소금무침',al:[13]},{n:'김치제육볶음',al:[5,6,9,10,13],t:'main'},
+      {n:'임실치즈고구마롤',al:[1,5,6]},{n:'석박지',al:[9]},
+      {n:'켐벨포도',al:[],t:'dessert'}],nut:[867,43.7,127,3.6]},
+    {date:19,day:'금요일',menus:[
+      {n:'찰흑미밥',al:[],t:'rice'},{n:'북어채무국',al:[5,6]},{n:'고구마순된장지짐',al:[5,6,13]},
+      {n:'닭목살구이',al:[5,15,18],t:'main'},{n:'들깨메밀전병',al:[2,3,5,6,16,18]},
+      {n:'배추김치',al:[9]},{n:'초코수리취떡',al:[],t:'dessert'}],nut:[870,36.1,144,3.6]},
+  ]},
+  {title:'4주차',range:'6월 22일 – 6월 26일 · 기말고사',days:[
+    {date:22,day:'월요일',menus:[
+      {n:'가츠동덮밥',al:[1,5,6,10,13],t:'rice'},{n:'메밀냉소바',al:[3,5,6,7,13,18]},
+      {n:'미니핫도그&케찹',al:[1,2,5,6,10,12,13,16,18],t:'main'},{n:'브로콜리숙회',al:[1,2,4,5,6,13]},
+      {n:'배추김치',al:[9]},{n:'짜먹는설빙(팥빙수맛)',al:[2,5,6],t:'dessert'}],nut:[966,31.5,316,4.5]},
+    {date:23,day:'화요일',menus:[
+      {n:'찰현미밥',al:[],t:'rice'},{n:'콩나물국',al:[5]},{n:'비름나물',al:[13]},
+      {n:'주꾸미당면볶음',al:[5,6,13],t:'main'},{n:'교자찐만두',al:[1,5,6,10,13,16,18]},
+      {n:'배추김치',al:[9]}],nut:[761,31.1,187,5.2]},
+    {date:24,day:'수요일',menus:[
+      {n:'칼슘쌀밥',al:[],t:'rice'},{n:'닭다리누룽지삼계탕',al:[15]},
+      {n:'진미채채소무침',al:[5,6,13,17]},{n:'청양소담떡갈비',al:[5,6,10,13,15,16,18],t:'main'},
+      {n:'깍두기',al:[9]},{n:'연필마카롱',al:[1,2,6],t:'dessert'}],nut:[873,45.9,200,10.5]},
+    {date:25,day:'목요일',exam:1,badge:'기말고사 1일',menus:[
+      {n:'찰보리밥',al:[],t:'rice'},{n:'아욱된장국',al:[5,6]},
+      {n:'소갈비찜',al:[5,6,16],t:'main'},{n:'상추겉절이',al:[5,6,13]},
+      {n:'새우하가우',al:[1,5,6,8,9]},{n:'배추김치',al:[9]},
+      {n:'메론',al:[],t:'dessert'}],nut:[905,36.9,180,6.4]},
+    {date:26,day:'금요일',exam:1,badge:'기말고사 2일',examOnly2:1},
+  ]},
+  {title:'5주차',range:'6월 29일 – 6월 30일 · 기말고사',days:[
+    {date:29,day:'월요일',exam:1,badge:'기말고사 3일',menus:[
+      {n:'김가루주먹밥',al:[1,2,5,6,10,15,16],t:'rice'},{n:'부추계란국',al:[1]},
+      {n:'오꼬노미야끼',al:[1,2,5,6,10,13,15,16],t:'main'},{n:'콥샐러드',al:[1,2,5,6,10,12,13]},
+      {n:'숯불바베큐치킨&우동사리',al:[5,6,12,13,15,18]},{n:'배추김치',al:[9]}],nut:[890,57.6,169,5.5]},
+    {date:30,day:'화요일',exam:1,badge:'기말고사 4일',menus:[
+      {n:'야채볶음밥',al:[5,6,13,18],t:'rice'},{n:'크림짬뽕',al:[5,6,9,13,17,18]},
+      {n:'무채장아찌무침',al:[]},{n:'꿔바로우&소스',al:[1,5,6,10],t:'main'},
+      {n:'멘보샤',al:[1,5,6,9]},{n:'배추김치',al:[9]},
+      {n:'포도주스',al:[13],t:'dessert'}],nut:[953,32.7,249,13.7]},
+    {empty:1},{empty:1},{empty:1},
+  ]},
+];
+
+/* ── 오늘 날짜 ── */
+const _now = new Date();
+const _y=_now.getFullYear(), _m=_now.getMonth(), _d=_now.getDate();
+const TODAY = (_y===2026 && _m===5) ? _d : null; // 6월(0-indexed: 5)
+
+/* ── 오늘 데이터 찾기 ── */
+function findToday(){
+  for(const wk of WEEKS){
+    for(const d of wk.days){
+      if(!d.empty && d.date===TODAY) return d;
+    }
+  }
+  return null;
+}
+
+/* ── 오늘의 급식 섹션 ── */
+function renderTodaySection(){
+  const sec = document.getElementById('today-section');
+  const now = new Date();
+  const dateStr = `2026년 6월 ${now.getDate()}일 (${DAYS[now.getDay()]})`;
+
+  if(!TODAY){
+    sec.innerHTML = `<div class="today-outer">
+      <span class="today-pill">오늘의 점심</span>
+      <div class="today-date-row">${now.getMonth()+1}월 ${now.getDate()}일 <span>급식 정보가 없습니다</span></div>
+    </div>`; return;
+  }
+
+  const d = findToday();
+  if(!d){
+    sec.innerHTML = `<div class="today-outer">
+      <span class="today-pill">오늘의 점심</span>
+      <div class="today-date-row">${dateStr} <span>급식 정보가 없습니다</span></div>
+    </div>`; return;
+  }
+
+  let tilesHtml = '';
+  if(d.special){
+    tilesHtml = `<div class="today-special">📢 오늘은 ${d.specialText||'휴일'}입니다</div>`;
+  } else if(d.menus){
+    tilesHtml = d.menus.map(m=>{
+      let cls='today-tile';
+      if(m.t==='main') cls+=' is-main';
+      else if(m.t==='dessert') cls+=' is-dessert';
+      else if(m.t==='rice') cls+=' is-rice';
+      return `<div class="${cls}">${m.n}</div>`;
+    }).join('');
+  }
+
+  sec.innerHTML = `<div class="today-outer">
+    <span class="today-pill">🍱 오늘의 점심</span>
+    <div class="today-date-row">${dateStr}${d.badge?` <span>${d.badge}</span>`:''}</div>
+    <div class="today-tiles">${tilesHtml}</div>
+  </div>`;
+}
+
+/* ── 알레르기 라인 ── */
+function alLine(nums){
+  if(!nums||!nums.length) return '';
+  return `<span class="al-line">${nums.join('·')}</span>`;
+}
+function row(m){
+  const isMain=m.t==='main', isRice=m.t==='rice', isDessert=m.t==='dessert';
+  let cls='meal-item';
+  if(isMain) cls='meal-item main-dish';
+  if(isDessert) cls='meal-item dessert-item';
+  const nameCls=isRice?'meal-name rice':isDessert?'meal-name dessert':'meal-name';
+  const prefix=isDessert?`<span class="dessert-emoji" style="font-size:11px;margin-right:2px">🍬</span>`:'';
+  return `<div class="${cls}"><div class="meal-row">${prefix}<span class="${nameCls}">${m.n}</span>${alLine(m.al)}</div></div>`;
+}
+function nutBar(k,p,ca,fe){
+  const pct=(v,m)=>Math.min(100,Math.round(v/m*100));
+  return `<div class="nutrition-bar"><div class="nutrition-rows">
+    <div class="nutrition-item"><span class="nutrition-name">열량</span><div class="nutrition-track"><div class="nutrition-fill fill-kcal" style="width:${pct(k,1100)}%"></div></div><span class="nutrition-val">${k}</span></div>
+    <div class="nutrition-item"><span class="nutrition-name">단백질</span><div class="nutrition-track"><div class="nutrition-fill fill-protein" style="width:${pct(p,85)}%"></div></div><span class="nutrition-val">${p}g</span></div>
+    <div class="nutrition-item"><span class="nutrition-name">칼슘</span><div class="nutrition-track"><div class="nutrition-fill fill-calcium" style="width:${pct(ca,500)}%"></div></div><span class="nutrition-val">${ca}mg</span></div>
+    <div class="nutrition-item"><span class="nutrition-name">철분</span><div class="nutrition-track"><div class="nutrition-fill fill-iron" style="width:${pct(fe,25)}%"></div></div><span class="nutrition-val">${fe}mg</span></div>
+  </div><div class="nutrition-print">${k}kcal · 단백 ${p}g · 칼슘 ${ca}mg · 철분 ${fe}mg</div></div>`;
+}
+function mealCard(d,exam=false){
+  const isToday=TODAY===d.date;
+  const cls=(exam?'meal-card exam-card':'meal-card')+(isToday?' today':'');
+  const badge=isToday?`<span class="today-badge">오늘</span>`:(d.badge?`<span class="card-badge">${d.badge}</span>`:'');
+  return `<div class="${cls}"${isToday?' id="today-card"':''}>
+    <div class="card-date-bar">
+      <span class="card-date-num">${d.date}</span>
+      <span class="card-date-day">${d.day}</span>
+      ${badge}
+    </div>
+    <div class="card-right">
+      <div class="card-body">${d.menus.map(row).join('')}</div>
+      ${d.nut?nutBar(...d.nut):''}
+    </div>
+  </div>`;
+}
+function specialCard(d){
+  return `<div class="special-card">
+    <div class="card-date-bar">
+      <span class="card-date-num">${d.date}</span>
+      <span class="card-date-day">${d.day}</span>
+      ${d.badge?`<span class="card-badge">${d.badge}</span>`:''}
+    </div>
+    <div class="special-body"><div class="special-icon">${d.icon}</div><div class="special-text">${d.text}</div></div>
+  </div>`;
+}
+
+function renderCalendar(){
+  const app=document.getElementById('app');
+  let html='';
+  WEEKS.forEach((wk,wi)=>{
+    let grid='';
+    wk.days.forEach(d=>{
+      if(d.empty){ grid+=`<div class="empty-card">—</div>`; return; }
+      if(d.examOnly||d.examOnly2){
+        const lbl=d.examOnly2?(d.badge||'기말고사 2일'):'중간고사 2일';
+        grid+=`<div class="empty-card" style="border-color:#fdba74;background:#fff7ed;flex-direction:column;gap:6px;">
+          <div style="font-size:22px">📝</div>
+          <div style="font-size:12px;color:#f97316;font-weight:700">${lbl}</div>
+          <div style="font-size:10px;color:#fba55a">${d.date}일 ${d.day}</div>
+        </div>`; return;
+      }
+      if(d.special){ grid+=specialCard(d); return; }
+      grid+=mealCard(d,!!d.exam);
+    });
+    const hdrs=wi===0?`<div class="day-headers">
+      <div class="day-header">월요일</div><div class="day-header">화요일</div>
+      <div class="day-header">수요일</div><div class="day-header">목요일</div>
+      <div class="day-header">금요일</div></div>`:'';
+    html+=`<section class="week-panel">
+      <div class="week-title">${wk.title} <span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:4px;">${wk.range}</span></div>
+      ${hdrs}<div class="day-grid">${grid}</div>
+    </section>`;
+  });
+  const lgItems=Object.entries(AL).map(([n,name])=>
+    `<div class="legend-item"><span class="legend-num">${String(n).padStart(2,'0')}</span><span>${name}</span></div>`
+  ).join('');
+  html+=`<div class="legend"><div class="legend-title">🔍 알레르기 유발식품</div><div class="legend-grid">${lgItems}</div></div>`;
+  app.innerHTML=html;
+}
+
+renderTodaySection();
+renderCalendar();
+</script>
+</body>
+</html>
