@@ -128,6 +128,9 @@
   #creditBar .cb-num.over{ color:var(--bad); }
   #creditBar .cb-num.ok{ color:var(--good); }
   #creditBar .cb-detail{ font-size:11px; color:var(--muted2); flex-shrink:0; }
+  #creditBar .cb-status{ font-size:12px; font-weight:800; padding:6px 13px; border-radius:999px; flex-shrink:0; white-space:nowrap; background:#2A3055; color:var(--muted); display:inline-flex; align-items:center; gap:6px; transition:background .25s, color .25s; }
+  #creditBar .cb-status.done{ background:var(--good); color:#12162A; box-shadow:0 0 0 1px var(--good), 0 0 16px #7DD9A055; }
+  #creditBar .cb-status.over{ background:var(--bad); color:#fff; }
 </style>
 </head>
 <body>
@@ -169,6 +172,7 @@
     <div class="cb-track"><div class="cb-fill" id="cbFill" style="width:0%"></div></div>
     <div class="cb-num" id="cbNum">0 / 24학점</div>
     <div class="cb-detail" id="cbDetail">국어 0 · 수학 0 · 영어 0</div>
+    <div class="cb-status" id="cbStatus">그룹 0 / 8 완료</div>
   </div>
 </div>
 
@@ -459,6 +463,30 @@ function updateCreditBar(){
   num.classList.toggle('over', total > cap);
   num.classList.toggle('ok', total > 0 && total <= cap);
   detail.textContent = `국어 ${sums["국어"]} · 수학 ${sums["수학"]} · 영어 ${sums["영어"]}`;
+
+  // 그룹(택N) 충족 여부로 "다 선택했는지"를 판정 — 국영수 학점바와 별개
+  let doneCount = 0, overAny = false, anySelected = false;
+  BLOCKS.forEach((block, bi)=>{
+    let count = 0;
+    block.subjects.forEach((s, si)=>{ if(selected.has(bi+'_'+si)) count++; });
+    if(count > 0) anySelected = true;
+    if(count === block.pick) doneCount++;
+    else if(count > block.pick) overAny = true;
+  });
+  const totalBlocks = BLOCKS.length;
+  const status = document.getElementById('cbStatus');
+  status.classList.remove('done','over');
+  if(overAny){
+    status.textContent = `⚠ 초과한 그룹 있음 (${doneCount} / ${totalBlocks})`;
+    status.classList.add('over');
+  } else if(doneCount === totalBlocks){
+    status.textContent = `✓ 모든 그룹 선택 완료`;
+    status.classList.add('done');
+  } else {
+    status.textContent = anySelected
+      ? `그룹 ${doneCount} / ${totalBlocks} 완료 · ${totalBlocks - doneCount}개 남음`
+      : `그룹 0 / ${totalBlocks} 완료`;
+  }
 }
 
 /* ================= UNIVERSITY SEARCH ================= */
