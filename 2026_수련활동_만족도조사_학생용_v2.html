@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1E2740">
+<title>2026 수련활동 만족도 조사</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow-x:hidden;width:100%;}
+html{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:#EFEFEF;color:#1E293B;
+  font-size:16px;line-height:1.5;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+:root{
+  --dark:#1E2740;--accent:#3B5BDB;
+  --c1:#3B5BDB;--c2:#5FAAA0;--c3:#9B72CF;
+  --c4:#E67700;--c5:#C92A2A;--c6:#1E2740;
+  --border:#E2E8F0;
+}
+.wrap{width:100%;max-width:560px;margin:0 auto;padding-bottom:24px;}
+
+/* ── 커버 ── */
+.cover{
+  background:var(--dark);color:white;
+  padding:30px 18px 24px;
+  margin-bottom:10px;position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.cover-tag{
+  display:inline-block;background:rgba(255,255,255,.15);
+  font-size:13px;font-weight:700;color:rgba(255,255,255,.9);
+  padding:6px 14px;border-radius:20px;margin-bottom:14px;
+}
+.cover h1{font-size:26px;font-weight:700;line-height:1.3;margin-bottom:6px;}
+.cover p{font-size:14px;color:rgba(255,255,255,.45);}
+.cover-chips{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.cover-chip{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  border-radius:8px;padding:8px 13px;font-size:14px;color:rgba(255,255,255,.75);
+}
+.cover-chip b{font-size:16px;color:white;}
+
+/* ── 카드 ── */
+.card{background:white;margin-bottom:10px;overflow:hidden;}
+
+/* ── 기본 정보 ── */
+.id-card{padding:18px;}
+.id-card h3{font-size:14px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;}
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.id-grid .full{grid-column:1/-1;}
+.id-field label{display:block;font-size:13px;font-weight:700;color:#94A3B8;text-transform:uppercase;margin-bottom:7px;}
+.id-field input,.id-field select{
+  width:100%;border:2px solid var(--border);border-radius:12px;
+  padding:16px 14px;font-family:inherit;font-size:18px;
+  color:#1E293B;background:#F8FAFC;outline:none;-webkit-appearance:none;
+}
+.id-field input:focus,.id-field select:focus{border-color:var(--accent);background:white;}
+
+/* ── 카테고리 헤더 ── */
+.cat-head{
+  display:flex;align-items:center;
+  padding:16px 18px;font-size:17px;font-weight:700;color:white;
+}
+.cat-head .q-range{
+  margin-left:auto;font-size:13px;font-weight:500;
+  background:rgba(255,255,255,.2);padding:5px 11px;border-radius:10px;white-space:nowrap;
+}
+
+/* ── 척도 안내 ── */
+.scale-hint{
+  display:flex;justify-content:space-between;
+  padding:12px 18px 13px;font-size:15px;font-weight:700;
+  background:#F1F5F9;border-bottom:1px solid #E2E8F0;
+}
+.scale-hint .lo{color:#C92A2A;}
+.scale-hint .hi{color:#2F9E6A;}
+
+/* ── 문항 행 ── */
+.q-row{padding:18px 14px 15px;border-bottom:1px solid #F0F2F5;}
+.q-row:last-child{border-bottom:none;}
+.q-row:nth-child(odd){background:#FAFBFD;}
+.q-top{display:flex;gap:10px;margin-bottom:14px;}
+.q-num{
+  min-width:28px;height:28px;background:#E8EDF5;border-radius:7px;
+  font-size:13px;font-weight:700;color:#64748B;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.q-text{font-size:16px;line-height:1.65;color:#1E293B;}
+
+/* ── 척도 버튼: 크고 탭하기 쉽게 ── */
+.scale{display:flex;gap:6px;}
+.scale input[type=radio]{display:none;}
+.scale label{
+  flex:1;min-height:56px;min-width:0;
+  border:2px solid #D1D9E6;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;color:#B0BAC9;cursor:pointer;
+  transition:background .08s,border-color .08s,color .08s;
+}
+.s1 input:checked+label{background:var(--c1);border-color:var(--c1);color:white;}
+.s2 input:checked+label{background:var(--c2);border-color:var(--c2);color:white;}
+.s3 input:checked+label{background:var(--c3);border-color:var(--c3);color:white;}
+.s4 input:checked+label{background:var(--c4);border-color:var(--c4);color:white;}
+.s5 input:checked+label{background:var(--c5);border-color:var(--c5);color:white;}
+.s6 input:checked+label{background:var(--c6);border-color:var(--c6);color:white;}
+
+/* ── 총점 ── */
+.total-card{background:var(--dark);color:white;padding:20px 18px;margin-bottom:10px;}
+.total-row{display:flex;align-items:center;gap:16px;margin-bottom:14px;}
+.total-num{font-size:56px;font-weight:700;line-height:1;letter-spacing:-2px;}
+.total-num span{font-size:22px;color:rgba(255,255,255,.35);}
+.total-lbl{font-size:13px;color:rgba(255,255,255,.4);margin-top:4px;}
+.bar-wrap{flex:1;}
+.bar-track{height:8px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#5FAAA0,#3B5BDB);transition:width .4s;}
+.bar-lbls{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.28);margin-top:5px;}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.cat-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 4px;text-align:center;}
+.cat-chip .cn{font-size:20px;font-weight:700;}
+.cat-chip .cl{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;}
+
+/* ── 1인 1역 ── */
+.role-section{padding:18px;}
+.role-section h3{font-size:16px;font-weight:700;color:#1E293B;margin-bottom:14px;}
+.role-list{display:flex;flex-direction:column;gap:9px;}
+.role-item{
+  display:flex;align-items:center;gap:12px;
+  border:2px solid #E2E8F0;border-radius:14px;
+  padding:16px 15px;background:#F8FAFC;cursor:pointer;min-height:60px;
+  transition:background .08s,border-color .08s;
+}
+.role-item.selected{background:#1E2740;border-color:#1E2740;}
+.role-item.selected .ri-num,.role-item.selected .ri-name{color:white;}
+.role-item.selected .ri-tag{background:rgba(255,255,255,.18);color:rgba(255,255,255,.85);}
+.ri-num{font-size:14px;font-weight:700;color:#94A3B8;min-width:24px;}
+.ri-name{font-size:16px;font-weight:600;color:#1E293B;flex:1;}
+.ri-tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:10px;color:white;white-space:nowrap;}
+
+.role-gap{height:14px;}
+.star-wrap{background:#EEF2FF;border:2px solid #C7D7F5;border-radius:14px;padding:16px 15px;}
+.star-wrap label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:16px;font-weight:600;color:#3B5BDB;}
+.star-wrap input[type=checkbox]{width:24px;height:24px;accent-color:#3B5BDB;flex-shrink:0;}
+.star-note{font-size:13px;color:#6B7280;margin-top:8px;}
+.duty-box{background:#F8FAFC;border:2px solid #E2E8F0;border-radius:14px;padding:16px;}
+.duty-box .duty-title{font-size:13px;font-weight:700;color:#64748B;text-transform:uppercase;margin-bottom:10px;}
+.duty-box ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;}
+.duty-box li{font-size:15px;color:#374151;line-height:1.65;}
+.duty-note{margin-top:12px;padding:12px 14px;background:#FFF7ED;border-radius:10px;font-size:14px;color:#92400E;font-weight:500;}
+.detail-wrap label{display:block;font-size:16px;font-weight:700;color:#1E293B;margin-bottom:6px;}
+.detail-wrap .hint{font-size:13px;color:#94A3B8;margin-bottom:10px;}
+.detail-wrap textarea{
+  width:100%;border:2px solid #E2E8F0;border-radius:14px;
+  padding:15px;font-family:inherit;font-size:16px;
+  line-height:1.7;color:#1E293B;background:#F8FAFC;outline:none;resize:vertical;
+}
+.detail-wrap textarea:focus{border-color:var(--accent);background:white;}
+
+/* ── 제출 버튼: fixed 대신 일반 흐름에 배치 ── */
+.submit-section{
+  padding:16px 14px;
+  padding-bottom:calc(48px + env(safe-area-inset-bottom));
+  background:white;
+  margin-top:10px;
+}
+.submit-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;border:none;border-radius:16px;
+  background:var(--dark);color:white;font-family:inherit;
+  font-size:18px;font-weight:700;padding:20px;cursor:pointer;
+  transition:transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.submit-btn:active{transform:scale(.97);}
+.submit-btn:disabled{background:#94A3B8;}
+
+/* ── 오버레이 ── */
+.overlay{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(30,39,64,.88);
+  align-items:flex-end;justify-content:center;
+}
+.overlay-box{
+  background:white;width:100%;max-width:560px;
+  border-radius:24px 24px 0 0;
+  padding:36px 20px calc(36px + env(safe-area-inset-bottom));
+  text-align:center;
+}
+.overlay-box .emoji{font-size:56px;margin-bottom:16px;}
+.overlay-box h2{font-size:22px;font-weight:700;color:#1E293B;margin-bottom:10px;}
+.overlay-box p{font-size:16px;color:#64748B;line-height:1.7;margin-bottom:6px;}
+.overlay-box .sub{font-size:14px;color:#94A3B8;margin-bottom:24px;}
+.overlay-box button{
+  width:100%;border:none;border-radius:14px;
+  background:#1E2740;color:white;font-family:inherit;
+  font-size:17px;font-weight:700;padding:18px;cursor:pointer;
+}
+.loading-box{background:white;border-radius:20px;padding:30px 40px;text-align:center;width:220px;}
+.loading-box p{font-size:15px;font-weight:600;color:#1E293B;margin-bottom:14px;}
+.load-track{height:7px;background:#E2E8F0;border-radius:4px;overflow:hidden;}
+.load-fill{height:100%;width:0;border-radius:4px;background:var(--accent);transition:width 1.5s ease;}
+@media (max-width:360px){
+  .q-row{padding:14px 10px 12px;}
+  .scale{gap:4px;}
+  .scale label{font-size:18px;min-height:50px;}
+  .ri-tag{font-size:11px;padding:3px 7px;}
+  body{font-size:16px;}
+  .cover h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 커버 -->
+  <div class="cover">
+    <div class="cover-tag">📋 풍문고등학교 2학년</div>
+    <h1>2026 수련활동<br>만족도 조사</h1>
+    <p>모나 용평 | 2026. 05. 20 – 05. 22</p>
+    <div class="cover-chips">
+      <div class="cover-chip">총 <b>20</b>문항</div>
+      <div class="cover-chip">각 <b>5점</b></div>
+      <div class="cover-chip">만점 <b>100점</b></div>
+    </div>
+    <div style="margin-top:12px;padding:10px 13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:10px;font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;">
+      📢 본 만족도 조사 결과는 <b style="color:white;">서울열린교육</b>에 공개됩니다.
+    </div>
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="card id-card">
+    <h3>기본 정보</h3>
+    <div class="id-grid">
+      <div class="id-field">
+        <label>반</label>
+        <input id="f-cls" type="number" inputmode="numeric" placeholder="7" maxlength="3">
+      </div>
+      <div class="id-field">
+        <label>번호</label>
+        <input id="f-num" type="number" inputmode="numeric" placeholder="15" maxlength="3">
+      </div>
+      <div class="id-field full">
+        <label>이름</label>
+        <input id="f-name" type="text" placeholder="홍길동">
+      </div>
+      <div class="id-field full">
+        <label>성별</label>
+        <select id="f-gender">
+          <option value="">선택하세요</option>
+          <option value="남">남</option>
+          <option value="여">여</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카테고리 블록 6개 -->
+  <div class="card" id="cat1">
+    <div class="cat-head" style="background:var(--c1)">🏢 시설 및 환경<span class="q-range">Q1–3 · 15점</span></div>
+    <div class="scale-hint"><span class="lo">① 매우 불만족 ←</span><span class="hi">→ ⑤ 매우 만족</span></div>
+  </div>
+  <div class="card" id="cat2">
+    <div class="cat-head" style="background:var(--c2)">🏨 숙소<span class="q-range">Q4–6 · 15점</span></div>
+    <div class="scale-hint"><span class="lo">① 매우 불만족 ←</span><span class="hi">→ ⑤ 매우 만족</span></div>
+  </div>
+  <div class="card" id="cat3">
+    <div class="cat-head" style="background:var(--c3)">🎯 프로그램<span class="q-range">Q7–12 · 30점</span></div>
+    <div class="scale-hint"><span class="lo">① 매우 불만족 ←</span><span class="hi">→ ⑤ 매우 만족</span></div>
+  </div>
+  <div class="card" id="cat4">
+    <div class="cat-head" style="background:var(--c4)">🛡️ 안전 및 식사<span class="q-range">Q13–16 · 20점</span></div>
+    <div class="scale-hint"><span class="lo">① 매우 불만족 ←</span><span class="hi">→ ⑤ 매우 만족</span></div>
+  </div>
+  <div class="card" id="cat5">
+    <div class="cat-head" style="background:var(--c5)">🚌 교통<span class="q-range">Q17–18 · 10점</span></div>
+    <div class="scale-hint"><span class="lo">① 매우 불만족 ←</span><span class="hi">→ ⑤ 매우 만족</span></div>
+  </div>
+  <div class="card" id="cat6">
+    <div class="cat-head" style="background:var(--c6)">✅ 종합<span class="q-range">Q19–20 · 10점</span></div>
+    <div class="scale-hint"><span class="lo">① 매우 불만족 ←</span><span class="hi">→ ⑤ 매우 만족</span></div>
+  </div>
+
+  <!-- 1인 1역 -->
+  <div class="card" id="role-block">
+    <div class="cat-head" style="background:#475569">🙋 1인 1역 성찰<span class="q-range">주관식</span></div>
+    <div class="role-section">
+
+      <h3>나의 팀을 선택하세요</h3>
+      <div class="role-list" id="roleGrid"></div>
+
+      <div class="role-gap"></div>
+
+      <div id="starWrap" style="display:none">
+        <div class="star-wrap">
+          <label>
+            <input type="checkbox" id="starCheck">
+            나는 <span id="starTeamName"></span> 선발자입니다 ★
+          </label>
+        </div>
+        <div class="star-note" id="starNote"></div>
+      </div>
+
+      <div class="role-gap"></div>
+
+      <div id="dutyBox" style="display:none">
+        <div class="duty-box">
+          <div class="duty-title">📋 우리 팀의 임무</div>
+          <ol id="dutyList"></ol>
+          <div id="dutyNote" class="duty-note" style="display:none"></div>
+        </div>
+        <div class="role-gap"></div>
+      </div>
+
+      <div class="detail-wrap">
+        <label>역할 수행 내용을 구체적으로 작성하세요</label>
+        <div class="hint">무엇을, 어떻게, 어떤 마음으로 수행했는지 솔직하게 써주세요.</div>
+        <textarea id="roleDetail" rows="5"
+          placeholder="예) 건강관리팀으로서 활동 중 컨디션이 안 좋아 보이는 친구를 발견하고 바로 선생님께 보고했습니다..."></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 총점 -->
+  <div class="total-card" id="totalBox">
+    <div class="total-row">
+      <div>
+        <div class="total-num" id="totalNum">0<span>/100</span></div>
+        <div class="total-lbl">현재 총점</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+        <div class="bar-lbls"><span>0</span><span>50</span><span>100</span></div>
+      </div>
+    </div>
+    <div class="cat-grid" id="catScores"></div>
+  </div>
+
+</div><!-- /wrap -->
+
+  <!-- 제출 버튼 (스크롤 흐름 안에) -->
+  <div class="submit-section">
+    <button class="submit-btn" id="submitBtn" onclick="submitSurvey()">✅ 제출하기</button>
+  </div>
+
+<!-- 제출 완료 -->
+<div class="overlay" id="successOverlay">
+  <div class="overlay-box">
+    <div class="emoji">🎉</div>
+    <h2>제출 완료!</h2>
+    <p>소중한 의견이 잘 전달됐어요.<br>선생님들이 열심히 반영할게요 😊</p>
+    <div class="sub" id="successSub"></div>
+    <button onclick="document.getElementById('successOverlay').style.display='none'">닫기</button>
+  </div>
+</div>
+
+<!-- 로딩 -->
+<div class="overlay" id="loadingOverlay" style="align-items:center;justify-content:center;">
+  <div class="loading-box">
+    <p>제출 중...</p>
+    <div class="load-track"><div class="load-fill" id="loadBar"></div></div>
+  </div>
+</div>
+
+<script>
+// ── 문항 데이터 ──────────────────────────────────────────────
+const questions = [
+  [1,  1, '시설은 전체적으로 교육적 측면에서 우수하다.'],
+  [1,  2, '환기, 채광, 조명, 방습, 방음 시설 등이 적절하게 이루어져 있다.'],
+  [1,  3, '화장실과 세면장 등은 깨끗하고 정돈이 잘 돼 있다.'],
+  [2,  4, '숙소의 청결 상태에 만족한다.'],
+  [2,  5, '숙소의 냉난방은 적당하다.'],
+  [2,  6, '베개 및 이불은 청결하고 잘 구비되어 있었다.'],
+  [3,  7, '활동한 프로그램 내용에 대하여 만족한다.'],
+  [3,  8, '우천 시 대체 프로그램(이나트 미술관)은 적절하였으며 만족한다.'],
+  [3,  9, '프로그램은 교육, 놀이, 휴식 등이 적절히 편성되었다.'],
+  [3, 10, '강사들은 바른말을 사용하며 친절하게 지도하였다.'],
+  [3, 11, '강사들로부터 내가 존중받고 있다는 느낌을 받았다.'],
+  [3, 12, '편성 인원과 수준에 따른 프로그램 난이도는 적당하였다.'],
+  [4, 13, '활동 전 안전사고 예방 교육을 충분히 받았다.'],
+  [4, 14, '식사의 양은 충분하였다.'],
+  [4, 15, '식당은 청결하였으며 부식 재료는 신선하고 맛있었다.'],
+  [4, 16, '바베큐 양이 충분하였고 맛있었으며, 화기 교육을 받고 안전하게 활동하였다.'],
+  [5, 17, '운전기사는 친절하고 교통 법규를 잘 지켰다.'],
+  [5, 18, '차량 실내가 청결하고 안전벨트가 부착되어 있었다.'],
+  [6, 19, '이번 수련활동 전반에 대하여 만족한다.'],
+  [6, 20, '이번 수련활동을 후배들에게도 추천하고 싶다.'],
+];
+
+const catNames = {1:'시설·환경',2:'숙소',3:'프로그램',4:'안전·식사',5:'교통',6:'종합'};
+const catMax   = {1:15,2:15,3:30,4:20,5:10,6:10};
+
+// ── 문항 생성 ─────────────────────────────────────────────────
+function buildRows() {
+  questions.forEach(([cat, num, text]) => {
+    const block = document.getElementById('cat' + cat);
+    const row = document.createElement('div');
+    row.className = 'q-row';
+    row.innerHTML =
+      '<div class="q-top">' +
+        '<span class="q-num">' + num + '</span>' +
+        '<span class="q-text">' + text + '</span>' +
+      '</div>' +
+      '<div class="scale s' + cat + '" id="scale' + num + '">' +
+        [1,2,3,4,5].map(v =>
+          '<input type="radio" name="q' + num + '" id="q' + num + 'v' + v + '" value="' + v + '">' +
+          '<label for="q' + num + 'v' + v + '">' + v + '</label>'
+        ).join('') +
+      '</div>';
+    block.appendChild(row);
+  });
+}
+buildRows();
+
+// ── 점수 계산 ─────────────────────────────────────────────────
+function getScore(n) {
+  const r = document.querySelector('input[name="q' + n + '"]:checked');
+  return r ? parseInt(r.value) : 0;
+}
+
+function calcAll() {
+  let total = 0;
+  const catTotals = {};
+  questions.forEach(([cat, num]) => {
+    const s = getScore(num);
+    total += s;
+    catTotals[cat] = (catTotals[cat] || 0) + s;
+  });
+  return { total, catTotals };
+}
+
+function updateDisplay() {
+  const { total, catTotals } = calcAll();
+  document.getElementById('totalNum').innerHTML = total + '<span>/100</span>';
+  document.getElementById('barFill').style.width = total + '%';
+  const cs = document.getElementById('catScores');
+  cs.innerHTML = '';
+  Object.entries(catTotals).forEach(([cat, score]) => {
+    const chip = document.createElement('div');
+    chip.className = 'cat-chip';
+    chip.innerHTML =
+      '<div class="cn">' + score + '<small style="font-size:11px;opacity:.45">/' + catMax[cat] + '</small></div>' +
+      '<div class="cl">' + catNames[cat] + '</div>';
+    cs.appendChild(chip);
+  });
+}
+
+document.addEventListener('change', e => { if (e.target.type === 'radio') updateDisplay(); });
+updateDisplay();
+
+// ── 1인 1역 팀 데이터 ────────────────────────────────────────
+const teams = [
+  {
+    num:'①', name:'안전교육팀',
+    tag:'수련활동 이전 임무', tagColor:'#3B5BDB',
+    star:true, starNote:'수련활동 이전 임무 수행팀 — 선발자는 ★ 표시',
+    duties:['교사가 제공하는 자료를 참고하여 수련활동 전 안전 교육 콘텐츠를 기획하고 구성한다.','전체 교육 시간에 참여자들이 집중할 수 있도록 자료를 준비한다.','각 반별로 활용할 안전교육자료를 제작한다.'],
+  },
+  {
+    num:'①', name:'장기자랑운영팀',
+    tag:'선발자 팀', tagColor:'#9B72CF',
+    star:true, starNote:'리로에서 이정은 선생님이 올린 공지를 통해 선발된 사람 해당 — 선발자는 ★ 표시',
+    duties:['장기자랑 무대의 순서를 기획한다.','진행팀을 선발하여 참가자 호출, 무대 입장·퇴장 안내를 맡는다.','사회자를 선발하여 무대 소개 및 진행 멘트를 맡는다.','준비팀을 선발하여 음향, 조명, 음원 파일 확인 등 무대 장비 상태를 체크한다 (학교 교가 음원 파일 준비 포함).','장기자랑이 끝난 후 정리 및 소감 공유를 보조한다.'],
+  },
+  { num:'②', name:'건강관리팀', duties:['같은 반 학생들의 건강 상태를 지속적으로 확인한다.','컨디션 저하자나 이상 증상자가 나타나면 즉시 교사 및 교관에게 보고한다.','기본적인 응급처치 상황에 대비하며 응급 대응 체계를 숙지한다.'] },
+  { num:'③', name:'질서지도팀', duties:['차량 승하차 시 학생들의 안전벨트 착용 여부를 확인한다.','휴게소 및 이동 중 도로 상황에 맞추어 안전한 경로를 안내한다.','운전기사 및 담임교사와의 소통을 통해 정차 및 출발 시간 조정을 돕는다.','버스 하차 시 발생한 분실물이나 쓰레기를 점검하고 정리한다.'] },
+  { num:'④', name:'미디어팀', duties:['수련활동의 주요 순간을 사진 및 영상으로 촬영한다.','촬영된 사진과 영상을 정리하여 프로그램별, 일정별 기록 클립을 구성한다.','반 단위 앨범 또는 영상 콘텐츠를 제작하고 백업한다.','추억 공유를 위해 클라우드나 반 채팅방에 자료를 업로드한다.','수련활동 후기(사진 포함 글쓰기 — 교지 게재 예정) 공모에 참여한다 (필수).'] },
+  { num:'⑤', name:'생태환경팀', duties:['수련활동 중 활동 장소와 숙소에서 발생한 쓰레기를 분리수거하고 현장을 정리한다.','수련 활동 장소에서 발견한 생태 환경적 특성(식물·동물·곤충 등)을 사진 찍어 조사 후 A4 1쪽 보고서를 작성·제출한다.','환경 보호의 중요성을 친구들에게 자연스럽게 전달한다.','수련활동 종료 시 숙소 퇴실 전 두고 간 물건과 쓰레기를 점검하고 정리한다.','분실물센터를 운영하며 학생들이 분실물을 찾을 수 있도록 안내하고 기록한다.'] },
+  { num:'⑥', name:'식당협조팀', duties:['식사 시간 학생들의 줄 서기 및 자리 안내를 맡는다.','식사 중 질서 유지와 급식 배식 동선을 조정한다.','식당 내 안전사고 예방과 규칙 안내를 보조한다.'] },
+  { num:'⑦', name:'동기부여팀', duties:['혼자 있거나 수동적인 급우들을 찾아가 말을 걸고 챙긴다.','교사와 합의 하에 각 방별로 자유롭게 진행할 수 있는 간단한 퀴즈·게임 등 학급별 이벤트를 기획한다.','전체 분위기를 긍정적으로 전환하는 데 기여한다.'] },
+  { num:'⑧', name:'생활운영팀', duties:['활동 시작 전후, 이동 시 학생 인원을 정확하게 점검하고 누락자가 있을 경우 즉시 교사나 기획단에 보고한다.','기상 시간에 학생들이 정시에 일어날 수 있도록 깨우거나 알림을 지원한다.','취침 전 점호를 보조하며 무단이탈·지각·소란 등 생활 규칙 위반을 예방한다.'] },
+  {
+    num:'⑨', name:'공모전운영팀(후기)',
+    tag:'수련활동 이후 임무', tagColor:'#2F9E6A',
+    duties:['활동 중 학생들과 교사의 피드백을 수집하여 좋았던 점, 불편한 점 등을 정리해 기록한다.','활동 종료 후 반 전체 의견을 정리해 보고한다.','후기 공모전 안내 포스터를 만들어 각 반에 게시하고 공모전을 홍보한다.'],
+  },
+];
+
+// ── 팀 목록 생성 ──────────────────────────────────────────────
+const roleGrid = document.getElementById('roleGrid');
+let selectedTeam = null;
+
+teams.forEach(team => {
+  const item = document.createElement('div');
+  item.className = 'role-item';
+  let html = '<span class="ri-num">' + team.num + '</span><span class="ri-name">' + team.name + '</span>';
+  if (team.tag) html += '<span class="ri-tag" style="background:' + team.tagColor + '">' + team.tag + '</span>';
+  item.innerHTML = html;
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.role-item').forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+    selectedTeam = team;
+    showDuty(team);
+  });
+  roleGrid.appendChild(item);
+});
+
+function showDuty(team) {
+  const starWrap = document.getElementById('starWrap');
+  if (team.star) {
+    document.getElementById('starTeamName').textContent = team.name;
+    document.getElementById('starNote').textContent = team.starNote || '';
+    starWrap.style.display = 'block';
+  } else {
+    starWrap.style.display = 'none';
+    document.getElementById('starCheck').checked = false;
+  }
+  const dutyBox  = document.getElementById('dutyBox');
+  const dutyList = document.getElementById('dutyList');
+  const dutyNote = document.getElementById('dutyNote');
+  dutyList.innerHTML = '';
+  team.duties.forEach(d => {
+    const li = document.createElement('li');
+    li.textContent = d;
+    dutyList.appendChild(li);
+  });
+  if (team.tag) {
+    dutyNote.style.display = 'block';
+    dutyNote.textContent = '※ ' + team.tag + ' 팀입니다.' + (team.starNote ? '  ' + team.starNote : '');
+  } else {
+    dutyNote.style.display = 'none';
+  }
+  dutyBox.style.display = 'block';
+}
+
+// ── 제출 ──────────────────────────────────────────────────────
+function submitSurvey() {
+  const cls  = document.getElementById('f-cls').value.trim();
+  const num  = document.getElementById('f-num').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const gender = document.getElementById('f-gender').value;
+
+  if (!cls || !num || !name) {
+    alert('반, 번호, 이름을 모두 입력해 주세요!');
+    return;
+  }
+
+  const submitKey = 'survey_' + cls + '_' + num + '_' + name;
+  if (localStorage.getItem(submitKey)) {
+    alert(cls + '반 ' + num + '번 ' + name + '\n이미 제출된 응답입니다. 중복 제출은 불가합니다.');
+    return;
+  }
+
+  const unanswered = [];
+  const scores = [];
+  for (let q = 1; q <= 20; q++) {
+    const checked = document.querySelector('input[name="q' + q + '"]:checked');
+    if (!checked) { unanswered.push(q); scores.push(0); }
+    else scores.push(parseInt(checked.value));
+  }
+
+  if (unanswered.length > 0) {
+    highlightUnanswered(unanswered);
+    alert('모든 문항에 응답해야 제출할 수 있어요.\n\n미응답: ' + unanswered.map(q => 'Q' + q).join(', '));
+    const firstQ = document.getElementById('scale' + unanswered[0]);
+    if (firstQ) firstQ.closest('.q-row').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  if (!selectedTeam) {
+    alert('1인 1역 팀을 선택해 주세요!');
+    document.getElementById('role-block').scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+
+  const data = {
+    cls, num, name, gender, scores,
+    team: selectedTeam.name,
+    isStar: document.getElementById('starCheck').checked,
+    detail: document.getElementById('roleDetail').value.trim(),
+  };
+
+  const loadingEl = document.getElementById('loadingOverlay');
+  const loadBar   = document.getElementById('loadBar');
+  loadingEl.style.display = 'flex';
+  setTimeout(() => { loadBar.style.width = '80%'; }, 50);
+  document.getElementById('submitBtn').disabled = true;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(result => {
+        loadBar.style.width = '100%';
+        setTimeout(() => {
+          loadingEl.style.display = 'none';
+          if (result.success) {
+            localStorage.setItem(submitKey, new Date().toISOString());
+            const btn = document.getElementById('submitBtn');
+            btn.textContent = '✅ 제출 완료';
+            btn.style.background = '#2F9E6A';
+            btn.disabled = true;
+            document.getElementById('successSub').textContent = cls + '반 ' + num + '번 ' + name;
+            document.getElementById('successOverlay').style.display = 'flex';
+          } else {
+            alert('저장 오류: ' + result.error);
+            document.getElementById('submitBtn').disabled = false;
+          }
+        }, 400);
+      })
+      .withFailureHandler(err => {
+        loadingEl.style.display = 'none';
+        alert('오류: ' + err.message);
+        document.getElementById('submitBtn').disabled = false;
+      })
+      .saveResponse(data);
+  } else {
+    setTimeout(() => {
+      loadBar.style.width = '100%';
+      setTimeout(() => {
+        loadingEl.style.display = 'none';
+        localStorage.setItem(submitKey, new Date().toISOString());
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = '✅ 제출 완료';
+        btn.style.background = '#2F9E6A';
+        btn.disabled = true;
+        document.getElementById('successSub').textContent = '⚠️ 미리보기 모드 — GAS 배포 시 실제 저장됩니다.';
+        document.getElementById('successOverlay').style.display = 'flex';
+      }, 400);
+    }, 800);
+  }
+}
+
+function highlightUnanswered(nums) {
+  document.querySelectorAll('.q-row').forEach(r => { r.style.background=''; r.style.outline=''; });
+  nums.forEach(q => {
+    const el = document.getElementById('scale' + q);
+    if (el) {
+      const row = el.closest('.q-row');
+      row.style.background = '#FFF0F0';
+      row.style.outline = '2px solid #C92A2A';
+      row.style.borderRadius = '6px';
+      setTimeout(() => { row.style.background=''; row.style.outline=''; }, 3000);
+    }
+  });
+}
+</script>
+</body>
+</html>

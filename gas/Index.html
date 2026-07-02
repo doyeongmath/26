@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>논술 독서 감상 기록</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e5e5e7;
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  header h1 { font-size: 18px; font-weight: 700; }
+  header p { font-size: 12px; color: #86868b; margin-top: 2px; }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  .card h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+
+  /* 검색 */
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
+
+  .input-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+  .input-group label {
+    font-size: 12px; font-weight: 600; color: #86868b; letter-spacing: 0.5px;
+  }
+
+  .input-group input {
+    border: 1.5px solid #e5e5e7;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus { border-color: #0071e3; }
+
+  .btn-primary {
+    background: #0071e3;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    height: 42px;
+  }
+
+  .btn-primary:hover { background: #0077ed; }
+  .btn-primary:active { background: #005ab8; }
+  .btn-primary:disabled { background: #c7c7cc; cursor: not-allowed; }
+
+  /* 결과 */
+  #results { display: none; }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .result-header h2 { font-size: 15px; font-weight: 600; }
+
+  .badge {
+    background: #e8f4fd;
+    color: #0071e3;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* 독서 카드 */
+  .book-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 4px solid #0071e3;
+  }
+
+  .book-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .book-title { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .book-author { font-size: 13px; color: #86868b; }
+
+  .book-date {
+    font-size: 11px;
+    color: #aeaeb2;
+    white-space: nowrap;
+    margin-left: 8px;
+    margin-top: 2px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #aeaeb2;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+
+  .reflection-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #3a3a3c;
+    margin-bottom: 12px;
+  }
+
+  .quote-box {
+    background: #f5f5f7;
+    border-left: 3px solid #aeaeb2;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+  }
+
+  .quote-text { font-size: 13px; line-height: 1.6; color: #636366; font-style: italic; }
+
+  /* 작성 영역 */
+  .write-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    border-top: 4px solid #34c759;
+  }
+
+  .write-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+
+  .write-desc {
+    font-size: 13px;
+    color: #86868b;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .hint-box {
+    background: #f0fff4;
+    border: 1px solid #c3e6cb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #2d6a4f;
+    line-height: 1.6;
+  }
+
+  .hint-box strong { font-weight: 700; }
+
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    border: 1.5px solid #e5e5e7;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    color: #1d1d1f;
+  }
+
+  textarea:focus { border-color: #34c759; }
+
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    color: #aeaeb2;
+    margin-top: 6px;
+    margin-bottom: 14px;
+  }
+
+  .char-count.warn { color: #ff9500; }
+  .char-count.good { color: #34c759; font-weight: 600; }
+
+  .btn-submit {
+    width: 100%;
+    background: #34c759;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-submit:hover { background: #30b452; }
+  .btn-submit:active { background: #28a745; }
+  .btn-submit:disabled { background: #c7c7cc; cursor: not-allowed; }
+
+  /* 제출 완료 */
+  .success-box {
+    background: #f0fff4;
+    border: 1.5px solid #34c759;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    display: none;
+  }
+
+  .success-box .icon { font-size: 32px; margin-bottom: 8px; }
+  .success-box h3 { font-size: 16px; font-weight: 700; color: #2d6a4f; margin-bottom: 4px; }
+  .success-box p { font-size: 13px; color: #52b788; }
+
+  .btn-rewrite {
+    background: none;
+    border: 1.5px solid #34c759;
+    color: #34c759;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+
+  .error-msg {
+    background: #fff2f2;
+    border: 1.5px solid #ff3b30;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #ff3b30;
+    margin-top: 10px;
+  }
+
+  .empty-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: #86868b;
+    font-size: 14px;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 논술 독서 감상 기록</h1>
+  <p>학번과 이름을 입력하고 나의 독서 기록을 확인하세요</p>
+</header>
+
+<div class="container">
+
+  <!-- 검색 -->
+  <div class="card">
+    <h2>학생 조회</h2>
+    <div class="input-row">
+      <div class="input-group">
+        <label>학번</label>
+        <input type="text" id="hakbun" placeholder="예) 30101" maxlength="10">
+      </div>
+      <div class="input-group">
+        <label>이름</label>
+        <input type="text" id="name" placeholder="예) 홍길동" maxlength="20">
+      </div>
+      <button class="btn-primary" id="btn-search" onclick="search()">조회</button>
+    </div>
+    <div id="search-error"></div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="results">
+
+    <!-- 독서 기록 목록 -->
+    <div class="result-header">
+      <h2 id="result-title"></h2>
+      <span class="badge" id="result-count"></span>
+    </div>
+    <div id="book-list"></div>
+
+    <!-- 생기부 직접 작성 -->
+    <div class="write-card" id="write-section">
+      <h2>생기부 독서활동 초안 작성</h2>
+      <p class="write-desc">위 기록들을 참고해서 생기부에 들어갈 내용을 직접 작성해보세요.</p>
+
+      <div class="hint-box">
+        <strong>작성 가이드</strong><br>
+        · 읽은 책들에서 무엇을 느끼고 배웠는지 중심으로 쓰세요<br>
+        · 책 제목을 자연스럽게 넣으면 좋아요<br>
+        · 나의 관심사, 탐구력, 성장이 드러나도록<br>
+        · <strong>~함, ~임, ~을 느낌</strong> 등의 문체로 작성 (200~500자 권장)
+      </div>
+
+      <div id="form-area">
+        <textarea id="gibub-text" placeholder="예) 철학과 과학 분야의 책들을 통해 세상을 바라보는 시각을 넓혔으며, 특히 &#39;크리스퍼베이비&#39;를 읽으며 과학 기술의 발전이 윤리적 판단과 함께 이루어져야 함을 깨달음..." oninput="updateCount()"></textarea>
+        <div class="char-count" id="char-count">0자</div>
+        <button class="btn-submit" id="btn-submit" onclick="submitGibub()">제출하기</button>
+        <div id="submit-error"></div>
+      </div>
+
+      <div class="success-box" id="success-box">
+        <div class="icon">✅</div>
+        <h3>제출 완료!</h3>
+        <p>선생님께 잘 전달되었습니다.</p>
+        <button class="btn-rewrite" onclick="showRewrite()">다시 작성하기</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  let currentHakbun = '';
+  let currentName = '';
+  let currentBan = '';
+
+  document.getElementById('hakbun').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('name').focus();
+  });
+  document.getElementById('name').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') search();
+  });
+
+  function search() {
+    const hakbun = document.getElementById('hakbun').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const errEl = document.getElementById('search-error');
+
+    if (!hakbun || !name) {
+      errEl.innerHTML = '<div class="error-msg">학번과 이름을 모두 입력해주세요.</div>';
+      return;
+    }
+    errEl.innerHTML = '';
+
+    const btn = document.getElementById('btn-search');
+    btn.disabled = true;
+    btn.textContent = '조회 중...';
+    document.getElementById('results').style.display = 'none';
+
+    google.script.run
+      .withSuccessHandler(function(records) {
+        btn.disabled = false;
+        btn.textContent = '조회';
+        currentHakbun = hakbun;
+        currentName = name;
+        currentBan = records.length > 0 ? records[0].ban : '';
+        renderRecords(records, name);
+      })
+      .withFailureHandler(function(err) {
+        btn.disabled = false;
+        btn.textContent = '조회';
+        errEl.innerHTML = '<div class="error-msg">오류: ' + err.message + '</div>';
+      })
+      .getStudentRecords(hakbun, name);
+  }
+
+  function renderRecords(records, name) {
+    const resultEl = document.getElementById('results');
+    const bookList = document.getElementById('book-list');
+
+    document.getElementById('result-title').textContent = name + ' 학생의 독서 기록';
+    document.getElementById('result-count').textContent = records.length + '권';
+
+    document.getElementById('write-section').style.display = 'block';
+
+    if (records.length === 0) {
+      bookList.innerHTML = '<div class="empty-msg">아직 등록된 독서 기록이 없습니다.<br>아래에서 생기부 초안을 직접 작성할 수 있습니다.</div>';
+    } else {
+      bookList.innerHTML = records.map(function(r) {
+        const reflection = r.reflection && r.reflection !== '.' ? r.reflection : '';
+        const sentence = r.memorableSentence && r.memorableSentence !== '.' ? r.memorableSentence : '';
+        return '<div class="book-card">' +
+          '<div class="book-meta">' +
+            '<div>' +
+              '<div class="book-title">' + esc(r.bookName) + '</div>' +
+              '<div class="book-author">' + esc(r.author) + '</div>' +
+            '</div>' +
+            '<div class="book-date">' + esc(r.timestamp) + '</div>' +
+          '</div>' +
+          (reflection ? '<div class="section-label">감상</div><div class="reflection-text">' + esc(reflection) + '</div>' : '') +
+          (sentence ? '<div class="section-label">기억하고 싶은 문장</div><div class="quote-box"><div class="quote-text">"' + esc(sentence) + '"</div></div>' : '') +
+          '</div>';
+      }).join('');
+
+      // 작성창 초기화
+      document.getElementById('gibub-text').value = '';
+      document.getElementById('char-count').textContent = '0자';
+      document.getElementById('char-count').className = 'char-count';
+      document.getElementById('form-area').style.display = 'block';
+      document.getElementById('success-box').style.display = 'none';
+      document.getElementById('submit-error').innerHTML = '';
+    }
+
+    resultEl.style.display = 'block';
+  }
+
+  function updateCount() {
+    const len = document.getElementById('gibub-text').value.trim().length;
+    const el = document.getElementById('char-count');
+    el.textContent = len + '자';
+    if (len === 0) {
+      el.className = 'char-count';
+    } else if (len < 100) {
+      el.className = 'char-count warn';
+    } else {
+      el.className = 'char-count good';
+    }
+  }
+
+  function submitGibub() {
+    const text = document.getElementById('gibub-text').value.trim();
+    const errEl = document.getElementById('submit-error');
+
+    if (!text) {
+      errEl.innerHTML = '<div class="error-msg">내용을 작성해주세요.</div>';
+      return;
+    }
+    if (text.length < 50) {
+      errEl.innerHTML = '<div class="error-msg">조금 더 자세히 작성해주세요. (50자 이상)</div>';
+      return;
+    }
+    errEl.innerHTML = '';
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>제출 중...';
+
+    google.script.run
+      .withSuccessHandler(function(result) {
+        btn.disabled = false;
+        btn.innerHTML = '제출하기';
+        if (result.success) {
+          document.getElementById('form-area').style.display = 'none';
+          document.getElementById('success-box').style.display = 'block';
+        } else {
+          errEl.innerHTML = '<div class="error-msg">' + result.error + '</div>';
+        }
+      })
+      .withFailureHandler(function(err) {
+        btn.disabled = false;
+        btn.innerHTML = '제출하기';
+        errEl.innerHTML = '<div class="error-msg">오류: ' + err.message + '</div>';
+      })
+      .submitGibub(currentHakbun, currentName, currentBan, text);
+  }
+
+  function showRewrite() {
+    document.getElementById('form-area').style.display = 'block';
+    document.getElementById('success-box').style.display = 'none';
+    document.getElementById('gibub-text').value = '';
+    document.getElementById('char-count').textContent = '0자';
+    document.getElementById('char-count').className = 'char-count';
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+</script>
+
+</body>
+</html>
