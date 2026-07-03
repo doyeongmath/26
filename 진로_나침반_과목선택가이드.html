@@ -528,6 +528,23 @@ function renderChips(text, cls){
   return `<span class="uchip ${cls} freetext">${text}</span>`;
 }
 
+// "핵심" 필드가 "-일반선택: … -진로선택: …" 처럼 그룹 라벨을 품은 경우(영남대 등)
+// 하나의 긴 freetext 칩으로 뭉개지 않도록 그룹별 urow로 분리해 개별 과목 칩으로 편다.
+function renderCoreRows(core){
+  if(!core) return '';
+  if(/-\s*[가-힣]+선택\s*:/.test(core)){
+    let html = '', m;
+    const re = /-\s*([가-힣]+선택)\s*:\s*([^-]*)/g;
+    while((m = re.exec(core))){
+      const label = m[1];
+      const cls = label === '진로선택' ? 'core' : 'rec';
+      html += `<div class="urow"><span class="ulabel">${label}</span><div class="uni-chips">${renderSubjectChips(m[2], cls)}</div></div>`;
+    }
+    if(html) return html;
+  }
+  return `<div class="urow"><span class="ulabel">핵심</span><div class="uni-chips">${renderChips(core,'core')}</div></div>`;
+}
+
 function searchUni(query){
   uniResults.innerHTML = '';
   if(!query || query.trim().length < 1){
@@ -550,7 +567,7 @@ function searchUni(query){
           <span class="udept">${college ? college+' · ' : ''}${dept}</span>
           <span class="uregion">${region} · ${area}</span>
         </div>
-        ${core ? `<div class="urow"><span class="ulabel">핵심</span><div class="uni-chips">${renderChips(core,'core')}</div></div>` : ''}
+        ${renderCoreRows(core)}
         ${rec ? `<div class="urow"><span class="ulabel">권장</span><div class="uni-chips">${renderChips(rec,'rec')}</div></div>` : ''}
         ${note ? `<div class="uni-note">${note}</div>` : ''}
       </div>
