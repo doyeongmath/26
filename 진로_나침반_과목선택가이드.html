@@ -42,6 +42,17 @@
 
   .section-label{ font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--muted2); text-transform:uppercase; margin-bottom:14px; padding-left:2px; display:flex; align-items:center; gap:10px;}
   .section-label .line{ flex:1; height:1px; background:var(--line); }
+  .section-label .sl-sub{ font-size:11px; font-weight:700; letter-spacing:.02em; text-transform:none; color:#12162A; background:var(--gold); padding:2px 8px; border-radius:999px; }
+  .grade-picker{ display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+  .grade-picker .gp-label{ font-size:12px; font-weight:800; letter-spacing:.04em; color:var(--muted); }
+  .need-grade{ text-align:center; color:var(--muted); font-size:15px; line-height:1.6; padding:34px 18px; background:var(--surface); border:1px dashed var(--line); border-radius:14px; }
+  .need-grade b{ color:var(--gold); }
+  .grade-toggle{ display:inline-flex; gap:6px; padding:5px; background:var(--surface); border:1px solid var(--line); border-radius:14px; }
+  .grade-toggle .gt-btn{ font-family:inherit; cursor:pointer; border:none; background:transparent; color:var(--muted); font-size:14px; font-weight:800; padding:9px 18px; border-radius:10px; display:inline-flex; align-items:baseline; gap:7px; transition:background .15s ease, color .15s ease; }
+  .grade-toggle .gt-btn span{ font-size:10.5px; font-weight:700; letter-spacing:.02em; color:var(--muted2); }
+  .grade-toggle .gt-btn:hover{ color:var(--text); }
+  .grade-toggle .gt-btn.active{ background:linear-gradient(160deg, var(--gold), var(--needle)); color:#12162A; box-shadow:0 4px 14px -6px var(--needle-glow); }
+  .grade-toggle .gt-btn.active span{ color:#12162A; opacity:.75; }
 
   .career-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(148px,1fr)); gap:10px; margin-bottom:52px; }
   .career-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:15px 13px; cursor:pointer; text-align:left; transition: transform .18s ease, border-color .18s ease, background .18s ease; color:var(--text); font-family:inherit; }
@@ -143,9 +154,9 @@
 <div class="wrap">
 
   <div class="hero">
-    <div class="eyebrow"><span class="dot"></span>풍문고등학교 · 2025학년도 입학생(현재 2학년)을 위한 2·3학년 선택과목 안내</div>
+    <div class="eyebrow"><span class="dot"></span><span id="eyebrowText">풍문고등학교 · 2·3학년 선택과목 안내</span></div>
     <h1>내 진로는, 어떤<br><span class="accent">과목</span>으로 완성될까?</h1>
-    <p class="sub">진로 계열을 고르면 학기별 선택 그룹(택N)에 맞춰 과목을 추천해드려요. 과목을 눌러 나만의 선택을 담아보고, 대학별 권장과목도 함께 확인하세요.</p>
+    <p class="sub">서울시교육청 <b>18개 계열</b> 중 희망 진로를 고르면, 그 계열·학과의 표준 권장과목과 대학별 권장과목을 먼저 확인할 수 있어요. 권장과목을 참고해 학기별 선택과목을 나만의 조합으로 담아보세요.</p>
     <div class="compass" id="compass">
       <div class="ring"></div>
       <div class="needle" id="needle"></div>
@@ -153,11 +164,16 @@
     </div>
   </div>
 
-  <div class="section-label">01 — 희망 진로 계열 선택<div class="line"></div></div>
+  <div class="section-label">01 — 희망 진로 계열 선택 <span class="sl-sub">서울시교육청 18계열</span><div class="line"></div></div>
   <div class="career-grid" id="careerGrid"></div>
 
-  <div class="section-label" id="resultLabel" style="display:none;">02 — 학기별 선택과목 (눌러서 담기)<div class="line"></div></div>
-  <div id="result"></div>
+  <div class="section-label">02 — 계열·학과별 표준 권장과목<div class="line"></div></div>
+  <div class="uni-search">
+    <div class="series-filter" id="seriesFilter"></div>
+    <input type="text" class="uni-input" id="seriesInput" placeholder="학과명으로 검색 (예: 컴퓨터공학, 간호, 심리)">
+    <div class="uni-hint">서울시교육청 고교학점제지원센터의 <b>18개 계열 · 117개 학과</b> 표준 권장과목이에요. 위에서 계열을 고르면 해당 계열 학과가 자동으로 펼쳐집니다. 초록 배지는 풍문고 개설과목과 일치하는 과목이에요.</div>
+    <div class="uni-results" id="seriesResults"></div>
+  </div>
 
   <div class="section-label">03 — 대학·학과별 권장과목 검색<div class="line"></div></div>
   <div class="uni-search">
@@ -166,13 +182,15 @@
     <div class="uni-results" id="uniResults"></div>
   </div>
 
-  <div class="section-label">04 — 계열·학과별 표준 권장과목<div class="line"></div></div>
-  <div class="uni-search">
-    <div class="series-filter" id="seriesFilter"></div>
-    <input type="text" class="uni-input" id="seriesInput" placeholder="학과명으로 검색 (예: 컴퓨터공학, 간호, 심리)">
-    <div class="uni-hint">서울시교육청 고교학점제지원센터의 <b>18개 계열 · 117개 학과</b> 표준 권장과목이에요. 특정 대학이 아니라 학과 일반 기준이며, 초록 배지는 풍문고 개설과목과 일치하는 과목입니다.</div>
-    <div class="uni-results" id="seriesResults"></div>
+  <div class="section-label">04 — 학기별 선택과목 (눌러서 담기)<div class="line"></div></div>
+  <div class="grade-picker">
+    <span class="gp-label">학년 선택</span>
+    <div class="grade-toggle" id="gradeToggle">
+      <button class="gt-btn" data-grade="1">1학년 <span>2026 입학</span></button>
+      <button class="gt-btn" data-grade="2">2학년 <span>2025 입학</span></button>
+    </div>
   </div>
+  <div id="result"></div>
 
   <div class="foot-note">
     ※ 학교 선택과목 정보는 2025학년도 풍문고 수강신청 자료를, 대학별 권장과목은 2028학년도 권역별 대학별 권장과목(대학어디가) 자료를 그대로 반영했으며, 연세대는 연세대학교 입학처 「2028학년도 전공연계과목 선택 가이드라인」(2026. 4.)을 추가 반영했습니다. 계열·학과별 표준 권장과목은 서울특별시교육청 고교학점제지원센터(2022 개정 교육과정 계열별 학과 안내) 자료입니다. 진로 매칭과 학점 체크는 참고용이며, 실제 신청 전 담임·진로 선생님과 상담하고 최신 대입전형계획을 함께 확인해 주세요. 체육·예술·교양 교과는 전 학생 공통 필수로 고정 배정되어 선택과목 목록에는 포함하지 않았습니다.
@@ -198,38 +216,33 @@ const AREA_COLOR = {
   "사회":"var(--c-사회)", "과학":"var(--c-과학)", "정보":"var(--c-정보)", "외국어":"var(--c-외국어)"
 };
 
-const CAREERS = [
-  { id:"lang",   emo:"📖", name:"어문·인문학",     angle:-155, desc:"국어국문·영문·언어학·문예창작 등 언어와 텍스트를 다루는 길" },
-  { id:"soc",    emo:"🍎", name:"사회과학",        angle:-124, desc:"사회학·심리학·행정학 등 사람과 사회 현상을 탐구하는 길" },
-  { id:"biz",    emo:"💼", name:"경영·경제",        angle:-93,  desc:"경영·경제·무역·회계 등 자원과 시장을 다루는 길" },
-  { id:"law",    emo:"⚖️", name:"법·행정",          angle:-62,  desc:"법학·행정학·경찰행정 등 규범과 제도를 다루는 길" },
-  { id:"edu",    emo:"🧑‍🏫", name:"교육학",           angle:-31,  desc:"초등·중등 교원, 교육학 등 가르치고 배우는 길" },
-  { id:"math",   emo:"📐", name:"자연과학·수학",    angle:0,    desc:"수학·물리학·통계학 등 원리를 증명하고 계산하는 길" },
-  { id:"cs",     emo:"💻", name:"컴퓨터·SW",        angle:31,   desc:"컴퓨터공학·AI·데이터사이언스 등 코드로 문제를 푸는 길" },
-  { id:"eng",    emo:"⚙️", name:"공학",             angle:62,   desc:"기계·전자·건축·화공 등 만들고 설계하는 길" },
-  { id:"med",    emo:"🩺", name:"의·치·한의학",     angle:93,   desc:"의예·치의예·한의예·수의예 등 생명을 다루는 길" },
-  { id:"bio",    emo:"🌱", name:"생명과학·환경",    angle:124,  desc:"생명공학·환경학 등 생명과 지구를 연구하는 길" },
-  { id:"media",  emo:"🎬", name:"미디어·콘텐츠",    angle:155,  desc:"언론·방송·콘텐츠제작 등 이야기를 전달하는 길" },
-  { id:"global", emo:"🌏", name:"국제·외국어",      angle:180,  desc:"국제학·외교·통번역 등 세계와 연결되는 길" },
+// 서울시교육청 고교학점제지원센터의 18개 계열. name은 SERIES_DATA의 계열명과 정확히 일치해야
+// 표준 권장과목 추천(GYE_REC)이 연결된다. angle은 나침반 바늘 방향(18등분).
+const GYE = [
+  { id:"lang",   emo:"📖", name:"언어·문학",       angle:0,   desc:"국어국문·영문·서양어·동양어·통번역 등 언어와 텍스트를 다루는 길" },
+  { id:"human",  emo:"📜", name:"인문과학",       angle:20,  desc:"사학·철학·문헌정보·인류학·문화콘텐츠 등 인간과 문화를 탐구하는 길" },
+  { id:"biz",    emo:"💼", name:"상경",           angle:40,  desc:"경영·경제·무역·세무회계·관광경영 등 자원과 시장을 다루는 길" },
+  { id:"media",  emo:"📣", name:"광고언론정보",   angle:60,  desc:"광고홍보·언론정보·정보미디어 등 이야기를 전달하는 길" },
+  { id:"soc",    emo:"🌍", name:"사회과학",       angle:80,  desc:"사회학·심리·정치외교·사회복지·지리 등 사람과 사회 현상을 탐구하는 길" },
+  { id:"law",    emo:"⚖️", name:"법·행정",        angle:100, desc:"법학·행정학·보건행정 등 규범과 제도를 다루는 길" },
+  { id:"sci",    emo:"🔬", name:"자연과학",       angle:120, desc:"수학·물리·화학·생명과학·천문·통계 등 원리를 증명하고 탐구하는 길" },
+  { id:"life",   emo:"🍳", name:"생활과학",       angle:140, desc:"식품영양·의류 등 생활 속 과학을 다루는 길" },
+  { id:"agri",   emo:"🌾", name:"농학",           angle:160, desc:"식물·동물·원예·조경 등 생명자원을 가꾸고 연구하는 길" },
+  { id:"mech",   emo:"⚙️", name:"기계·전기·전자", angle:180, desc:"기계·전기·전자·항공우주 등 만들고 제어하는 길" },
+  { id:"cs",     emo:"💻", name:"정보·컴퓨터",     angle:200, desc:"컴퓨터·소프트웨어·AI·빅데이터·정보보안 등 코드로 문제를 푸는 길" },
+  { id:"arch",   emo:"🏗️", name:"건축·환경",       angle:220, desc:"건축·토목·도시·교통·환경공학 등 공간과 환경을 설계하는 길" },
+  { id:"chem",   emo:"🧪", name:"화학·생명",       angle:240, desc:"화학공학·생명공학·신소재·에너지자원 등 물질과 생명을 다루는 길" },
+  { id:"health", emo:"🩹", name:"보건",           angle:260, desc:"간호·물리치료·임상병리·치위생 등 건강을 돌보는 길" },
+  { id:"med",    emo:"🩺", name:"의약학",         angle:280, desc:"의예·치의예·한의예·수의·약학 등 생명을 다루는 길" },
+  { id:"edu",    emo:"🧑‍🏫", name:"교육",           angle:300, desc:"초등·중등 교원, 교육학·유아교육 등 가르치고 배우는 길" },
+  { id:"art",    emo:"🎨", name:"예술",           angle:320, desc:"미술·음악·연극영화·디자인·문예창작 등 표현하고 창작하는 길" },
+  { id:"pe",     emo:"⛹️", name:"체육",           angle:340, desc:"체육·스포츠과학·스포츠의학·무용 등 몸으로 탐구하는 길" },
 ];
 
-const WHY = {
-  lang:"글과 언어를 깊이 읽고 표현하는 힘을 기르는 데 도움이 돼요.",
-  soc:"사회 현상을 구조적으로 분석하는 시각을 길러줘요.",
-  biz:"자원 배분과 의사결정을 수치로 이해하는 감각을 키워요.",
-  law:"규범과 제도, 논리적 근거를 다루는 훈련이 돼요.",
-  edu:"설명하고 소통하는 역량, 교과 지식의 폭을 넓혀줘요.",
-  math:"수학적 사고와 증명·논리 체계를 탄탄히 다져줘요.",
-  cs:"알고리즘적 사고와 데이터를 다루는 기초가 돼요.",
-  eng:"원리를 설계와 문제 해결로 옮기는 힘을 길러줘요.",
-  med:"생명 현상을 정밀하게 이해하는 배경지식이 돼요.",
-  bio:"생명과 환경 시스템을 탐구하는 안목을 넓혀줘요.",
-  media:"이야기를 구성하고 전달하는 감각을 키워줘요.",
-  global:"세계와 소통하는 언어·문화 감수성을 넓혀줘요."
-};
-
-// blocks: term(학기), pick(택N), total, sub(하위그룹명), credit(과목당 학점), subjects:[name,area,type,[careers]]
-const BLOCKS = [
+// blocks: term(학기), pick(택N), total, sub(하위그룹명), credit(과목당 학점), subjects:[name,area,type]
+// 학년별로 택N·학점·과목 구성이 달라 BLOCKS_2(현 2학년, 2025 입학) / BLOCKS_1(현 1학년, 2026 입학)로 분리한다.
+// 추천(★)은 과목 자체 태그가 아니라 GYE_REC(서울시교육청 표준 권장과목)로 계산하므로 careers 태그는 두지 않는다.
+const BLOCKS_2 = [
   { term:"2학년 1학기", pick:3, total:12, sub:null, credit:4,
     subjects:[
       ["주제 탐구 독서","국어","진로",["lang","soc","edu","media"]],
@@ -324,13 +337,114 @@ const BLOCKS = [
   },
 ];
 
+// 현 1학년(2026 입학) 교육과정: 2학년 선택이 '택4 × 3학점'(2학년은 택3 × 4학점)으로 다르고 과목 구성도 일부 다르다.
+const BLOCKS_1 = [
+  { term:"2학년 1학기", pick:4, total:12, sub:null, credit:3,
+    subjects:[
+      ["주제 탐구 독서","국어","진로"],
+      ["인공지능 수학","수학","진로"],
+      ["미디어 영어","영어","융합"],
+      ["세계시민과 지리","사회","일반"],
+      ["세계사","사회","일반"],
+      ["사회와 문화","사회","일반"],
+      ["현대사회와 윤리","사회","일반"],
+      ["경제","사회","진로"],
+      ["물리학","과학","일반"],
+      ["화학","과학","일반"],
+      ["생명과학","과학","일반"],
+      ["지구과학","과학","일반"],
+    ]
+  },
+  { term:"2학년 2학기", pick:4, total:13, sub:null, credit:3,
+    subjects:[
+      ["문학과 영상","국어","진로"],
+      ["기하","수학","진로"],
+      ["수학과제 탐구","수학","융합"],
+      ["세계 문화와 영어","영어","융합"],
+      ["도시의 미래 탐구","사회","진로"],
+      ["정치","사회","진로"],
+      ["법과 사회","사회","진로"],
+      ["역사로 탐구하는 현대 세계","사회","융합"],
+      ["윤리문제 탐구","사회","융합"],
+      ["역학과 에너지","과학","진로"],
+      ["물질과 에너지","과학","진로"],
+      ["세포와 물질대사","과학","진로"],
+      ["지구시스템과학","과학","진로"],
+    ]
+  },
+  { term:"3학년 1학기", pick:4, total:14, sub:"국·영·수·사·과", credit:3,
+    subjects:[
+      ["언어생활 탐구","국어","융합"],
+      ["미적분Ⅱ","수학","진로"],
+      ["경제 수학","수학","진로"],
+      ["영미 문학 읽기","영어","진로"],
+      ["한국지리 탐구","사회","진로"],
+      ["인문학과 윤리","사회","진로"],
+      ["기후변화와 지속가능한 세계","사회","융합"],
+      ["사회문제 탐구","사회","융합"],
+      ["역사로 탐구하는 현대 세계","사회","융합"],
+      ["전자기와 양자","과학","진로"],
+      ["화학 반응의 세계","과학","진로"],
+      ["생물의 유전","과학","진로"],
+      ["행성우주과학","과학","진로"],
+      ["과학과제 연구","과학","진로"],
+    ]
+  },
+  { term:"3학년 1학기", pick:1, total:2, sub:"기술가정/정보", credit:3,
+    subjects:[
+      ["정보","정보","일반"],
+      ["인공지능 기초","정보","진로"],
+    ]
+  },
+  { term:"3학년 1학기", pick:1, total:2, sub:"제2외국어/한문", credit:3,
+    subjects:[
+      ["중국어","외국어","일반"],
+      ["언어생활과 한자","외국어","융합"],
+    ]
+  },
+  { term:"3학년 2학기", pick:7, total:13, sub:"국·영·수·사·과", credit:3,
+    subjects:[
+      ["독서 토론과 글쓰기","국어","융합"],
+      ["매체 의사소통","국어","융합"],
+      ["수학과 문화","수학","융합"],
+      ["실용 통계","수학","융합"],
+      ["심화 영어 독해와 작문","영어","진로"],
+      ["윤리와 사상","사회","진로"],
+      ["한국사 심화 탐구","사회","진로"],
+      ["여행지리","사회","융합"],
+      ["금융과 경제생활","사회","융합"],
+      ["과학의 역사와 문화","과학","융합"],
+      ["기후변화와 환경생태","과학","융합"],
+      ["융합과학 탐구","과학","융합"],
+      ["공학커뮤니케이션","과학","융합"],
+    ]
+  },
+  { term:"3학년 2학기", pick:1, total:2, sub:"기술가정/정보", credit:3,
+    subjects:[
+      ["생활과학 탐구","정보","진로"],
+      ["데이터 과학","정보","진로"],
+    ]
+  },
+  { term:"3학년 2학기", pick:1, total:2, sub:"제2외국어/한문", credit:3,
+    subjects:[
+      ["중국 문화","외국어","융합"],
+      ["한문","외국어","일반"],
+    ]
+  },
+];
+
+// 현재 활성 학년의 블록. 기본값 없음 — 학생이 학년을 눌러야 학기별 선택과목이 나타난다.
+let currentGrade = null;
+let BLOCKS = null;
+
 // 학교지정 필수과목 (국영수, 이미 확정 배정 — 24학점 카운트 대상 아님, 대학검색 매칭용으로만 사용)
 const REQUIRED_SUBJECTS = ["공통국어1","공통국어2","문학","화법과 언어","독서와 작문",
   "공통수학1","공통수학2","대수","미적분Ⅰ","확률과 통계",
   "공통영어1","공통영어2","영어Ⅰ","영어Ⅱ","영어 독해와 작문"];
 
 const ALL_SCHOOL_SUBJECTS = new Set(REQUIRED_SUBJECTS);
-BLOCKS.forEach(b => b.subjects.forEach(s => ALL_SCHOOL_SUBJECTS.add(s[0])));
+// 대학·계열 검색의 ✓ 매칭은 학년과 무관하게 동작해야 하므로 두 학년의 개설과목을 모두 넣는다.
+[...BLOCKS_1, ...BLOCKS_2].forEach(b => b.subjects.forEach(s => ALL_SCHOOL_SUBJECTS.add(s[0])));
 // 띄어쓰기 차이(예: "경제수학"↔"경제 수학", "데이터과학"↔"데이터 과학")까지 매칭되도록 공백 제거판도 만들어 둔다.
 const SCHOOL_SUBJECTS_NOSPACE = new Set([...ALL_SCHOOL_SUBJECTS].map(s => s.replace(/\s/g, '')));
 
@@ -363,11 +477,47 @@ const SERIES_DATA = [["언어·문학","국어국문학과","화법과 언어, �
 // row: [region, area, uni, college, dept, core, rec, note]
 
 /* ================= STATE ================= */
+/* ===== 계열별 추천 과목(GYE_REC) — 서울시교육청 표준 권장과목 기반 =====
+   각 계열 소속 학과들의 '일반선택+진로선택' 표준 권장과목을 모아, 그 계열 학과의
+   과반(≥ ⌈학과수/2⌉, 최소 2)이 공통으로 권장하는 과목만 추천(★)으로 남긴다.
+   융합선택은 폭이 너무 넓어 제외한다. 결과는 풍문고 개설과목명으로 정규화한다. */
+function canonSchoolSubjects(name){
+  let p = name.replace(/^(국어|수학|영어|사회|과학|한국사|정보)\s*[(（]/, '')
+              .replace(/^[\s(（\[]+|[\s)）\].·]+$/g, '').trim();
+  if(!p) return [];
+  if(ALL_SCHOOL_SUBJECTS.has(p)) return [p];
+  const alias = SUBJECT_ALIAS[p];
+  if(alias){ const hit = alias.filter(a => ALL_SCHOOL_SUBJECTS.has(a)); if(hit.length) return hit; }
+  const ns = p.replace(/\s/g, '');
+  for(const s of ALL_SCHOOL_SUBJECTS){ if(s.replace(/\s/g,'') === ns) return [s]; }
+  return [];
+}
+const GYE_REC = {}; // 계열명 -> Set(추천 과목명)
+(function(){
+  const byGye = {};
+  SERIES_DATA.forEach(r => { (byGye[r[0]] = byGye[r[0]] || []).push(r); });
+  Object.keys(byGye).forEach(gye => {
+    const rows = byGye[gye], n = rows.length, cnt = {};
+    rows.forEach(r => {
+      const subj = new Set();
+      [r[2], r[3]].forEach(field => {            // 일반선택 + 진로선택
+        (field || '').replace(/[,\s]*등\s*$/, '').split(',').map(t => t.trim()).filter(Boolean)
+          .forEach(nm => canonSchoolSubjects(nm).forEach(c => subj.add(c)));
+      });
+      subj.forEach(c => { cnt[c] = (cnt[c] || 0) + 1; });
+    });
+    const thr = Math.max(2, Math.ceil(n / 2));
+    const set = new Set();
+    Object.keys(cnt).forEach(c => { if(cnt[c] >= thr) set.add(c); });
+    GYE_REC[gye] = set;
+  });
+})();
+
 const selected = new Set(); // "blockIdx_subIdx"
 
 /* ================= RENDER: CAREER GRID ================= */
 const grid = document.getElementById('careerGrid');
-CAREERS.forEach(c=>{
+GYE.forEach(c=>{
   const btn = document.createElement('button');
   btn.className = 'career-card';
   btn.id = 'career-'+c.id;
@@ -378,7 +528,6 @@ CAREERS.forEach(c=>{
 
 const needle = document.getElementById('needle');
 const resultEl = document.getElementById('result');
-const resultLabel = document.getElementById('resultLabel');
 let currentCareer = null;
 
 function selectCareer(career){
@@ -386,22 +535,62 @@ function selectCareer(career){
   document.querySelectorAll('.career-card').forEach(el=>el.classList.remove('active'));
   document.getElementById('career-'+career.id).classList.add('active');
   needle.style.transform = `translate(-50%,-50%) rotate(${career.angle}deg)`;
-  resultLabel.style.display = 'block';
-  renderBlocks(career);
+  // 02 계열·학과별 표준 권장과목 섹션을 선택한 계열로 자동 필터한다.
+  if(typeof activeSeries !== 'undefined'){
+    activeSeries = career.name;
+    if(seriesInput) seriesInput.value = '';
+    syncSeriesFilter();
+    renderSeriesList();
+  }
+  renderResult();
+}
+
+/* ================= 학년 토글 (1학년 / 2학년) — 기본값 없음, 반드시 선택 ================= */
+function setGrade(g){
+  currentGrade = g;
+  BLOCKS = (g === '2') ? BLOCKS_2 : BLOCKS_1;
+  selected.clear();
+  document.querySelectorAll('.gt-btn').forEach(b => b.classList.toggle('active', b.dataset.grade === g));
+  const eb = document.getElementById('eyebrowText');
+  if(eb) eb.textContent = (g === '2')
+    ? '풍문고등학교 · 2025학년도 입학생(현재 2학년)을 위한 2·3학년 선택과목 안내'
+    : '풍문고등학교 · 2026학년도 입학생(현재 1학년)을 위한 2·3학년 선택과목 안내';
+  renderResult();
+}
+document.querySelectorAll('.gt-btn').forEach(b => b.addEventListener('click', () => setGrade(b.dataset.grade)));
+
+// 04 학기별 선택과목 영역. 학년을 골라야 나타나고, 계열까지 고르면 권장과목이 ★로 표시된다.
+function renderResult(){
+  if(!currentGrade){
+    resultEl.innerHTML = `<div class="need-grade">위에서 <b>학년(1학년 / 2학년)</b>을 선택하면 그 학년의 학기별 선택과목이 나타나요.<br>학년마다 택N·학점이 달라요.</div>`;
+    updateCreditBar();
+    return;
+  }
+  renderBlocks(currentCareer);
 }
 
 function renderBlocks(career){
-  let html = `
+  let html = career ? `
     <div class="result-head">
       <div class="emo">${career.emo}</div>
       <div>
-        <div class="rt">희망 진로</div>
+        <div class="rt">희망 진로 · ${currentGrade}학년</div>
         <h2>${career.name}</h2>
         <p>${career.desc}</p>
       </div>
     </div>
+  ` : `
+    <div class="result-head">
+      <div class="emo">🧭</div>
+      <div>
+        <div class="rt">${currentGrade}학년 학기별 선택과목</div>
+        <h2>계열을 선택해 보세요</h2>
+        <p>위 01에서 희망 진로 계열을 고르면 그 계열의 권장과목이 ★로 표시돼요. 지금도 자유롭게 담을 수 있어요.</p>
+      </div>
+    </div>
   `;
 
+  const recSet = career ? (GYE_REC[career.name] || new Set()) : new Set();
   BLOCKS.forEach((block, bi)=>{
     html += `
       <div class="block">
@@ -412,7 +601,7 @@ function renderBlocks(career){
         <div class="subject-grid">
           ${block.subjects.map((s, si) => {
             const id = bi+'_'+si;
-            const isRec = s[3].includes(career.id);
+            const isRec = recSet.has(s[0]);
             return `
             <div class="subject-card ${isRec?'recommended':''}" data-id="${id}" style="border-left-color:${AREA_COLOR[s[1]]}" onclick="toggleSubject('${id}')">
               <div class="check">✓</div>
@@ -421,7 +610,7 @@ function renderBlocks(career){
                 <span class="area-tag" style="background:${AREA_COLOR[s[1]]}">${s[1]}</span>
                 <span class="stype">${s[2]}</span>
               </div>
-              ${isRec ? `<div class="star">★ ${career.name} 추천</div>` : ``}
+              ${isRec ? `<div class="star">★ ${career.name}계열 권장</div>` : ``}
             </div>
           `}).join('')}
         </div>
@@ -431,7 +620,6 @@ function renderBlocks(career){
 
   resultEl.innerHTML = html;
   syncSelectedUI();
-  resultEl.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
 function toggleSubject(id){
@@ -460,6 +648,18 @@ function syncSelectedUI(){
 }
 
 function updateCreditBar(){
+  const fillEl = document.getElementById('cbFill');
+  const numEl = document.getElementById('cbNum');
+  const detailEl = document.getElementById('cbDetail');
+  const statusEl = document.getElementById('cbStatus');
+  if(!BLOCKS){ // 학년 미선택 상태: 학점바를 비활성 안내로 둔다.
+    fillEl.style.width = '0%'; fillEl.classList.remove('over');
+    numEl.textContent = '0 / 24학점'; numEl.classList.remove('over','ok');
+    detailEl.textContent = '국어 0 · 수학 0 · 영어 0';
+    statusEl.classList.remove('done','over');
+    statusEl.textContent = '학년을 선택하세요';
+    return;
+  }
   let sums = { "국어":0, "수학":0, "영어":0 };
   BLOCKS.forEach((block, bi)=>{
     block.subjects.forEach((s, si)=>{
@@ -652,8 +852,8 @@ seriesInput.addEventListener('input', () => {
 });
 renderSeriesList();
 
-
-updateCreditBar();
+// 초기 상태: 학년 미선택 → 04 영역에 학년 선택 안내, 학점바 비활성.
+renderResult();
 </script>
 </body>
 </html>
