@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>하노이의 탑 — 전설, 규칙, 그리고 일반항</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --bg: #fbf7ee;
+    --panel: #f4ecd9;
+    --panel-2: #f0e6d0;
+    --gold: #b07d1e;
+    --gold-soft: #8a5f13;
+    --ivory: #2c2822;
+    --muted: #6f6757;
+    --mint: #12866a;
+    --rule: #e4d9bf;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ivory);
+    font-family:'Noto Sans KR', sans-serif;
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:100px 24px 70px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(212,175,55,0.16), transparent 60%),
+      var(--bg);
+    border-bottom:1px solid var(--rule);
+    overflow:hidden;
+  }
+  .hero-disks{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:28px;}
+  .hero-disk{height:14px;border-radius:8px;background:linear-gradient(180deg,#e8c25e,#c8952c);box-shadow:0 2px 10px rgba(176,125,30,0.3);}
+  .eyebrow{
+    letter-spacing:0.35em;
+    font-size:12px;
+    color:var(--gold-soft);
+    text-transform:uppercase;
+    margin-bottom:18px;
+    font-weight:500;
+  }
+  h1.title{
+    font-family:'Noto Serif KR', serif;
+    font-weight:900;
+    font-size:56px;
+    margin:0 0 14px;
+    background:linear-gradient(180deg, var(--ivory), var(--gold-soft));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{color:var(--muted);font-size:16px;max-width:480px;margin:0 auto;}
+
+  /* SECTIONS */
+  section{padding:80px 0;border-bottom:1px solid var(--rule);}
+  section:last-of-type{border-bottom:none;}
+  .chapter-mark{
+    display:flex;align-items:center;gap:14px;margin-bottom:28px;
+  }
+  .chapter-num{
+    font-family:'Noto Serif KR',serif;
+    font-weight:700;
+    font-size:14px;
+    color:#fff;
+    background:var(--gold);
+    width:32px;height:32px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .chapter-label{color:var(--gold-soft);letter-spacing:0.15em;font-size:13px;text-transform:uppercase;font-weight:500;}
+  h2{
+    font-family:'Noto Serif KR', serif;
+    font-size:32px;
+    font-weight:700;
+    margin:0 0 24px;
+    color:var(--ivory);
+  }
+  p{color:#4a4436;font-size:16px;margin:0 0 18px;}
+  .lede{font-size:18px;color:var(--ivory);}
+
+  .callout{
+    background:var(--panel);
+    border-left:3px solid var(--gold);
+    border-radius:4px;
+    padding:20px 24px;
+    margin:28px 0;
+    color:var(--muted);
+    font-size:14.5px;
+  }
+  .callout b{color:var(--gold-soft);}
+
+  /* RULES */
+  .rule-list{list-style:none;margin:0 0 32px;padding:0;display:flex;flex-direction:column;gap:14px;}
+  .rule-list li{
+    display:flex;gap:16px;align-items:flex-start;
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .rule-num{
+    font-family:'Noto Serif KR',serif;
+    color:var(--gold);
+    font-weight:700;
+    font-size:15px;
+    flex-shrink:0;
+  }
+  .rule-list p{margin:0;font-size:15px;color:#4a4436;}
+  .rule-list .goal{border-color:var(--mint);}
+  .rule-list .goal .rule-num{color:var(--mint);}
+
+  /* GAME WIDGET */
+  .game-card{
+    background:var(--panel-2);
+    border:1px solid var(--rule);
+    border-radius:16px;
+    padding:28px 24px 24px;
+    margin-top:8px;
+  }
+  .game-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+  .game-title{font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;color:var(--gold-soft);}
+  .game-stats{display:flex;gap:18px;font-size:13px;color:var(--muted);}
+  .game-stats span b{color:var(--ivory);font-size:15px;}
+  .pegs{display:flex;justify-content:space-around;align-items:flex-end;height:170px;margin:20px 0 10px;position:relative;}
+  .peg{
+    position:relative;
+    width:110px;height:100%;
+    display:flex;flex-direction:column-reverse;align-items:center;justify-content:flex-start;
+    cursor:pointer;
+    border-radius:6px;
+    transition:background 0.15s;
+  }
+  .peg:hover{background:rgba(212,175,55,0.06);}
+  .peg.selected{background:rgba(212,175,55,0.14);}
+  .peg::before{
+    content:'';
+    position:absolute;
+    bottom:14px;left:50%;
+    width:6px;height:130px;
+    background:#c2b48d;
+    border-radius:3px;
+    transform:translateX(-50%);
+    z-index:0;
+  }
+  .peg::after{
+    content:'';
+    position:absolute;
+    bottom:8px;left:50%;
+    width:100px;height:8px;
+    background:#c2b48d;
+    border-radius:4px;
+    transform:translateX(-50%);
+    z-index:0;
+  }
+  .disk{
+    position:relative;z-index:1;
+    height:16px;margin-bottom:4px;max-width:92%;
+    border-radius:8px;
+    background:linear-gradient(180deg,#e8c25e,#c8952c);
+    box-shadow:0 2px 6px rgba(0,0,0,0.18);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;color:#3b2c05;font-weight:700;
+    transition:transform 0.15s;
+  }
+  .peg.selected .disk:last-child{transform:translateY(-6px);}
+  .game-controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .btn{
+    border:1px solid var(--rule);
+    background:transparent;
+    color:var(--ivory);
+    padding:9px 16px;
+    border-radius:8px;
+    font-size:13px;
+    cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;
+    transition:border-color 0.15s, color 0.15s;
+  }
+  .btn:hover{border-color:var(--gold);color:var(--gold-soft);}
+  .msg{font-size:13px;color:var(--muted);min-height:20px;margin-top:10px;}
+  .msg.win{color:var(--mint);font-weight:700;}
+  .msg.err{color:#c0392b;}
+
+  /* MATH */
+  .step{
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-radius:12px;
+    padding:20px 22px;
+    margin:0 0 16px;
+  }
+  .step-label{font-size:12px;letter-spacing:0.1em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:10px;font-weight:600;}
+  .katex-display{margin:12px 0;}
+  .katex{color:var(--ivory);font-size:1.05em;}
+
+  table.seq{width:100%;border-collapse:collapse;margin:22px 0;font-size:14.5px;}
+  table.seq th, table.seq td{border:1px solid var(--rule);padding:10px 8px;text-align:center;}
+  table.seq th{background:var(--panel);color:var(--gold-soft);font-weight:600;}
+  table.seq td{color:#4a4436;}
+
+  .result-box{
+    background:linear-gradient(135deg, rgba(212,175,55,0.14), rgba(212,175,55,0.03));
+    border:1px solid var(--gold);
+    border-radius:14px;
+    padding:26px 28px;
+    text-align:center;
+    margin:30px 0;
+  }
+  .result-box .label{font-size:13px;color:var(--gold-soft);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px;}
+  .result-box .katex{font-size:1.5em;color:var(--ivory);}
+
+  .epilogue{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    padding-top:60px;
+  }
+  .epilogue .num{color:var(--gold-soft);font-weight:700;}
+
+  @media (max-width:600px){
+    h1.title{font-size:38px;}
+    h2{font-size:26px;}
+    .pegs{height:150px;}
+    .peg{width:80px;}
+    .peg::after{width:74px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-disks">
+    <div class="hero-disk" style="width:40px;"></div>
+    <div class="hero-disk" style="width:60px;"></div>
+    <div class="hero-disk" style="width:80px;"></div>
+    <div class="hero-disk" style="width:100px;"></div>
+  </div>
+  <div class="eyebrow">수열의 귀납적 정의 · 대수</div>
+  <h1 class="title">하노이의 탑</h1>
+  <p class="subtitle">전설에서 시작해 규칙을 배우고, 마침내 수열의 일반항으로 세상의 끝을 계산한다.</p>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="chapter-mark">
+      <div class="chapter-num">1</div>
+      <div class="chapter-label">The Legend</div>
+    </div>
+    <h2>세상이 끝나는 날</h2>
+    <p class="lede">인도 베나레스의 한 사원에는 세계의 중심을 상징하는 다이아몬드 바늘 세 개가 세워져 있다고 전해진다.</p>
+    <p>태초에 브라흐마 신은 그 중 한 바늘에 순금으로 된 원반 64개를 크기 순서대로, 가장 큰 것이 맨 아래에 오도록 쌓아 두었다. 그리고 사원의 승려들에게 한 가지 임무를 맡겼다. 이 원반들을 정해진 규칙에 따라 다른 바늘로 모두 옮기라는 것이었다. 승려들은 밤낮없이, 하루도 쉬지 않고 원반을 옮기고 있으며, 마지막 64번째 원반이 새로운 바늘 위에 놓이는 순간 사원은 먼지가 되어 무너지고 세상은 끝난다고 한다.</p>
+    <div class="callout">
+      이 이야기는 1883년 프랑스의 수학자 <b>에두아르 뤼카(Édouard Lucas)</b>가 <b>&lsquo;하노이의 탑&rsquo;</b>이라는 퍼즐을 세상에 소개하면서 함께 붙인 전설이다. 실제 인도 사원의 전승이라기보다는, 퍼즐에 신비로움을 더하기 위해 뤼카가 지어낸 이야기로 알려져 있다. 하지만 이 전설은 우리에게 중요한 질문 하나를 던진다 — <b>정말로 원반 64개를 옮기는 데 얼마나 걸릴까?</b> 이 질문의 답은 오늘 수업의 마지막에 함께 확인한다.
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter-mark">
+      <div class="chapter-num">2</div>
+      <div class="chapter-label">The Rules</div>
+    </div>
+    <h2>게임의 규칙</h2>
+    <p>크기가 다른 원반 <span class="katex-inline">\(n\)</span>개가 한 기둥에 작은 원반이 위로 오도록 쌓여 있는 상태에서 시작한다. 세 개의 기둥 중 처음 기둥에 쌓인 원반을 다른 기둥으로 모두 옮기면 게임이 끝난다.</p>
+
+    <ul class="rule-list">
+      <li>
+        <span class="rule-num">규칙 1</span>
+        <p>한 번에 옮길 수 있는 원반은 <b>단 하나</b>뿐이다.</p>
+      </li>
+      <li>
+        <span class="rule-num">규칙 2</span>
+        <p>옮기는 원반은 항상 어느 기둥이든 <b>맨 위에 있는 원반</b>이어야 한다.</p>
+      </li>
+      <li>
+        <span class="rule-num">규칙 3</span>
+        <p>자신보다 <b>큰 원반 위에는</b> 올려놓을 수 있지만, <b>작은 원반 위에는</b> 올려놓을 수 없다.</p>
+      </li>
+      <li class="goal">
+        <span class="rule-num">목표</span>
+        <p>이 규칙을 지키면서 <b>가장 적은 횟수</b>로 원반 전체를 다른 기둥으로 옮긴다.</p>
+      </li>
+    </ul>
+
+    <div class="game-card">
+      <div class="game-head">
+        <div class="game-title">직접 해보기 — 원반 3개</div>
+        <div class="game-stats">
+          <span>이동 횟수 <b id="moveCount">0</b></span>
+        </div>
+      </div>
+      <div class="pegs" id="pegs">
+        <div class="peg" data-peg="0"></div>
+        <div class="peg" data-peg="1"></div>
+        <div class="peg" data-peg="2"></div>
+      </div>
+      <div class="game-controls">
+        <button class="btn" id="resetBtn">다시 시작</button>
+      </div>
+      <div class="msg" id="gameMsg">원반을 클릭해 선택하고, 옮길 기둥을 클릭하세요.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter-mark">
+      <div class="chapter-num">3</div>
+      <div class="chapter-label">The General Term</div>
+    </div>
+    <h2>일반항 구하기</h2>
+    <p class="lede">원반 <span class="katex-inline">\(n\)</span>개를 옮기는 데 필요한 <b>최소 이동 횟수</b>를 <span class="katex-inline">\(a_n\)</span>이라 하자.</p>
+
+    <div class="step">
+      <div class="step-label">Step 1 — 귀납적 정의 세우기</div>
+      <p>원반 <span class="katex-inline">\(n\)</span>개를 옮기려면, 가장 큰 맨 아래 원반을 움직이기 전에 먼저 그 위에 쌓인 <span class="katex-inline">\(n-1\)</span>개의 원반을 다른 기둥으로 옮겨 놓아야 한다. 여기에 최소 <span class="katex-inline">\(a_{n-1}\)</span>번이 필요하다.</p>
+      <p>그 다음 가장 큰 원반을 목표 기둥으로 옮긴다. (1번)</p>
+      <p>마지막으로, 옮겨 두었던 <span class="katex-inline">\(n-1\)</span>개의 원반을 다시 그 위로 옮긴다. 여기에 다시 <span class="katex-inline">\(a_{n-1}\)</span>번이 필요하다.</p>
+      <div class="katex-display" id="eq1"></div>
+    </div>
+
+    <table class="seq">
+      <tr><th>n</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+      <tr><th>a<sub>n</sub></th><td>1</td><td>3</td><td>7</td><td>15</td><td>31</td></tr>
+    </table>
+
+    <div class="step">
+      <div class="step-label">Step 2 — <span style="text-transform:none">α</span>를 이용해 등비수열 꼴로 변형</div>
+      <p><span class="katex-inline">\(a_n = 2a_{n-1}+1\)</span> 과 같이 <span class="katex-inline">\(a_n = pa_{n-1}+q\ (p \neq 1)\)</span> 꼴의 점화식은, 다음 방정식을 만족하는 <span class="katex-inline">\(\alpha\)</span>를 이용하면 등비수열로 바꿀 수 있다.</p>
+      <div class="katex-display" id="eq2"></div>
+      <p>이 식에 <span class="katex-inline">\(p=2,\ q=1\)</span>을 대입하여 <span class="katex-inline">\(\alpha\)</span>를 구하면:</p>
+      <div class="katex-display" id="eq3"></div>
+      <p>따라서 원래의 점화식은 다음과 같이 변형된다.</p>
+      <div class="katex-display" id="eq4"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-label">Step 3 — 등비수열의 일반항 구하기</div>
+      <p><span class="katex-inline">\(b_n = a_n + 1\)</span>로 치환하면, <span class="katex-inline">\(\{b_n\}\)</span>은 공비 2인 등비수열이다.</p>
+      <div class="katex-display" id="eq5"></div>
+      <p>첫째항은 <span class="katex-inline">\(b_1 = a_1+1 = 1+1 = 2\)</span> 이므로:</p>
+      <div class="katex-display" id="eq6"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-label">Step 4 — 원래 수열로 되돌리기</div>
+      <p><span class="katex-inline">\(b_n = a_n+1\)</span> 이었으므로:</p>
+      <div class="katex-display" id="eq7"></div>
+    </div>
+
+    <div class="result-box">
+      <div class="label">일반항</div>
+      <div id="eqFinal"></div>
+    </div>
+
+    <p>표의 값과 비교해 보면 <span class="katex-inline">\(a_1=2^1-1=1,\ a_2=2^2-1=3,\ a_3=2^3-1=7\)</span> 로 정확히 일치함을 확인할 수 있다.</p>
+
+    <div class="callout">
+      이제 전설로 돌아가 보자. 원반이 <span class="katex-inline">\(n=64\)</span>개일 때 최소 이동 횟수는 <span class="katex-inline">\(a_{64} = 2^{64}-1 \approx 1.8 \times 10^{19}\)</span>번이다. 승려들이 <b>1초에 한 번씩, 밤낮없이 쉬지 않고</b> 원반을 옮긴다고 해도 이를 모두 마치는 데는 약 <b>5,800억 년</b>이 걸린다 — 우주의 나이(약 138억 년)보다 훨씬 긴 시간이다. 세상이 끝나는 날은, 아주 먼 훗날의 이야기인 셈이다.
+    </div>
+  </section>
+
+  <div class="epilogue">
+    풍문고등학교 · 대수 — 수열의 귀납적 정의 <span class="num">§</span> 하노이의 탑
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '\\(', right: '\\)', display: false},
+      {left: '\\[', right: '\\]', display: true}
+    ]
+  });
+
+  function eq(id, tex, display) {
+    katex.render(tex, document.getElementById(id), {displayMode: display !== false});
+  }
+
+  eq('eq1', 'a_n = 2a_{n-1} + 1 \\quad (n \\ge 2), \\qquad a_1 = 1');
+  eq('eq2', '\\alpha = p\\alpha + q');
+  eq('eq3', '\\alpha = 2\\alpha + 1 \\ \\Longrightarrow\\ \\alpha = -1');
+  eq('eq4', 'a_n - (-1) = 2\\bigl(a_{n-1} - (-1)\\bigr) \\ \\Longrightarrow\\ a_n + 1 = 2(a_{n-1}+1)');
+  eq('eq5', 'b_n = 2\\,b_{n-1}');
+  eq('eq6', 'b_n = 2 \\cdot 2^{\\,n-1} = 2^{\\,n}');
+  eq('eq7', 'a_n + 1 = 2^{\\,n} \\ \\Longrightarrow\\ a_n = 2^{\\,n} - 1');
+  eq('eqFinal', 'a_n = 2^{\\,n} - 1');
+
+  // ---- Hanoi game ----
+  const N = 3;
+  let pegs, selected, moves;
+  const pegEls = document.querySelectorAll('.peg');
+  const msgEl = document.getElementById('gameMsg');
+  const moveEl = document.getElementById('moveCount');
+  const widths = {1: 40, 2: 60, 3: 80};
+
+  function init() {
+    pegs = [[3,2,1], [], []];
+    selected = null;
+    moves = 0;
+    msgEl.textContent = '원반을 클릭해 선택하고, 옮길 기둥을 클릭하세요.';
+    msgEl.className = 'msg';
+    render();
+  }
+
+  function render() {
+    moveEl.textContent = moves;
+    pegEls.forEach((el, i) => {
+      el.innerHTML = '';
+      el.classList.toggle('selected', selected === i);
+      pegs[i].forEach(size => {
+        const d = document.createElement('div');
+        d.className = 'disk';
+        d.style.width = widths[size] + 'px';
+        d.textContent = size;
+        el.appendChild(d);
+      });
+    });
+  }
+
+  function handleClick(i) {
+    if (selected === null) {
+      if (pegs[i].length === 0) {
+        msgEl.textContent = '빈 기둥입니다. 원반이 있는 기둥을 선택하세요.';
+        msgEl.className = 'msg err';
+        return;
+      }
+      selected = i;
+      msgEl.textContent = '이제 옮길 기둥을 클릭하세요.';
+      msgEl.className = 'msg';
+    } else if (selected === i) {
+      selected = null;
+      msgEl.textContent = '선택을 취소했습니다.';
+      msgEl.className = 'msg';
+    } else {
+      const from = pegs[selected], to = pegs[i];
+      const disk = from[from.length - 1];
+      const top = to[to.length - 1];
+      if (top !== undefined && disk > top) {
+        msgEl.textContent = '큰 원반은 작은 원반 위에 놓을 수 없습니다.';
+        msgEl.className = 'msg err';
+        selected = null;
+      } else {
+        to.push(from.pop());
+        moves++;
+        selected = null;
+        if (i !== 0 && pegs[i].length === N) {
+          msgEl.textContent = `완성! ${moves}번 만에 모두 옮겼습니다. 더 적은 횟수로도 옮길 수 있을까요?`;
+          msgEl.className = 'msg win';
+        } else {
+          msgEl.textContent = '원반을 클릭해 선택하고, 옮길 기둥을 클릭하세요.';
+          msgEl.className = 'msg';
+        }
+      }
+    }
+    render();
+  }
+
+  pegEls.forEach((el, i) => el.addEventListener('click', () => handleClick(i)));
+  document.getElementById('resetBtn').addEventListener('click', init);
+
+  init();
+});
+</script>
+
+</body>
+</html>
