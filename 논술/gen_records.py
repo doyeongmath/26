@@ -1,6 +1,6 @@
 import openpyxl, io, sys, re
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-wb = openpyxl.load_workbook('📚 논술 독서 감상 기록(응답) (1).xlsx')
+wb = openpyxl.load_workbook('📚 논술 독서 감상 기록(응답).xlsx')
 ws = wb.active
 
 def clean(val):
