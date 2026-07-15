@@ -16,7 +16,7 @@ function getSheet() {
 }
 
 function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile('Index')
+  return HtmlService.createHtmlOutputFromFile('독서감상기록')
     .setTitle('논술 독서 감상 기록')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
