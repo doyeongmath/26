@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원뿔을 잘라보자</title>
+<style>
+  :root{
+    --navy:#1A1A2E;
+    --blue:#185A9D;
+    --teal:#43CEA2;
+    --tealdark:#17A589;
+    --amber:#E8A80A;
+    --purple:#8E44AD;
+    --bg:#F5F8FA;
+    --card:#FFFFFF;
+    --text:#1A1A2E;
+    --muted:#5B6472;
+    --line:#E1E8EE;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  .wrap{max-width:1260px;margin:0 auto;padding:0 24px 50px;}
+  header.hero{
+    background:linear-gradient(135deg,var(--navy) 0%,#16213E 55%, var(--blue) 100%);
+    color:#fff;
+    padding:38px 24px 32px;
+    text-align:center;
+  }
+  header.hero h1{
+    margin:0 0 8px;
+    font-size:2.15em;
+    letter-spacing:-0.01em;
+  }
+  header.hero p{
+    margin:0;
+    font-size:1.0em;
+    color:#CFE3E8;
+  }
+  section{margin-top:26px;}
+  h2.section-title{
+    font-size:1.3em;margin:0 0 14px;color:var(--navy);
+  }
+  .legend-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px;}
+  .legend-chip{
+    display:flex;align-items:center;gap:7px;
+    background:var(--card);border:1px solid var(--line);
+    border-radius:24px;padding:6px 14px 6px 10px;font-size:0.9em;font-weight:700;
+    box-shadow:0 2px 6px rgba(20,30,50,0.05);
+  }
+  .legend-dot{width:12px;height:12px;border-radius:50%;flex:none;}
+  .intro-line{text-align:center;color:var(--muted);font-size:0.98em;max-width:760px;margin:0 auto;}
+  /* control bar */
+  .control-bar{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 24px;box-shadow:0 4px 16px rgba(20,30,50,0.06);
+  }
+  .badge-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+  .curve-name-badge{
+    display:inline-block;padding:6px 20px;border-radius:22px;color:#fff;font-weight:800;font-size:1.25em;
+  }
+  .phi-readout{
+    font-weight:700;color:var(--blue);
+    background:#EAF2FA;border-radius:10px;padding:7px 14px;font-size:1.05em;
+  }
+  .slider-row{display:flex;align-items:center;gap:12px;max-width:640px;margin:0 auto;}
+  .slider-row span{font-size:0.82em;color:var(--muted);font-weight:700;}
+  .slider-row input[type=range]{width:100%;accent-color:var(--blue);height:6px;}
+  .boundary-hint{
+    max-width:640px;margin:10px auto 0;padding:9px 15px;border-radius:10px;
+    background:#FFF4E0;color:#8A6A2E;font-size:.86em;text-align:center;font-weight:700;
+    border:1px solid #F0DDAE;
+  }
+  .preset-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px;}
+  .preset-btn{
+    border:1.5px solid var(--line);background:#fff;border-radius:9px;
+    padding:8px 14px;font-size:0.88em;font-weight:700;cursor:pointer;color:var(--text);
+    transition:all .15s;
+  }
+  .preset-btn:hover{border-color:var(--blue);color:var(--blue);}
+  .preset-btn.play{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .preset-btn.play:hover{opacity:0.88;color:#fff;}
+  /* visualization panels */
+  .lab-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;margin-top:20px;
+  }
+  @media (max-width:860px){ .lab-grid{grid-template-columns:1fr;} }
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 16px 18px;box-shadow:0 4px 16px rgba(20,30,50,0.06);
+  }
+  .panel h3{margin:0 0 10px;font-size:1em;color:var(--navy);text-align:center;}
+  #scene3d-holder{
+    position:relative;width:100%;aspect-ratio:4/3.3;
+    border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 30%, #eef4f8 0%, #dfe9ef 100%);
+    touch-action:none;cursor:grab;
+  }
+  #scene3d-holder:active{cursor:grabbing;}
+  #scene3d-holder canvas{display:block;width:100%;height:100%;max-width:100%;}
+  .drag-tip{
+    position:absolute;bottom:8px;left:10px;font-size:0.72em;color:#5a6c78;
+    background:rgba(255,255,255,0.75);padding:3px 8px;border-radius:8px;pointer-events:none;
+  }
+  #scene2d-holder{
+    width:100%;aspect-ratio:4/3.3;border-radius:12px;background:#fbfdfe;
+    border:1px dashed var(--line);
+  }
+  #scene2d-holder canvas{display:block;width:100%;height:100%;max-width:100%;}
+  table.summary-table{
+    width:100%;border-collapse:collapse;background:var(--card);
+    border-radius:12px;overflow:hidden;box-shadow:0 3px 12px rgba(20,30,50,0.06);
+  }
+  table.summary-table th, table.summary-table td{
+    padding:12px 16px;text-align:center;font-size:0.92em;border-bottom:1px solid var(--line);
+  }
+  table.summary-table th{background:var(--navy);color:#fff;font-weight:700;}
+  table.summary-table tr:last-child td{border-bottom:none;}
+  table.summary-table td.curve-cell{font-weight:800;}
+  footer{margin-top:40px;text-align:center;color:var(--muted);font-size:0.82em;}
+  .question-card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:26px 28px;box-shadow:0 5px 18px rgba(20,30,50,0.07);
+    text-align:center;
+  }
+  .question-kicker{font-size:.88em;font-weight:800;color:var(--blue);margin-bottom:8px;}
+  .question-card h2{margin:0 0 10px;font-size:1.55em;line-height:1.4;color:var(--navy);}
+  .question-card p{margin:0 auto 18px;color:var(--muted);}
+  .prediction-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:760px;margin:0 auto;
+  }
+  .prediction-grid div{
+    text-align:left;background:#F7FAFC;border:1px solid var(--line);
+    border-radius:11px;padding:10px 13px;font-size:.9em;
+  }
+  .prediction-grid b{color:var(--blue);margin-right:5px;}
+  .teacher-tip{
+    max-width:760px;margin:15px auto 0;padding:10px 14px;border-radius:10px;
+    background:#FFF8E7;color:#6B5314;font-size:.84em;text-align:left;
+  }
+  .discovery-note{
+    margin-top:14px;background:#F7FAFC;border:1px solid var(--line);
+    border-radius:12px;padding:13px 16px;color:var(--muted);font-size:.9em;text-align:center;
+  }
+  .angle-help{
+    font-size:.78em;color:var(--muted);background:#F7FAFC;
+    border:1px solid var(--line);border-radius:9px;padding:6px 10px;
+  }
+  .distance-card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:20px;box-shadow:0 4px 16px rgba(20,30,50,0.06);
+  }
+  .distance-card h3{margin:0 0 12px;color:var(--navy);text-align:center;}
+  .distance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .distance-item{
+    border:1px solid var(--line);border-radius:12px;padding:13px 10px;text-align:center;
+    background:#FBFDFE;font-size:.88em;
+  }
+  .distance-item .name{font-weight:800;font-size:1.05em;margin-bottom:7px;}
+  .distance-item .desc{color:var(--muted);}
+  .next-question{
+    margin-top:14px;padding:14px 16px;border-radius:12px;background:#EEF5FB;
+    border:1px solid #D7E6F2;text-align:center;color:var(--navy);
+  }
+  @media (max-width:860px){
+    .prediction-grid,.distance-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .prediction-grid,.distance-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>원뿔을 잘라보자</h1>
+  <p>하나의 원뿔을 평면으로 자르면 어떤 곡선들이 만들어질까요?</p>
+</header>
+<div class="wrap">
+  <section id="intro">
+    <div class="question-card">
+      <div class="question-kicker">🔎 먼저 생각해 봅시다</div>
+      <h2>하나의 원뿔을 평면으로 자르면<br>어떤 모양들이 만들어질까요?</h2>
+      <p>평면의 위치와 기울기를 바꾸어 봅시다.<br>
+      <strong>몇 종류의 곡선이 나타날지</strong> 먼저 예상해 보세요.</p>
+    </div>
+  </section>
+  <section id="lab">
+    <div class="control-bar">
+      <div class="badge-row">
+        <span class="curve-name-badge" id="curveBadge" style="background:var(--muted);">?</span>
+        <span class="phi-readout" id="phiReadout">φ = 0.0°</span>
+        <span class="angle-help">φ: 원뿔의 축과 절단면 사이의 관계를 나타내는 각</span>
+      </div>
+      <div class="slider-row">
+        <span>0°</span>
+        <div style="flex:1;position:relative;">
+          <input type="range" id="phiSlider" min="0" max="88" step="0.5" value="0" style="width:100%;">
+          <div id="boundaryTick" style="position:absolute;top:-3px;left:65.9%;width:2px;height:11px;background:#C7CDD4;pointer-events:none;"></div>
+        </div>
+        <span>88°</span>
+      </div>
+      <div class="boundary-hint" id="boundaryHint" style="display:none;"></div>
+      <div class="preset-row">
+        <button class="preset-btn play" id="playBtn">▶ 변화 관찰</button>
+        <button class="preset-btn" id="resetViewBtn">↺ 시점 초기화</button>
+        <button class="preset-btn" id="revealBtn" style="border-color:var(--amber);color:#8A6A2E;">🔎 이름 공개하기</button>
+      </div>
+      <div class="preset-row" id="namedPresetRow" style="display:none;">
+        <button class="preset-btn" data-phi="0">🟢 원</button>
+        <button class="preset-btn" data-phi="30">🔵 타원</button>
+        <button class="preset-btn" data-phi="58">🟠 포물선</button>
+        <button class="preset-btn" data-phi="75">🟣 쌍곡선</button>
+      </div>
+    </div>
+    <div class="lab-grid">
+      <div class="panel">
+        <h3>3D — 원뿔과 절단면</h3>
+        <div id="scene3d-holder"></div>
+      </div>
+      <div class="panel">
+        <h3>2D — 실제 단면 모양</h3>
+        <div id="scene2d-holder"></div>
+      </div>
+    </div>
+  </section>
+  <section id="summary">
+    <h2 class="section-title">📋 우리가 발견한 것</h2>
+    <table class="summary-table">
+      <tr><th>평면과 원뿔의 관계</th><th>나타나는 곡선</th></tr>
+      <tr>
+        <td>축에 수직</td>
+        <td class="curve-cell" style="color:#17A589;">원</td>
+      </tr>
+      <tr>
+        <td>모선보다 완만함</td>
+        <td class="curve-cell" style="color:#185A9D;">타원</td>
+      </tr>
+      <tr>
+        <td>모선과 평행</td>
+        <td class="curve-cell" style="color:#E8A80A;">포물선</td>
+      </tr>
+      <tr>
+        <td>모선보다 가파름</td>
+        <td class="curve-cell" style="color:#8E44AD;">쌍곡선</td>
+      </tr>
+    </table>
+  </section>
+    <section style="margin-top:20px;">
+      <div class="distance-card">
+        <h3>🔗 그런데 네 곡선은 '거리'로도 설명할 수 있습니다</h3>
+        <div class="distance-grid">
+          <div class="distance-item">
+            <div class="name" style="color:#17A589;">원</div>
+            <div class="desc">한 점에서<br>같은 거리</div>
+          </div>
+          <div class="distance-item">
+            <div class="name" style="color:#185A9D;">타원</div>
+            <div class="desc">두 점까지 거리의<br>합이 일정</div>
+          </div>
+          <div class="distance-item">
+            <div class="name" style="color:#E8A80A;">포물선</div>
+            <div class="desc">한 점과 한 직선까지<br>거리가 같음</div>
+          </div>
+          <div class="distance-item">
+            <div class="name" style="color:#8E44AD;">쌍곡선</div>
+            <div class="desc">두 점까지 거리의<br>차가 일정</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  <footer>풍문고등학교 · 기하</footer>
+</div>
+<script>
+(function(){
+  "use strict";
+  // ---------------- math constants ----------------
+  const ALPHA_DEG = 32;                    // cone half-angle (axis to generator)
+  const ALPHA = ALPHA_DEG * Math.PI/180;
+  const PARABOLA_DEG = 90 - ALPHA_DEG;     // 58
+  const H = 92;                            // plane pivot height along axis
+  const T_MAX = 190;                       // rendered generator length
+  const N_SAMPLES = 240;
+  const COLORS_CSS = { circle:'#17A589', ellipse:'#185A9D', parabola:'#E8A80A', hyperbola:'#8E44AD' };
+  const NAMES = { circle:'원', ellipse:'타원', parabola:'포물선', hyperbola:'쌍곡선' };
+  let revealed = false;
+  function curveType(phiDeg){
+    const eps = 0.15;
+    if(phiDeg <= eps) return 'circle';
+    if(Math.abs(phiDeg-PARABOLA_DEG) <= eps) return 'parabola';
+    if(phiDeg < PARABOLA_DEG) return 'ellipse';
+    return 'hyperbola';
+  }
+  // returns array length N_SAMPLES of {t,x,y,z} or null (gap), theta order 0..N-1
+  function computeCurveRaw(phiDeg){
+    const phi = phiDeg*Math.PI/180;
+    const sinA=Math.sin(ALPHA), cosA=Math.cos(ALPHA);
+    const sinP=Math.sin(phi), cosP=Math.cos(phi);
+    const pts=[];
+    for(let i=0;i<N_SAMPLES;i++){
+      const theta = i*2*Math.PI/N_SAMPLES;
+      const dx=sinA*Math.cos(theta), dy=cosA, dz=sinA*Math.sin(theta);
+      const denom = sinP*dx + cosP*dy;
+      let t=null;
+      if(Math.abs(denom) > 1e-6){
+        t = (cosP*H)/denom;
+      }
+      if(t!==null && Math.abs(t) <= T_MAX){
+        pts.push({theta:theta, t:t, x:t*dx, y:t*dy, z:t*dz});
+      } else {
+        pts.push(null);
+      }
+    }
+    return pts;
+  }
+  // split into segments; rotate array to avoid artificial split at array boundary
+  function splitSegments(pts){
+    let hasNull = pts.some(p=>p===null);
+    if(!hasNull){
+      return { closed:true, segments:[pts.slice()] };
+    }
+    const nullIdx = pts.findIndex(p=>p===null);
+    const rotated = pts.slice(nullIdx+1).concat(pts.slice(0, nullIdx+1));
+    const segments=[]; let current=[];
+    for(const p of rotated){
+      if(p===null){ if(current.length>1) segments.push(current); current=[]; }
+      else current.push(p);
+    }
+    if(current.length>1) segments.push(current);
+    return { closed:false, segments:segments };
+  }
+  // ---------------- vanilla-canvas pseudo-3D renderer (no external deps) ----------------
+  const holder = document.getElementById('scene3d-holder');
+  const canvas3d = document.createElement('canvas');
+  holder.appendChild(canvas3d);
+  const ctx3d = canvas3d.getContext('2d');
+  function resizeRenderer(){
+    const w = holder.clientWidth, h = holder.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas3d.width = w*dpr; canvas3d.height = h*dpr;
+    canvas3d.style.width = w+'px'; canvas3d.style.height = h+'px';
+    ctx3d.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function vec3(x,y,z){ return {x:x,y:y,z:z}; }
+  function sub(a,b){ return vec3(a.x-b.x,a.y-b.y,a.z-b.z); }
+  function dot(a,b){ return a.x*b.x+a.y*b.y+a.z*b.z; }
+  function cross(a,b){ return vec3(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x); }
+  function norm(a){ const l=Math.sqrt(dot(a,a))||1e-9; return vec3(a.x/l,a.y/l,a.z/l); }
+  // ---- static geometry (built once) ----
+  const CONE_RADIAL = 40;
+  const coneTriangles = (function(){
+    const tris=[];
+    const ring = function(sign){
+      const arr=[];
+      for(let i=0;i<CONE_RADIAL;i++){
+        const th=i*2*Math.PI/CONE_RADIAL;
+        arr.push(vec3(T_MAX*Math.sin(ALPHA)*Math.cos(th), sign*T_MAX*Math.cos(ALPHA), T_MAX*Math.sin(ALPHA)*Math.sin(th)));
+      }
+      return arr;
+    };
+    const apex = vec3(0,0,0);
+    [1,-1].forEach(function(sign){
+      const r = ring(sign);
+      for(let i=0;i<CONE_RADIAL;i++){
+        const p1=r[i], p2=r[(i+1)%CONE_RADIAL];
+        const a = apex, b = sign>0 ? p1 : p2, c = sign>0 ? p2 : p1;
+        const n = norm(cross(sub(b,a), sub(c,a)));
+        tris.push({ v:[a,b,c], n:n });
+      }
+    });
+    return tris;
+  })();
+  const wireLines = (function(){
+    const lines=[];
+    const meridianCount=20;
+    for(let i=0;i<meridianCount;i++){
+      const th=i*2*Math.PI/meridianCount;
+      const dx=Math.sin(ALPHA)*Math.cos(th), dy=Math.cos(ALPHA), dz=Math.sin(ALPHA)*Math.sin(th);
+      lines.push({ pts:[vec3(-T_MAX*dx,-T_MAX*dy,-T_MAX*dz), vec3(T_MAX*dx,T_MAX*dy,T_MAX*dz)] });
+    }
+    const ringFracs=[0.42,0.75,1.0];
+    ringFracs.forEach(function(frac){
+      [1,-1].forEach(function(sign){
+        const t=T_MAX*frac, pts=[];
+        for(let i=0;i<=CONE_RADIAL;i++){
+          const th=i*2*Math.PI/CONE_RADIAL;
+          pts.push(vec3(t*Math.sin(ALPHA)*Math.cos(th), sign*t*Math.cos(ALPHA), t*Math.sin(ALPHA)*Math.sin(th)));
+        }
+        lines.push({ pts:pts });
+      });
+    });
+    return lines;
+  })();
+  const axisLineGeo = (function(){
+    const axisMaxY = T_MAX*Math.cos(ALPHA)*1.08;
+    return { pts:[vec3(0,-axisMaxY,0), vec3(0,axisMaxY,0)] };
+  })();
+  const apexPointGeo = vec3(0,0,0);
+  // ---- per-phi geometry (recomputed on slider change) ----
+  let planeQuad = null;     // array of 4 vec3
+  let curveSegs3D = null;   // array of {pts:[vec3...], color}
+  function planeNormalVec(phiDeg){
+    const phi = phiDeg*Math.PI/180;
+    return vec3(Math.sin(phi), Math.cos(phi), 0);
+  }
+  function updatePlane(phiDeg){
+    const e1 = vec3(Math.cos(phiDeg*Math.PI/180), -Math.sin(phiDeg*Math.PI/180), 0);
+    const e2 = vec3(0,0,-1);
+    const p0 = vec3(0,H,0);
+    const s = T_MAX*0.66;
+    planeQuad = [
+      vec3(p0.x+(-s)*e1.x+(-s)*e2.x, p0.y+(-s)*e1.y+(-s)*e2.y, p0.z+(-s)*e1.z+(-s)*e2.z),
+      vec3(p0.x+( s)*e1.x+(-s)*e2.x, p0.y+( s)*e1.y+(-s)*e2.y, p0.z+( s)*e1.z+(-s)*e2.z),
+      vec3(p0.x+( s)*e1.x+( s)*e2.x, p0.y+( s)*e1.y+( s)*e2.y, p0.z+( s)*e1.z+( s)*e2.z),
+      vec3(p0.x+(-s)*e1.x+( s)*e2.x, p0.y+(-s)*e1.y+( s)*e2.y, p0.z+(-s)*e1.z+( s)*e2.z)
+    ];
+  }
+  function updateCurve(phiDeg){
+    const type = curveType(phiDeg);
+    const colorCss = COLORS_CSS[type];
+    const raw = computeCurveRaw(phiDeg);
+    const split = splitSegments(raw);
+    curveSegs3D = split.segments.filter(function(s){ return s.length>1; }).map(function(seg){
+      return { pts: seg.map(function(p){ return vec3(p.x,p.y,p.z); }), color: colorCss, closed: split.closed && split.segments.length===1 };
+    });
+  }
+  // ---------------- camera orbit control ----------------
+  const camState = { radius: 560, az: 0.65, pol: 1.15 };
+  const LIGHT_DIR = norm(vec3(0.35,0.82,0.45));
+  const FOV = 34 * Math.PI/180;
+  function getCameraBasis(){
+    const r=camState.radius, az=camState.az, pol=camState.pol;
+    const pos = vec3( r*Math.sin(pol)*Math.sin(az), r*Math.cos(pol), r*Math.sin(pol)*Math.cos(az) );
+    const target = vec3(0, H*0.25, 0);
+    const forward = norm(sub(target,pos));
+    const worldUp = vec3(0,1,0);
+    let right = cross(forward, worldUp);
+    if(Math.abs(dot(right,right)) < 1e-6) right = vec3(1,0,0); else right = norm(right);
+    const up = norm(cross(right, forward));
+    return { pos:pos, forward:forward, right:right, up:up };
+  }
+  function projectPoint(p, cam, w, h){
+    const rel = sub(p, cam.pos);
+    const vz = dot(rel, cam.forward);
+    const vx = dot(rel, cam.right);
+    const vy = dot(rel, cam.up);
+    if(vz < 5) return null;
+    const focal = (h*0.5) / Math.tan(FOV/2);
+    const scale = focal / vz;
+    return { x: w/2 + vx*scale, y: h/2 - vy*scale, vz: vz };
+  }
+  function render3D(){
+    const w = holder.clientWidth, h = holder.clientHeight;
+    ctx3d.clearRect(0,0,w,h);
+    const cam = getCameraBasis();
+    const prims = [];
+    // cone triangles
+    coneTriangles.forEach(function(tri){
+      const s0=projectPoint(tri.v[0],cam,w,h), s1=projectPoint(tri.v[1],cam,w,h), s2=projectPoint(tri.v[2],cam,w,h);
+      if(!s0||!s1||!s2) return;
+      const depth=(s0.vz+s1.vz+s2.vz)/3;
+      const shade = Math.max(0.35, Math.min(1, 0.55 + 0.55*dot(tri.n, LIGHT_DIR)));
+      const g = Math.round(150+60*shade), bcol = Math.round(175+65*shade), rcol=Math.round(140+55*shade);
+      prims.push({ type:'tri', pts:[s0,s1,s2], depth:depth, fill:'rgba('+rcol+','+g+','+bcol+',0.20)' });
+    });
+    // wireframe
+    wireLines.forEach(function(line){
+      const sp = line.pts.map(function(p){ return projectPoint(p,cam,w,h); });
+      if(sp.some(function(s){return !s;})) return;
+      const depth = sp.reduce(function(a,s){return a+s.vz;},0)/sp.length;
+      prims.push({ type:'poly', pts:sp, depth:depth, stroke:'rgba(127,146,163,0.55)', lineWidth:1 });
+    });
+    // axis
+    (function(){
+      const sp = axisLineGeo.pts.map(function(p){ return projectPoint(p,cam,w,h); });
+      if(sp[0] && sp[1]){
+        const depth=(sp[0].vz+sp[1].vz)/2;
+        prims.push({ type:'poly', pts:sp, depth:depth, stroke:'rgba(120,132,145,0.8)', lineWidth:1.4 });
+      }
+    })();
+    // apex
+    (function(){
+      const s = projectPoint(apexPointGeo,cam,w,h);
+      if(s) prims.push({ type:'dot', pt:s, depth:s.vz, fill:'#1A1A2E', r:4.5 });
+    })();
+    // cutting plane
+    if(planeQuad){
+      const sp = planeQuad.map(function(p){ return projectPoint(p,cam,w,h); });
+      if(!sp.some(function(s){return !s;})){
+        const depth = sp.reduce(function(a,s){return a+s.vz;},0)/sp.length;
+        prims.push({ type:'poly', pts:sp, depth:depth, fill:'rgba(142,68,173,0.20)', stroke:'rgba(142,68,173,0.55)', lineWidth:1.5, close:true });
+      }
+    }
+    prims.sort(function(a,b){ return b.depth - a.depth; });
+    prims.forEach(function(pr){
+      if(pr.type==='tri'){
+        ctx3d.beginPath();
+        ctx3d.moveTo(pr.pts[0].x,pr.pts[0].y);
+        ctx3d.lineTo(pr.pts[1].x,pr.pts[1].y);
+        ctx3d.lineTo(pr.pts[2].x,pr.pts[2].y);
+        ctx3d.closePath();
+        ctx3d.fillStyle = pr.fill;
+        ctx3d.fill();
+      } else if(pr.type==='poly'){
+        ctx3d.beginPath();
+        pr.pts.forEach(function(s,i){ if(i===0) ctx3d.moveTo(s.x,s.y); else ctx3d.lineTo(s.x,s.y); });
+        if(pr.close) ctx3d.closePath();
+        if(pr.fill){ ctx3d.fillStyle=pr.fill; ctx3d.fill(); }
+        if(pr.stroke){ ctx3d.strokeStyle=pr.stroke; ctx3d.lineWidth=pr.lineWidth||1; ctx3d.stroke(); }
+      } else if(pr.type==='dot'){
+        ctx3d.beginPath();
+        ctx3d.arc(pr.pt.x,pr.pt.y,pr.r,0,Math.PI*2);
+        ctx3d.fillStyle=pr.fill;
+        ctx3d.fill();
+      }
+    });
+    // curve always drawn last, fully visible, on top
+    if(curveSegs3D){
+      curveSegs3D.forEach(function(seg){
+        const sp = seg.pts.map(function(p){ return projectPoint(p,cam,w,h); }).filter(function(s){return s;});
+        if(sp.length<2) return;
+        ctx3d.beginPath();
+        sp.forEach(function(s,i){ if(i===0) ctx3d.moveTo(s.x,s.y); else ctx3d.lineTo(s.x,s.y); });
+        if(seg.closed) ctx3d.closePath();
+        ctx3d.strokeStyle = seg.color;
+        ctx3d.lineWidth = 4.2;
+        ctx3d.lineJoin='round'; ctx3d.lineCap='round';
+        ctx3d.stroke();
+      });
+    }
+  }
+  let dragging=false, lastX=0, lastY=0;
+  canvas3d.addEventListener('pointerdown', function(e){
+    dragging=true; lastX=e.clientX; lastY=e.clientY;
+    canvas3d.setPointerCapture(e.pointerId);
+  });
+  canvas3d.addEventListener('pointerup', function(){ dragging=false; });
+  canvas3d.addEventListener('pointercancel', function(){ dragging=false; });
+  canvas3d.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    const dx = e.clientX-lastX, dy = e.clientY-lastY;
+    lastX=e.clientX; lastY=e.clientY;
+    camState.az -= dx*0.006;
+    camState.pol = Math.max(0.25, Math.min(Math.PI-0.25, camState.pol - dy*0.006));
+  });
+  canvas3d.addEventListener('wheel', function(e){
+    e.preventDefault();
+    camState.radius = Math.max(340, Math.min(1000, camState.radius + e.deltaY*0.4));
+  }, { passive:false });
+  document.getElementById('resetViewBtn').addEventListener('click', function(){
+    camState.radius=560; camState.az=0.65; camState.pol=1.15;
+  });
+  function animate(){
+    requestAnimationFrame(animate);
+    render3D();
+  }
+  // ---------------- 2D true-shape panel ----------------
+  const holder2d = document.getElementById('scene2d-holder');
+  const canvas2d = document.createElement('canvas');
+  holder2d.appendChild(canvas2d);
+  const ctx2d = canvas2d.getContext('2d');
+  function resizeCanvas2d(){
+    const w = holder2d.clientWidth, h = holder2d.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas2d.width = w*dpr; canvas2d.height = h*dpr;
+    canvas2d.style.width = w+'px'; canvas2d.style.height = h+'px';
+    ctx2d.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function localUV(p, phiDeg){
+    const phi = phiDeg*Math.PI/180;
+    const cosP=Math.cos(phi), sinP=Math.sin(phi);
+    const u = p.x*cosP - (p.y-H)*sinP;
+    const v = -p.z;
+    return {u:u, v:v};
+  }
+  function drawTrueShape(phiDeg){
+    const w = holder2d.clientWidth, h = holder2d.clientHeight;
+    ctx2d.clearRect(0,0,w,h);
+    const type = curveType(phiDeg);
+    const color = COLORS_CSS[type];
+    const raw = computeCurveRaw(phiDeg);
+    const split = splitSegments(raw);
+    const uvSegments = split.segments.map(function(seg){
+      return seg.map(function(p){ return localUV(p, phiDeg); });
+    });
+    // bounding box across all points for autoscale
+    let minU=Infinity,maxU=-Infinity,minV=Infinity,maxV=-Infinity;
+    uvSegments.forEach(function(seg){
+      seg.forEach(function(p){
+        if(p.u<minU)minU=p.u; if(p.u>maxU)maxU=p.u;
+        if(p.v<minV)minV=p.v; if(p.v>maxV)maxV=p.v;
+      });
+    });
+    if(!isFinite(minU)){ minU=-50;maxU=50;minV=-50;maxV=50; }
+    const spanU = Math.max(maxU-minU, 20), spanV = Math.max(maxV-minV, 20);
+    const cx = (minU+maxU)/2, cy=(minV+maxV)/2;
+    const pad = 30;
+    const scale = Math.min((w-2*pad)/spanU, (h-2*pad)/spanV);
+    function toScreen(u,v){
+      return { x: w/2 + (u-cx)*scale, y: h/2 - (v-cy)*scale };
+    }
+    // axes (through plane-local origin, i.e. u=0,v=0 which is p0)
+    const origin = toScreen(0,0);
+    ctx2d.strokeStyle = '#D7E0E8'; ctx2d.lineWidth = 1;
+    ctx2d.beginPath(); ctx2d.moveTo(0, origin.y); ctx2d.lineTo(w, origin.y); ctx2d.stroke();
+    ctx2d.beginPath(); ctx2d.moveTo(origin.x, 0); ctx2d.lineTo(origin.x, h); ctx2d.stroke();
+    // curve
+    ctx2d.lineWidth = 3.4;
+    ctx2d.strokeStyle = color;
+    ctx2d.lineCap = 'round';
+    ctx2d.lineJoin = 'round';
+    uvSegments.forEach(function(seg){
+      if(seg.length<2) return;
+      ctx2d.beginPath();
+      seg.forEach(function(p,i){
+        const s = toScreen(p.u,p.v);
+        if(i===0) ctx2d.moveTo(s.x,s.y); else ctx2d.lineTo(s.x,s.y);
+      });
+      if(split.closed) ctx2d.closePath();
+      ctx2d.stroke();
+    });
+    // label (only after names are revealed)
+    if(revealed){
+      ctx2d.fillStyle = color;
+      ctx2d.font = "bold 17px 'Malgun Gothic','Apple SD Gothic Neo',sans-serif";
+      ctx2d.textAlign = 'left';
+      ctx2d.fillText(NAMES[type], 14, 26);
+    }
+  }
+  // ---------------- UI wiring ----------------
+  const slider = document.getElementById('phiSlider');
+  const phiReadout = document.getElementById('phiReadout');
+  const curveBadge = document.getElementById('curveBadge');
+  function updateBoundaryHint(phiDeg){
+    const hint = document.getElementById('boundaryHint');
+    if(Math.abs(phiDeg - PARABOLA_DEG) <= 4){
+      hint.style.display = 'block';
+      hint.textContent = revealed
+        ? '✨ 여기가 타원과 쌍곡선 사이의 경계 — 포물선입니다.'
+        : '✨ 지금 곡선이 닫힌 모양에서 열린 모양으로 바뀌고 있어요. 잘 보세요!';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+  function refreshAll(phiDeg){
+    phiDeg = Math.max(0, Math.min(88, phiDeg));
+    slider.value = phiDeg;
+    phiReadout.textContent = 'φ = ' + phiDeg.toFixed(1) + '°';
+    const type = curveType(phiDeg);
+    if(revealed){
+      curveBadge.textContent = NAMES[type];
+      curveBadge.style.background = COLORS_CSS[type];
+    } else {
+      curveBadge.textContent = '?';
+      curveBadge.style.background = 'var(--muted)';
+    }
+    updatePlane(phiDeg);
+    updateCurve(phiDeg);
+    drawTrueShape(phiDeg);
+    updateBoundaryHint(phiDeg);
+  }
+  slider.addEventListener('input', function(){
+    refreshAll(parseFloat(slider.value));
+  });
+  document.querySelectorAll('.preset-btn[data-phi]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      stopPlay();
+      refreshAll(parseFloat(btn.getAttribute('data-phi')));
+    });
+  });
+  const revealBtn = document.getElementById('revealBtn');
+  revealBtn.addEventListener('click', function(){
+    revealed = true;
+    document.getElementById('namedPresetRow').style.display = 'flex';
+    revealBtn.textContent = '✓ 공개됨';
+    revealBtn.disabled = true;
+    revealBtn.style.opacity = '0.5';
+    revealBtn.style.cursor = 'default';
+    refreshAll(parseFloat(slider.value));
+  });
+  // autoplay
+  let playing=false, playReq=null;
+  const playBtn = document.getElementById('playBtn');
+  function stopPlay(){
+    playing=false;
+    playBtn.textContent='▶ 변화 관찰';
+    if(playReq) cancelAnimationFrame(playReq);
+  }
+  function stepPlay(){
+    if(!playing) return;
+    let v = parseFloat(slider.value) + 0.28;
+    if(v>=88){ v=88; refreshAll(v); stopPlay(); return; }
+    refreshAll(v);
+    playReq = requestAnimationFrame(stepPlay);
+  }
+  playBtn.addEventListener('click', function(){
+    if(playing){ stopPlay(); return; }
+    if(parseFloat(slider.value) >= 87.5) refreshAll(0);
+    playing=true;
+    playBtn.textContent='⏸ 멈춤';
+    stepPlay();
+  });
+  // ---------------- init & resize ----------------
+  function onResize(){
+    resizeRenderer();
+    resizeCanvas2d();
+    drawTrueShape(parseFloat(slider.value));
+  }
+  window.addEventListener('resize', onResize);
+  // ResizeObserver re-measures the actual panel width whenever layout
+  // settles (grid/media-query timing can make the first synchronous
+  // clientWidth read stale on some mobile browsers), so the canvas
+  // never gets locked to an oversized inline pixel width.
+  if(window.ResizeObserver){
+    const ro = new ResizeObserver(function(){ onResize(); });
+    ro.observe(holder);
+    ro.observe(holder2d);
+  }
+  onResize();
+  refreshAll(0);
+  animate();
+})();
+</script>
+</body>
+</html>
