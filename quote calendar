@@ -1,0 +1,571 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #262b31;
+    --bg-2: #2f353c;
+    --paper: #f3ecdc;
+    --paper-2: #ece2cc;
+    --paper-3: #e2d5b8;
+    --ink: #2b2a26;
+    --ink-soft: #766f5e;
+    --accent-red: #b6423a;
+    --line: #cabe9c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .stage {
+    min-height: 100%;
+    padding: 28px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background:
+      radial-gradient(circle at 30% 0%, var(--bg-2), var(--bg) 70%);
+    border-radius: 18px;
+  }
+
+  .eyebrow {
+    color: #b9b2a0;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    margin-bottom: 18px;
+  }
+
+  .calendar-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .stack {
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+  }
+  .stack.s1 {
+    background: var(--paper-2);
+    transform: translate(6px, 8px) rotate(1.2deg);
+  }
+  .stack.s2 {
+    background: var(--paper-3);
+    transform: translate(11px, 15px) rotate(-1.6deg);
+  }
+
+  .card {
+    position: relative;
+    background: var(--paper);
+    border-radius: 4px;
+    box-shadow: 0 18px 30px -14px rgba(0,0,0,0.55);
+    padding: 26px 24px 22px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 10px;
+    background-image: repeating-linear-gradient(
+      90deg, transparent, transparent 10px, rgba(43,42,38,0.12) 10px, rgba(43,42,38,0.12) 11px
+    );
+  }
+
+  .ring-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    margin-bottom: 6px;
+  }
+  .ring {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--bg);
+    margin-top: -14px;
+    box-shadow: 0 0 0 3px var(--paper);
+  }
+
+  .month {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .day-num {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 800;
+    font-size: 76px;
+    line-height: 1;
+    margin: 2px 0 4px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .day-num.sunday { color: var(--accent-red); }
+
+  .weekday {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+  }
+  .weekday.sunday { color: var(--accent-red); }
+
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--line);
+    margin: 0 6px 16px;
+  }
+
+  .quote-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+  }
+
+  .quote-author {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+  }
+  .quote-author::before { content: "— "; }
+
+  .card-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  .fav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  .fav-btn:active { transform: scale(0.96); }
+  .fav-btn.active {
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+  }
+  .fav-btn svg { width: 14px; height: 14px; }
+
+  .nav-row {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 26px;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    background: var(--bg-2);
+    border: 1px solid #3d4550;
+    color: #e9e4d8;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .nav-btn:active { transform: scale(0.94); }
+  .nav-btn svg { width: 18px; height: 18px; }
+
+  .center-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .today-btn {
+    background: none;
+    border: none;
+    color: #cfc7b3;
+    font-size: 13px;
+    font-family: 'Pretendard', sans-serif;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-bottom: 1px solid transparent;
+  }
+  .today-btn:hover { border-bottom-color: #cfc7b3; }
+
+  .date-input {
+    background: var(--bg-2);
+    border: 1px solid #3d4550;
+    color: #e9e4d8;
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-family: 'Pretendard', sans-serif;
+    color-scheme: dark;
+  }
+
+  .bottom-row {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 22px;
+    text-align: center;
+  }
+
+  .fav-toggle {
+    background: none;
+    border: none;
+    color: #a39a85;
+    font-size: 13px;
+    font-family: 'Pretendard', sans-serif;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .fav-list {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 14px;
+    background: var(--bg-2);
+    border-radius: 10px;
+    padding: 6px 4px;
+    display: none;
+  }
+  .fav-list.open { display: block; }
+
+  .fav-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #3a414a;
+    cursor: pointer;
+  }
+  .fav-item:last-child { border-bottom: none; }
+  .fav-item:hover { background: rgba(255,255,255,0.03); }
+
+  .fav-item-text {
+    font-size: 13px;
+    color: #d8d2c2;
+    font-family: 'Noto Serif KR', serif;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .fav-item-date {
+    font-size: 11px;
+    color: #8b8474;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .fav-empty {
+    text-align: center;
+    color: #8b8474;
+    font-size: 13px;
+    padding: 18px 10px;
+  }
+</style>
+
+<div class="stage">
+  <div class="eyebrow">오늘의 명언</div>
+
+  <div class="calendar-wrap">
+    <div class="stack s2"></div>
+    <div class="stack s1"></div>
+    <div class="card">
+      <div class="ring-row">
+        <div class="ring"></div>
+        <div class="ring"></div>
+      </div>
+      <div class="month" id="monthLabel">9월</div>
+      <div class="day-num" id="dayNum">7</div>
+      <div class="weekday" id="weekdayLabel">월요일</div>
+      <hr class="divider" />
+      <div class="quote-text" id="quoteText">문장을 불러오는 중...</div>
+      <div class="quote-author" id="quoteAuthor"></div>
+      <div class="card-footer">
+        <button class="fav-btn" id="favBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          <span id="favLabel">저장하기</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn" aria-label="이전 날">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="center-controls">
+      <input type="date" class="date-input" id="dateInput" />
+      <button class="today-btn" id="todayBtn">오늘로 이동</button>
+    </div>
+    <button class="nav-btn" id="nextBtn" aria-label="다음 날">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="bottom-row">
+    <button class="fav-toggle" id="favToggle">즐겨찾기 보기 (<span id="favCount">0</span>)</button>
+  </div>
+  <div class="fav-list" id="favList"></div>
+</div>
+
+<script>
+  const QUOTES = [
+    ["오늘 걷지 않으면 내일은 뛰어야 한다.", "한국 속담"],
+    ["천릿길도 한 걸음부터.", "한국 속담"],
+    ["작은 물방울이 바위를 뚫는다.", "한국 속담"],
+    ["시작이 반이다.", "아리스토텔레스"],
+    ["오늘 할 수 있는 일에 최선을 다하라. 그러면 내일은 한 걸음 더 나아가 있을 것이다.", "새뮤얼 존슨"],
+    ["넘어지는 것이 실패가 아니라, 넘어진 자리에 머무는 것이 실패다.", "소크라테스"],
+    ["시련은 있어도 실패는 없다.", "정주영"],
+    ["할 수 있다고 믿든 할 수 없다고 믿든, 믿는 대로 될 것이다.", "헨리 포드"],
+    ["인내는 쓰지만 그 열매는 달다.", "장 자크 루소"],
+    ["오늘 흘린 땀이 내일의 자신감이 된다.", "무명"],
+    ["오늘의 나는 어제의 내가 만든 것이다.", "제임스 앨런"],
+    ["매일 조금씩이라도 나아가는 것이 완벽을 기다리는 것보다 낫다.", "마크 트웨인"],
+    ["가장 큰 실수는 아무것도 하지 않는 것이다.", "테오도어 루스벨트"],
+    ["성공은 열정을 잃지 않고 실패를 거듭할 수 있는 능력이다.", "윈스턴 처칠"],
+    ["오늘 할 일을 내일로 미루지 마라.", "벤저민 프랭클린"],
+    ["나무를 심기 가장 좋은 때는 20년 전이었다. 두 번째로 좋은 때는 바로 지금이다.", "중국 속담"],
+    ["실패를 두려워하지 말고, 도전하지 않는 것을 두려워하라.", "무명"],
+    ["끝까지 해내는 사람이 결국 이긴다.", "무명"],
+    ["작은 성공들이 모여 큰 성공을 만든다.", "무명"],
+    ["의심이 든다면, 일단 하라.", "무명"],
+    ["오늘의 고통이 내일의 힘이 된다.", "무명"],
+    ["느리더라도 멈추지 않는다면 문제되지 않는다.", "공자"],
+    ["가장 높은 곳에 오르려면 가장 낮은 곳에서 시작해야 한다.", "생텍쥐페리"],
+    ["오늘 하루도 수고했다, 그것으로 충분하다.", "무명"],
+    ["가장 어두운 밤도 끝나고 태양은 떠오른다.", "빅토르 위고"],
+    ["가장 위대한 영광은 한 번도 실패하지 않음이 아니라 실패할 때마다 다시 일어서는 데 있다.", "공자"],
+    ["구르는 돌에는 이끼가 끼지 않는다.", "서양 속담"],
+    ["기회는 준비된 자에게 온다.", "루이 파스퇴르"],
+    ["별을 향해 쏘아라. 빗나가더라도 달에는 닿을 것이다.", "레스 브라운"],
+    ["자신을 이기는 것이 가장 큰 승리다.", "플라톤"],
+    ["가장 강한 종이 살아남는 것이 아니라, 변화에 가장 잘 적응하는 종이 살아남는다.", "찰스 다윈"],
+    ["삶이 그대를 속일지라도 슬퍼하거나 노하지 말라.", "알렉산드르 푸시킨"],
+    ["산을 오르는 길은 하나가 아니다. 자기만의 속도로 오르면 된다.", "무명"],
+    ["지금의 힘듦은 네가 나아가고 있다는 증거다.", "무명"],
+    ["1년 후의 나에게 부끄럽지 않도록, 오늘의 나에게 최선을 다하자.", "무명"],
+    ["작은 습관이 쌓여 큰 결과를 만든다.", "무명"],
+    ["잘하고 있어. 그리고 앞으로 더 잘할 거야.", "무명"],
+    ["포기하고 싶은 순간이 바로 포기하지 말아야 할 순간이다.", "무명"],
+    ["오늘 흘린 노력은 어디로도 사라지지 않는다.", "무명"],
+    ["남과 비교하지 말고 어제의 나와 비교하라.", "무명"],
+    ["불안은 준비하고 있다는 증거다.", "무명"],
+    ["힘든 시간은 지나가지만, 그 시간에 쌓은 힘은 남는다.", "무명"],
+    ["지금 이 순간의 노력이 1년 뒤 웃을 이유가 된다.", "무명"],
+    ["느려도 괜찮다. 멈추지만 않으면 된다.", "무명"],
+    ["실수해도 괜찮다. 실수는 배움의 다른 이름이다.", "무명"],
+    ["오늘 하루치의 성실함이 내일의 자신감을 만든다.", "무명"],
+    ["꿈은 목표가 되고, 목표는 계획이 되고, 계획은 오늘의 행동이 된다.", "그렉 라이드"],
+    ["단단한 땅에서 자란 나무일수록 바람에 강하다.", "무명"],
+    ["가장 어두운 순간은 해뜨기 직전이다.", "토마스 풀러"],
+    ["잘 될 거라는 믿음보다, 잘 해내겠다는 다짐이 너를 데려간다.", "무명"],
+    ["지금의 최선이 나중의 후회를 줄여준다.", "무명"],
+    ["힘들다고 느껴진다면 그만큼 성장하고 있다는 뜻이다.", "무명"],
+    ["누구에게나 힘든 1년은 있다. 그 1년을 잘 지나온 사람이 다음 문을 연다.", "무명"],
+    ["작은 목표부터 하나씩, 그게 큰 목표로 가는 가장 확실한 길이다.", "무명"],
+    ["지치는 날엔 잠깐 쉬어도 괜찮다. 다시 걸으면 된다.", "무명"],
+    ["네가 지금 쌓고 있는 건 성적만이 아니라 버텨내는 힘이다.", "무명"],
+    ["오늘도 책상에 앉은 너를 응원한다.", "무명"]
+  ];
+
+  const WEEKDAYS = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+
+  function toDateStr(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function dayOfYear(d) {
+    const start = new Date(d.getFullYear(), 0, 0);
+    const diff = d - start;
+    return Math.floor(diff / 86400000);
+  }
+
+  function quoteIndexForDate(d) {
+    // 연도 + 연중 일수를 함께 섞어서 매년 같은 날짜라도 조합이 자연스럽게 순환하도록 함
+    const doy = dayOfYear(d);
+    const seed = doy + d.getFullYear() * 7;
+    return ((seed % QUOTES.length) + QUOTES.length) % QUOTES.length;
+  }
+
+  let current = new Date();
+  let favorites = [];
+  let favLoaded = false;
+
+  const el = {
+    month: document.getElementById("monthLabel"),
+    dayNum: document.getElementById("dayNum"),
+    weekday: document.getElementById("weekdayLabel"),
+    quoteText: document.getElementById("quoteText"),
+    quoteAuthor: document.getElementById("quoteAuthor"),
+    favBtn: document.getElementById("favBtn"),
+    favLabel: document.getElementById("favLabel"),
+    dateInput: document.getElementById("dateInput"),
+    prevBtn: document.getElementById("prevBtn"),
+    nextBtn: document.getElementById("nextBtn"),
+    todayBtn: document.getElementById("todayBtn"),
+    favToggle: document.getElementById("favToggle"),
+    favCount: document.getElementById("favCount"),
+    favList: document.getElementById("favList")
+  };
+
+  async function loadFavorites() {
+    try {
+      const res = await window.storage.get("favorites", false);
+      favorites = res && res.value ? JSON.parse(res.value) : [];
+    } catch (e) {
+      favorites = [];
+    }
+    favLoaded = true;
+    renderFavCount();
+  }
+
+  async function saveFavorites() {
+    try {
+      await window.storage.set("favorites", JSON.stringify(favorites), false);
+    } catch (e) {
+      console.error("저장 실패", e);
+    }
+  }
+
+  function renderFavCount() {
+    el.favCount.textContent = favorites.length;
+  }
+
+  function isFavorited(dateStr) {
+    return favorites.some(f => f.date === dateStr);
+  }
+
+  function updateFavButton() {
+    const dateStr = toDateStr(current);
+    const fav = isFavorited(dateStr);
+    el.favBtn.classList.toggle("active", fav);
+    el.favLabel.textContent = fav ? "저장됨" : "저장하기";
+  }
+
+  function render() {
+    const dateStr = toDateStr(current);
+    const idx = quoteIndexForDate(current);
+    const [text, author] = QUOTES[idx];
+    const isSunday = current.getDay() === 0;
+
+    el.month.textContent = `${current.getFullYear()}년 ${current.getMonth() + 1}월`;
+    el.dayNum.textContent = current.getDate();
+    el.dayNum.classList.toggle("sunday", isSunday);
+    el.weekday.textContent = WEEKDAYS[current.getDay()];
+    el.weekday.classList.toggle("sunday", isSunday);
+    el.quoteText.textContent = `“${text}”`;
+    el.quoteAuthor.textContent = author;
+    el.dateInput.value = dateStr;
+
+    if (favLoaded) updateFavButton();
+    renderFavList();
+  }
+
+  function renderFavList() {
+    if (favorites.length === 0) {
+      el.favList.innerHTML = '<div class="fav-empty">아직 저장한 명언이 없어요.</div>';
+      return;
+    }
+    const sorted = [...favorites].sort((a, b) => b.date.localeCompare(a.date));
+    el.favList.innerHTML = sorted.map(f => `
+      <div class="fav-item" data-date="${f.date}">
+        <span class="fav-item-text">“${f.text}” — ${f.author}</span>
+        <span class="fav-item-date">${f.date}</span>
+      </div>
+    `).join("");
+
+    el.favList.querySelectorAll(".fav-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const [y, m, d] = item.dataset.date.split("-").map(Number);
+        current = new Date(y, m - 1, d);
+        render();
+      });
+    });
+  }
+
+  el.prevBtn.addEventListener("click", () => {
+    current.setDate(current.getDate() - 1);
+    render();
+  });
+
+  el.nextBtn.addEventListener("click", () => {
+    current.setDate(current.getDate() + 1);
+    render();
+  });
+
+  el.todayBtn.addEventListener("click", () => {
+    current = new Date();
+    render();
+  });
+
+  el.dateInput.addEventListener("change", (e) => {
+    if (!e.target.value) return;
+    const [y, m, d] = e.target.value.split("-").map(Number);
+    current = new Date(y, m - 1, d);
+    render();
+  });
+
+  el.favBtn.addEventListener("click", async () => {
+    const dateStr = toDateStr(current);
+    const idx = quoteIndexForDate(current);
+    const [text, author] = QUOTES[idx];
+    const existingIdx = favorites.findIndex(f => f.date === dateStr);
+
+    if (existingIdx >= 0) {
+      favorites.splice(existingIdx, 1);
+    } else {
+      favorites.push({ date: dateStr, text, author });
+    }
+    updateFavButton();
+    renderFavCount();
+    renderFavList();
+    await saveFavorites();
+  });
+
+  el.favToggle.addEventListener("click", () => {
+    const open = el.favList.classList.toggle("open");
+    el.favToggle.textContent = (open ? "즐겨찾기 숨기기 (" : "즐겨찾기 보기 (");
+    el.favToggle.innerHTML = `${open ? "즐겨찾기 숨기기" : "즐겨찾기 보기"} (<span id="favCount">${favorites.length}</span>)`;
+    el.favCount = document.getElementById("favCount");
+  });
+
+  render();
+  loadFavorites();
+</script>quo
